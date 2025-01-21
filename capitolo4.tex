@@ -1,0 +1,37 @@
+\setlength{\tabcolsep}{18pt} %Gap before text Starts
+\renewcommand{\arraystretch}{1.5} %Cell Height scaling
+\setlength{\arrayrulewidth}{0.5mm} %Table Border Thickness
+\arrayrulecolor{blue} % Table Border Color
+\newcolumntype{s}{>{\columncolor{blue!20}} c}
+
+
+\section{Tables}
+
+\begin{tabular}{|l|b{4cm}|}
+    \hline
+    This & a\\ \hline
+    a & table and it has a really really really really really really long cell \\ \hline
+\end{tabular}
+
+\vspace{1in}
+
+\begin{tabular}{|c|c|c|}
+    \hline
+    \multicolumn{3}{|c|}{A multiple column} \\ \hline
+    1 & 2 & 3 \\\hline 
+    \multirow{2}{2cm}{A multiple row} & 5 & 6\\
+     & 8 & 9 \\ \hline
+\end{tabular}
+
+
+\newpage
+\begin{table}[!h]
+    
+    \rowcolors{2}{white}{black!5}
+    \begin{tabular}{|c|c|c|c|c|}
+        \hline
+        \textbf{Attacco} & \textbf{Vettore} & \textbf{\textit{DDS}} & \textbf{DDS } & \textbf{Superficie}\\ \hline
+        DDoS & 943,912& 45,553 & lal & lol\\ \hline 
+    \end{tabular}
+\caption{Descrizione tabella}
+\end{table}
