@@ -1,1 +1,53 @@
 \chapter{Introduction}
+
+
+% Definizione di un colore personalizzato
+\definecolor{customgray}{rgb}{0.70, 0.70, 0.70} % Grigio chiaro
+
+% Regolazione dello spessore delle linee
+\setlength{\arrayrulewidth}{1.0pt} % Spessore linee generali
+% \renewcommand{\arraystretch}{1.2} % Altezza righe
+
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{black!5}{white}
+    \resizebox{\linewidth}{!}{%
+        \begin{tabular}{|c|c|c|c|c|c|}
+            \hline
+            \rowcolor{customgray}
+            \multicolumn{1}{|>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Tipo di}\\ \textbf{attacco}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Vettore} \\ \textbf{attacco}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Protoc.}/ \\ \textbf{Estens.}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Bersaglio} \\ \textbf{nella rete}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Software}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Soluzione}}} \\
+            \hline
+            \tabularCenterstack{l}{Discovery \\ devices[2]} &
+            \tabularCenterstack{c}{Verbose nature \\ of RTPS} &
+            \tabularCenterstack{c}{DDSI-RTPS} &
+            \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
+            \tabularCenterstack{c}{Sniffer \\ python} &
+            \tabularCenterstack{c}{DDS-security} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            \tabularCenterstack{l}{DDos[2]} &
+            \tabularCenterstack{c}{Heartbeat \\ sequence number} &
+            \tabularCenterstack{c}{DDSI-RTPS} &
+            \tabularCenterstack{c}{Data-reader} &
+            \tabularCenterstack{c}{Sniffer \\ python} &
+            \tabularCenterstack{c}{DDS-security} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            \tabularCenterstack{l}{DDoS[3]} &
+            \tabularCenterstack{c}{Authentication \\ challenge} &
+            \tabularCenterstack{c}{DDS security 1.1 \\ Discovery protoc.} &
+            \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
+            \tabularCenterstack{c}{Proverif} &
+            \tabularCenterstack{c}{Scandenza richieste \\ di autenticazione} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            
+
+            \hline
+        \end{tabular}
+        }
+        \caption{La versione DDS in tutti i casi è la 1.4}
+    \end{table}
