@@ -50,16 +50,18 @@ dato che quest'ultimo:
     \item controlla che l'ultimo sequence number arrivato non ha un valore più alto 
     del sequence number ricevuto in precedenza 
 \end{itemize}
-\subsubsection{Dettagli attacco}
+\subsubsection{Dettagli attacco AFTER}
 Per sfruttare questa vulnerabilità l'attaccante deve utilizzare qualche strumento
 per sniffare la comunicazione tra data-reader e data-writer e intercettare un
 messaggio di tipo HEARTBEAT. Successivamente l'attaccante modifica il valore del
 sequence number del messaggio HEARTBEAT. Il messaggio poi viene mandato verso il
 data-writer così facendolo rimanere in attesa di un messaggio HEARTBEAT con Un
 sequence number superiore a quello appena ricevuto. Facendo così il data-reader
-non legge più i messaggi mandati dal data-writer e bloccando il così
-il funziomanto del data-reader finchè il sequence number non
+non legge più i messaggi mandati dal data-writer e bloccando così l'esecuzione
+del data-reader finchè il sequence number non 
 sarà superiore a quello ricevuto dall'attaccante.
+
+Di solito questi tipo di attaco sono difficili da identificare.
 
 
 \subsubsection{Questa è una sottosottosezione}
