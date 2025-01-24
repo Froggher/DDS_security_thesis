@@ -7,7 +7,9 @@ verrà analizzato il vettore d'attacco, il protocollo utilizzato, il bersaglio
 dell'attacco e infine verrà proposta una soluzione applicabile per
 mitigare possibili attacchi non autorizzati. Successivamente grazie all'aiuto 
 di un software riusciremo a capire come queste vulnerabilità possono 
-influire sul funziomanto degli --host-- collegati alla rete DDS.
+influire sul funziomanto degli --host-- collegati alla rete DDS. In molti casi
+l'attaccante ha a disposizione un dispositivo all'interno della rete sotto
+il suo controllo.
 
 
 \section{Attacchi di tipo DDoS}
@@ -61,7 +63,85 @@ non legge più i messaggi mandati dal data-writer e bloccando così l'esecuzione
 del data-reader finchè il sequence number non 
 sarà superiore a quello ricevuto dall'attaccante.
 
+\subsubsection{Conclusioni AFTER}
 Di solito questi tipo di attaco sono difficili da identificare.
+
+\subsection{DDoS sfruttando estensione DDS security}
+In questo attacco dobbiamo considerare il modulo del DDS chiamato DDS security
+versione 1.1.(fonti ora da foglio 6) Questo modulo si occupa di stabilire una
+connessione sicura tra i vari dispositivi della rete. Infatti verranno utilizzate
+delle api da parte dei partecipanti per effettuare le varie azioni, come
+ad esempio iscriversi ad un topic e pubblicare un messaggio del topic.
+(foglio 3 pag 718)Per effettuare l'autenticazione un partecipante deve prima
+risolvere una challenge criptografica richiesta dal sistema di autenticazione
+della rete. Effettuato poi questo calcolo criptografico il risultato viene
+controllato dal sistema di autenticazione, controllando che se il risultato
+inviato corrisponde all'hash della challenge criptografica.
+
+\subsubsection{Dettagli attacco AFTER foglio 3}
+L'attacco DDoS si svolge proprio durante la fase di autenticazione del protocollo
+DDS security 1.1, in particolare quando un nuovo dispositivo legittimo si vuole 
+collegare alla rete e comincia a mandare una richiesta di autenticazione
+all'ente di controllo. La richiesta del partecipante poi viene intercettata 
+dall'attaccante che modifica i valori all'interno del pacchetto delle 
+challenge criptografica. Modicando ogni volta questi valori, l'attaccante
+comincia a mandare tante richeieste criptografiche alla sua vittima.
+Il partecipante comincierà a calcolare queste challenge per effettuare 
+l'autenticazione investendo tutte le risorse necessarie.
+Dato che molto probabilmente chi riceve questo attacco è un dispositivo IOT 
+che non dispone di una potenza di calcolo molto elevata e si ritroverà
+occupato per tutto il tempo necessario per risolvere le challenge criptografiche
+ricevute dall'attaccante, bloccando così il suo funziomanto.
+
+\subsubsection{Conclusioni AFTER foglio 3}
+Una raccomandazione per mitigare questo attacco può essere quello di cambiare delle
+policy QoS in modo tale da impostare un tempo limite massimo per effettuare
+l'autenticazione. Impostando un limite simile queste policy possono prevenire
+che i partecipanti si ritrovino sopraffatti dalle troppe richieste di 
+autenticazione. Un allarme potrebbe essere anche utile per identificare possibili
+tentativi DDoS di questo tipo così allertando un amministratore.
+
+\section{Attacchi di tipo Discovery}
+Dal foglio 2
+Prendere informazioni DDS senza effettuare veri e propri
+attacchi di tipo attivo può essere molto utile per un attaccante che prova
+a penetrare una rete DDS. In molti casi tutto quello che deve fare l'attaccante
+è osservare i messaggi che vengono scambiati all'interno del network.
+Successivamente quando si ottengono informazioni a sufficienza sarà più
+facile per l'attaccante trovare un vettore di attacco.
+
+\subsection{Enumeration sniff foglio 2 e foglio 5}
+Prendendo in considerazione il protocollo DDSI-RTPS, possiamo notare che di
+default quest'ultimo è molto "verbouse", cioè scambia molte informazioni in
+chiaro durante le comunicazioni tra i vari dispositivi. In particolare
+il modulo discovery del protocollo RTPS che a sua volta si suddivide in
+altri 2 protocolli fondamentali che sono necessari:(foglio 5 pag 123)
+\begin{itemize}
+    \item Simple Partipant Discovery Protocol (SPDP)
+    \item Simple Endpoint Discovery Protocol (SEDP)
+\end{itemize}
+Per questo attacco ci focalizzeremo in particolare nel SPDP che serve a
+individuare la presenza dei partecipanti alla rete. In particolar modo
+il funzionamento si basa su un messaggio di tipo multicast e unicast che viene
+mandato a tutti i dispositivi della rete per informare chi è presente attualmente.
+(foglio 5 pag 125)
+
+\subsubsection{Dettagli attacco AFTER}
+Utilizzando un qualche software in grado di "sniffare" i vari pacchetti della
+rete, come un semplice script python è stato possibile analizzare il loro
+contenuto. I pacchetti analizzati sono quelli di tipo multicast RTPS SPDP
+All'interno di un pacchetto di questo tipo possiamo trovare: (nel foglio 2 
+non viene specificato bene di quale pacchetto si parla, ma guardando la documentazione
+da pag 125 del foglio 5, stiamo analizzando il pacchetto SPDPdiscoveredParticipandData)
+(da scrivere in corsivo) l'indirizzo ip dell'host, il prefisso GUID dell'RTPS,
+la versione dell RTPS, L'ID del venditore, informazioni riguardanti la sincronizzazione
+e infine il contenuto dei submessages.
+
+
+\subsubsection{Conclusioni AFTER}
+Di solito questi tipo di attaco sono difficili da identificare e possono essere
+effettuati anche non avendo un dispositivo autenticato all'interno della rete.
+
 
 
 \subsubsection{Questa è una sottosottosezione}
