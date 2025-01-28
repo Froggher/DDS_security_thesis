@@ -142,7 +142,7 @@ e infine il contenuto dei submessages.
 Di solito questi tipo di attaco sono difficili da identificare e possono essere
 effettuati anche non avendo un dispositivo autenticato all'interno della rete.
 
-\section{Attacchi sfruttando le policy QoS foglio 1}
+\section{Attacchi sfruttando le policy QoS ownership-kind foglio 1}
 
 % \begin{figure}[H]
 %     \centering
@@ -204,6 +204,10 @@ questo attacco, può causare in certi casi molti danni a seconda della rete DDS,
 specialmente se il DataWriter dell'attaccante riesce a mandare degli aggiornamenti
 del topic senza che venga scoperto.
 
+Una soluzione utile a risolvere questo vettore di attacco potrebbe essere l'utilizzo
+dell'estensione DDS security che rende impossibile capire qual è il topic bersaglio
+perchè i messaggi scambiati tra DataReader e DataWriter sono criptati.
+
 
 
 \subsubsection{Questa è una sottosottosezione}
@@ -231,26 +235,33 @@ La teoria dell'attacco ci dice che se
             \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Software}}} &
             \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Soluzione}}} \\
             \hline
-            \tabularCenterstack{l}{Discovery \\ devices[2]} &
+            \tabularCenterstack{c}{Discovery \\ devices[2]} &
             \tabularCenterstack{c}{Verbose nature \\ of RTPS} &
             \tabularCenterstack{c}{DDSI-RTPS} &
             \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
             \tabularCenterstack{c}{Sniffer \\ python} &
             \tabularCenterstack{c}{-} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{l}{DDos[2]} &
+            \tabularCenterstack{c}{DDos[2]} &
             \tabularCenterstack{c}{Heartbeat \\ sequence number} &
             \tabularCenterstack{c}{DDSI-RTPS} &
             \tabularCenterstack{c}{Data-reader} &
             \tabularCenterstack{c}{Sniffer \\ python} &
             \tabularCenterstack{c}{-} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{l}{DDoS[3]} &
+            \tabularCenterstack{c}{DDoS[3]} &
             \tabularCenterstack{c}{Authentication \\ challenge} &
             \tabularCenterstack{c}{DDS security 1.1 \\ Discovery protoc.} &
             \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
             \tabularCenterstack{c}{Proverif} &
             \tabularCenterstack{c}{Scandenza richieste \\ di autenticazione} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            \tabularCenterstack{c}{QoS policy[4]} &
+            \tabularCenterstack{c}{ownership-strength} &
+            \tabularCenterstack{c}{DDSI-RTPS} &
+            \tabularCenterstack{c}{DataReader} &
+            \tabularCenterstack{c}{RTI \\ shapes} &
+            \tabularCenterstack{c}{DDS security} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             
             % Aggiungere altre linee
