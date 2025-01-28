@@ -160,9 +160,50 @@ effettuati anche non avendo un dispositivo autenticato all'interno della rete.
 % i tipi di variabili che usano i QoS (int, double,.. etc) per i capitoli
 % che spiegano meglio i concetti introduttivi
 
-Questo attacco sfrutta le policy QoS del DDS.
-%https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership
-%https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership_strength
+Queste tipologie di attacco sono possibili solo se certe policy QoS vengono
+modificate durante l'esecuzione della rete, specialmente il parametro 
+OWNERSHIP-KIND che gestisce quanti DataWriter possono scrivere per un
+determinato Topic. Questo parametro può essere impostato in due modi diversi:
+\begin{itemize}
+    \item SHARED: in questo modo più di un DataWriter possono aggiornare le
+    informazioni di un topic. Inoltre un DataReader si può iscrivere a
+    qualsiasi scrittore dello stesso topic.
+    \item EXCLUSIVE: solo un DataWriter può aggiornare le informazioni di un
+    topic. Il DataWriter che ha il permesso di scrittura per il topic è quello
+    che dispone di un OWNERSHIP-strength con valore più alto.
+\end{itemize}
+
+% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership
+% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership_strength
+
+\subsection{Foglio 4-B Modifica maligna di ownership strength}
+In una rete dove si utilizza un OWNERSHIP-kind di tipo EXCLUSIVE è possibile
+utilizzare l'OWNERSHIP-strength a favore
+dell'attaccante. Infatti è possibile far ricevere informazioni a un DataWriter
+in maniera errata, dato che quest'ultimo non riceverà più informazioni da
+una fonte affidabile.
+
+\subsubsection{Foglio 4-B Dettagli attacco}
+L'attaccante, con un DataWriter in suo possesso all'interno di una rete DDS,
+può sfruttare il fatto che il topic preso di mira può essere aggiornato
+solo dal DataWriter con l'OWNERSHIP-strength più alta. 
+Per effettuare questo attacco tutto quello che serve è sapere il topic che
+si vuole modificare, le policy QoS in uso e il valore dell'ownership-strength.
+L'ultimo passo è quello di impostare il topic scelto nel DataWriter
+dell'attaccante con OWNERSHIP-strength superiore a quella utilizzata dal
+DataWriter originario che aggiorna il topic.
+Ora i DataReader che sono iscritti al topic bersaglio
+ricevono le informazioni dal DataWriter dell'attaccante.
+
+\subsubsection{Foglio 4-B Conclusioni}
+L'OWNERSHIP-kind di tipo EXCLUSIVE è utilizzata in contensti dove le
+informazioni ricevute dal DataReader devono essere accurate dato che un singolo
+scrittore (in molti casi si tratta di un sensore) può mandare nuovi aggiornamenti
+del topic. Se l'attaccante, dovesse riesce a modificare i valori del topic con
+questo attacco, può causare in certi casi molti danni a seconda della rete DDS, 
+specialmente se il DataWriter dell'attaccante riesce a mandare degli aggiornamenti
+del topic senza che venga scoperto.
+
 
 
 \subsubsection{Questa è una sottosottosezione}
