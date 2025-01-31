@@ -8,10 +8,10 @@ dell'attacco e infine verrà proposta una soluzione applicabile per
 mitigare possibili attacchi non autorizzati. Nel prossimo capitolo grazie all'aiuto
 del software --inserire software-- riusciremo a capire come queste vulnerabilità
 possono essere ricreate in un ambiente simulato.
-Queste vulnerabilità di base hanno una base una base di appoggio solida per 
-l'attaccante, in molti casi un dispositivo ha già a disposizione il controllo
+Queste vulnerabilità hanno una base di appoggio solida per 
+l'attaccante. In molti casi un dispositivo ha già la possibilità di controllo
 di un partecipante all'interno della rete o ha la possibilità di modificare
-dei file di configurazione all'interno della rete DDS.
+dei file di configurazione all'interno del network stesso.
 
 Di seguito la versione del DDS con lo standard OMG utilizzata in tutti i casi è
 la 1.4
@@ -21,7 +21,7 @@ la 1.4
 
 \section{Attacchi DDoS}
 Questi attacchi consistono nel sovraccaricare uno o più dispositivi collegati alla 
-rete DDS in modo tale da renderli non responsive. Infatti molti sono di tipo 
+rete DDS in modo tale da renderli non responsivi. Infatti molti sono di tipo 
 I O T -- e la potenza di calcolo nella maggior parte dei casi è ridotta.
 Per di più in molti casi vengono utilizzati dispositivi
 che non possono permettersi --delay-- nell'analisi di certi dati, specialmente in
@@ -48,12 +48,12 @@ DataWriter.
 Un DataWriter inoltre può richiedere un messaggio ACKNACK da un DataReader se
 nell'HEARTBEAT inviato in precedenza dal DataWriter il parametro FINAL è attivo.
 Il messaggio ACKNACK consente di far rimanere sempre sincronizzato il DataReader al 
-DataWriter che non potrà spedire nuovi pacchetti HEARTBEAT fino a quando non ha 
+DataWriter che non potrà spedire nuovi pacchetti HEARTBEAT fino a quando non avrà 
 ricevuto la conferma di ricezione con un messaggio ACKNACK.
 I controlli del sequence number all'interno dell'HEARTBEAT 
 non sono sufficienti per coprire la rete da questo tipo di attacco:
 \begin{itemize}
-    \item un controllo viene effettuato per verificare che non ci siano 
+    \item un primo controllo viene effettuato per verificare che non ci siano 
     valori negativi
     \item un altro controllo serve a determinare se l'ultimo sequence number 
     appena ricevuto non ha un valore più alto di quello ricevuto in precedenza
@@ -70,22 +70,23 @@ Una volta ricevuto il pacchetto il DataReader si metterà in attesa di un HEARTB
 con un
 sequence number superiore a quello appena ricevuto. Di conseguenza il DataReader
 non elaborerà più i messaggi legittimi mandati dal DataWriter,
-data che hanno sequence numember più piccoli, bloccando così la sua
+dato che hanno sequence numember più piccoli, bloccando così la sua
 esecuzione indefinitamente. Solo un messaggio HEARTBEAT con un sequence number
 maggiore a quello del DataReader farà ripristinare la sua esecuzione.
 
 
 \subsubsection{Conclusioni AFTER}
 Di solito questo tipo di attacco è difficile da identificare. 
-Un messaggio HEARTBEAT riguarda un solo topic e quindi il resto delle
-comunicazione che avvengono su topic differenti o anche sullo stesso 
+Un messaggio HEARTBEAT riguarda un solo topic, quindi il resto delle
+comunicazioni che avvengono su topic differenti o anche sullo stesso 
 topic, ma con un DataReader diverso, non subiranno cambiamenti.
 
 
 \subsection{DDoS sfruttando estensione DDS security}
-In questo attacco dobbiamo considerare il modulo del DDS chiamato DDS security
-versione 1.1.(fonti ora da foglio 6) Questo modulo si occupa di stabilire una
-connessione sicura tra i vari dispositivi della rete. Infatti verranno utilizzati
+Per l'attacco sopra citato dobbiamo considerare il modulo del DDS 
+chiamato DDS security
+versione 1.1.(fonti ora da foglio 6) Questo si occupa di stabilire una
+connessione sicura tra i vari dispositivi della rete, infatti verranno utilizzati
 dei plugin da parte dei partecipanti che servono a: 
 \begin{itemize}
     \item autenticazione
@@ -96,14 +97,14 @@ dei plugin da parte dei partecipanti che servono a:
 \end{itemize}
 (foglio 3 pag 718)Per effettuare l'autenticazione un partecipante deve
 risolvere una challenge crittografica richiesta dal sistema di autenticazione
-della rete. Effettuato poi questo calcolo criptografico il risultato viene
-controllato dal sistema di autenticazione, per verificare se il risultato
-inviato corrisponde all'hash del risultato della challenge crittografica.
+della rete. Effettuato poi questo calcolo crittografico, il risultato viene
+controllato dal sistema di autenticazione per verificare se esso corrisponda
+all'hash del risultato della challenge crittografica.
 
-Questo attacco è stato scoperto con Proverif un tool che viene usato
+Questo attacco è stato scoperto con Proverif, un tool che viene usato
 per individuare vulnerabilità nei protocolli crittografici. 
-Utilizzato in molti studi, come ad esempio l'analisi della posta elettronica
-certificata e l'analisi del TLS 1.3.
+È stato utilizzato in molti studi, come ad esempio nell'analisi della 
+posta elettronica certificata e nell'analisi del TLS 1.3.
 
 % https://bblanche.gitlabpages.inria.fr/proverif/manual.pdf
 \subsubsection{Dettagli attacco AFTER foglio 3}
@@ -125,10 +126,10 @@ ricevute dall'attaccante, bloccando così il suo funzionamento.
 \subsubsection{Conclusioni AFTER foglio 3}
 Una raccomandazione per mitigare questo attacco può essere quello di cambiare delle
 policy QoS impostando un tempo limite massimo per effettuare
-l'autenticazione. Queste policy possono prevenire
-che i partecipanti si ritrovino sopraffatti dalle troppe richieste di
+l'autenticazione. Queste policy possono fare in modo
+che i partecipanti non si ritrovino sopraffatti dalle troppe richieste di
 autenticazione. Un allarme potrebbe essere anche utile per identificare possibili
-tentativi DDoS di questo tipo allertando così un amministratore. (parlare di proverif)
+tentativi DDoS di questo tipo, allertando così un amministratore. (parlare di proverif)
 
 
 \section{Attacchi di enumerazione e di sniffing}
@@ -142,38 +143,41 @@ facile per l'attaccante trovare un vettore di attacco.
 
 
 \subsection{Enumeration sniff foglio 2 e foglio 5}
-Prendendo in considerazione il protocollo DDSI-RTPS, possiamo notare che di
-default quest'ultimo è molto "verbose", cioè scambia molte informazioni in
-chiaro durante le comunicazioni tra i vari dispositivi. In particolare
-il modulo discovery del protocollo RTPS che a sua volta si suddivide in
-altri 2 protocolli fondamentali che sono necessari:(foglio 5 pag 123)
+% Devo spiegare il modulo discovery
+Prendendo in considerazione, il protocollo RTPS e il suo modulo discovery,
+possiamo notare che di default sono molto "verbose", cioè scambiano 
+informazioni in
+chiaro durante le comunicazioni tra i vari dispositivi. Il modulo 
+discovery del protocollo RTPS a sua volta si suddivide in
+altri 2 protocolli fondamentali, che sono necessari per le specifiche DDS:
+% (foglio 5 pag 123)
 \begin{itemize}
     \item Simple Participant Discovery Protocol (SPDP)
     \item Simple Endpoint Discovery Protocol (SEDP)
 \end{itemize}
-Per questo attacco ci focalizzeremo in particolare nel SPDP che serve a
+Per questo attacco ci focalizzeremo in particolare su SPDP che serve ad
 individuare la presenza dei partecipanti alla rete. In particolar modo
-il funzionamento si basa su un messaggio di tipo multicast e unicast che viene
-mandato a tutti i dispositivi della rete per informare chi è presente attualmente.
-(foglio 5 pag 125)
+il funzionamento si basa su un messaggi di tipo multicast e unicast che vengono
+mandati a tutti i dispositivi del network per informare chi è presente attualmente.
+% (foglio 5 pag 125)
 
 
 \subsubsection{Dettagli attacco AFTER}
-Utilizzando un qualche software in grado di "sniffare" i vari pacchetti della
+Utilizzando un software in grado di "sniffare" i vari pacchetti della
 rete, come un semplice script python è stato possibile analizzare il loro
-contenuto. I pacchetti analizzati sono quelli di tipo multicast RTPS SPDP
+contenuto. I pacchetti analizzati sono quelli di tipo multicast RTPS-SPDP.
 All'interno di un pacchetto di questo tipo possiamo trovare: (nel foglio 2
 non viene specificato bene di quale pacchetto si parla, ma guardando la documentazione
 da pag 125 del foglio 5, stiamo analizzando il pacchetto SPDPdiscoveredParticipandData)
 (da scrivere in corsivo) l'indirizzo ip dell'host, il prefisso GUID dell'RTPS,
 la versione dell RTPS, L'ID del venditore, informazioni riguardanti la sincronizzazione
-e infine il contenuto dei submessages.
+ed infine il contenuto dei submessages.
 
 
 
 
 \subsubsection{Conclusioni AFTER}
-Di solito questi tipo di attacco sono difficili da identificare e possono essere
+Di solito questo tipo di attacco è difficile da identificare e possono essere
 effettuati anche non avendo un dispositivo autenticato all'interno della rete.
 
 
@@ -216,11 +220,11 @@ determinato Topic. Questo parametro può essere impostato in due modi diversi:
 
 
 Un'altra policy QoS che può essere usata come vettore di attacco è quella
-che regola il parametro LIFESPAN. Corrisponde al tempo limite massimo per la
+che regola il parametro LIFESPAN. Questa corrisponde al tempo limite massimo per la
 lettura da parte di un DataReader di un dato di un topic, che viene inserito
 all'interno del pacchetto inviato dal DataWriter. Per determinare se un pacchetto
 di un determinato topic è scaduto viene utilizzato il timestamp di creazione
-aggiungendo il LIFESPAN impostato; se questo questo "expiration time" risulta
+aggiungendo il LIFESPAN impostato; se questo "expiration time" risulta
 superiore all'orario durante la ricezione del DataReader allora l'informazione
 ricevuta è ancora valida. Per funzionare gli orologi del DataWriter e del DataReader
 devono essere sincronizzati tra di loro.
@@ -239,9 +243,10 @@ modi:
     ritrasmettere dal DataWriter i pacchetti mancanti o ricevuti in maniera errata.
     In questo modo le informazioni del DataReader saranno sempre corrette anche
     se non sempre saranno aggiornate in tempo reale.
-    \item BEST-EFFORT: l'impostazione predefinita che consente il recupero
-    dei pacchetti mancanti del DataReader, quindi quest'ultimo potrebbe anche
-    perdere dei pacchetti che gli sono stati inviati.
+    \item BEST-EFFORT: l'impostazione predefinita non consente il recupero
+    dei pacchetti mancanti o corrotti
+    del DataReader, quindi, quest'ultimo potrebbe anche perdere dei pacchetti 
+    che gli sono stati inviati.
 \end{itemize}
 
 
@@ -264,11 +269,11 @@ una fonte affidabile.
 L'attaccante, con un DataWriter in suo possesso all'interno di una rete DDS,
 può sfruttare il fatto che il topic preso di mira può essere aggiornato
 solo dal DataWriter con l'OWNERSHIP-strength più alta.
-Per effettuare questo attacco tutto quello che serve è sapere il topic che
+Per effettuare questo attacco, tutto quello che serve, è sapere il topic che
 si vuole modificare, le policy QoS in uso e il valore dell ownership-strength.
 L'ultimo passo è quello di impostare il topic scelto nel DataWriter
-dell'attaccante con OWNERSHIP-strength superiore a quella utilizzata dal
-DataWriter originario che aggiorna il topic.
+dell'attaccante con OWNERSHIP-strength superiore a quello utilizzato dal
+DataWriter originario.
 Ora i DataReader che sono iscritti al topic bersaglio
 ricevono le informazioni dal DataWriter dell'attaccante.
 
@@ -277,10 +282,10 @@ ricevono le informazioni dal DataWriter dell'attaccante.
 L'OWNERSHIP-kind di tipo EXCLUSIVE è utilizzata in contesti dove le
 informazioni ricevute dal DataReader devono essere accurate dato che un singolo
 scrittore (in molti casi si tratta di un sensore) può mandare nuovi aggiornamenti
-del topic. Se l'attaccante, dovesse riesce a modificare i valori del topic con
-questo attacco, può causare in certi casi molti danni a seconda della rete DDS,
-specialmente se il DataWriter dell'attaccante riesce a mandare degli aggiornamenti
-del topic senza che venga scoperto.
+del topic. Se l'attaccante, dovesse riuscire a modificare i valori del topic con
+questo attacco, potrebbe causare in certi casi molti danni,
+specialmente se il DataWriter dell'attaccante riuscisse a mandare degli aggiornamenti
+del topic senza essere scoperto.
 
 
 Una soluzione utile a risolvere questo vettore di attacco potrebbe essere l'utilizzo
@@ -289,23 +294,26 @@ perchè i messaggi scambiati tra DataReader e DataWriter sono criptati.
 
 
 \subsection{Foglio 4-D Modifica maligna di LIFESPAN QoS}
-L'attaccante in questo attacco deve poter modificare le policy QoS riguardanti
+L'attaccante a volte potrebbe modificare le policy QoS riguardanti il
 LIFESPAN e se necessario il parametro RELIABLE.
-Infatti il tempo di limite di scadenza dei pacchetti (LIFESPAN)
+Infatti il tempo limite di scadenza dei pacchetti, contenenti i dati del topic,
 può essere impostato a valori molto piccoli creando problemi di comunicazione
 tra un DataWriter e un DataReader. Utilizzando un'affidabilità di tipo RELIABLE
-si riesce mitigare l'attaccante deve utilizzare valori più estremi per compromettere
-la comunicazione. Questo test è stato dimostrando RTI Shapes Demo che implementa una
-soluzione DDS di RTI corrisponde a quella dello standard OMG.
+si a riesce mitigare l'attaccante che così deve utilizzare valori più estremi
+per compromettere
+la comunicazione. Questo test è stato dimostrato con RTI Shapes Demo che 
+implementa una
+soluzione DDS di RTI corrispondente alle specifiche dello standard OMG.
+
 
 
 \subsubsection{Foglio 4-D Dettagli attacco}
-Avendo sotto controllo questi due parametri policy, l'attaccante può modificare La
+Avendo sotto controllo questi due parametri policy, l'attaccante può modificare la
 policy dei DataWriter in modo tale da avere un LIFESPAN molto piccolo. Così
-facendo i pacchetti spediti dal publisher arriveranno già scaduti e non potranno
-essere utilizzati dai DataReader, in certi casi il pacchetto che deve essere inviato
-viene distrutto dallo stesso DataWriter all'interno della coda prima dell'invio
-del pacchetto. In questo caso il test è stato effettuato impostando il valore di
+facendo, i pacchetti spediti dal publisher arriveranno già scaduti e non potranno più
+essere utilizzati dai DataReader. In certi casi il pacchetto che deve essere inviato
+viene distrutto dallo stesso DataWriter all'interno della sua coda prima dell'invio. 
+In questo caso il test è stato effettuato impostando il valore di
 LIFESPAN < 80ms dove si è visto che nessun pacchetto raggiunge il DataReader.
 Se si aumenta il valore tra gli 80ms e i 100ms già si può notare che dei pacchetti
 vengono letti con successo dal DataReader, mentre altri vengono eliminati prima
@@ -316,7 +324,7 @@ la comunicazione tra publisher e subscriber avviene senza nessun problema.
 Un dettaglio da aggiungere è che se su RTI Shapes veniva impostata la policy
 dell'affidabilità (RELIABILITY) di tipo RELIABLE i millisecondi utilizzati
 dal LIFESPAN per compromettere le comunicazioni tra DataReader e DataWriter
-devono essere moltiplicati per un fattore di 0.01. Quindi ad esempio se si
+devono essere moltiplicati per un fattore di 0.01. Quindi, ad esempio se si
 ottiene un completo annullamento delle comunicazioni con un LIFESPAN < 80ms
 utilizzando il la RELIABILITY di tipo BEST-EFFORT, per ottenere lo stesso
 risultato con RELIABILITY di tipo RELIABLE dobbiamo impostare un
@@ -324,15 +332,14 @@ LIFESPAN < 0.8ms.
 
 
 \subsubsection{Foglio 4-D Conclusioni}
-Inizialmente molte reti DDS hanno impostato come parametro RELIABILITY quella
-di tipo BEST-EFFORT che è l'impostazione di default. Quindi nella maggior parte
+Inizialmente molte reti DDS hanno impostato la RELIABILITY
+di tipo BEST-EFFORT che è l'impostazione predefinita. Quindi nella maggior parte
 dei casi l'attaccante non si deve preoccupare di questo parametro.
-
 
 Una possibile soluzione sarebbe quella di impostare qualche tipo di controllo
 in modo tale da avvertire un operatore umano se molti pacchetti vengono
 scartati perché arrivati con un LIFESPAN scaduto. Questo controllo potrebbe
-essere anche utile, nel caso in cui il DataWriter e il DataReader si trovano
+essere anche utile, nel caso in cui il DataWriter e il DataReader si trovassero
 distanti fisicamente tra di loro, per verificare la qualità del collegamento.
 
 

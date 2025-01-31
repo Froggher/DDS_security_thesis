@@ -8,3 +8,5 @@ che spiegano meglio i concetti introduttivi
 
 Non ho parlato molto dei software utilizzati, specialmente Proverif e 
 RTI Shapes
+
+Devo parlare meglio dei protocolli RTPS
