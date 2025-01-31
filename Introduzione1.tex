@@ -85,39 +85,50 @@ topic, ma con un DataReader diverso, non subiranno cambiamenti.
 \subsection{DDoS sfruttando estensione DDS security}
 In questo attacco dobbiamo considerare il modulo del DDS chiamato DDS security
 versione 1.1.(fonti ora da foglio 6) Questo modulo si occupa di stabilire una
-connessione sicura tra i vari dispositivi della rete. Infatti verranno utilizzate
-delle api da parte dei partecipanti per effettuare le varie azioni, come
-ad esempio iscriversi ad un topic e pubblicare un messaggio del topic.
-(foglio 3 pag 718)Per effettuare l'autenticazione un partecipante deve prima
+connessione sicura tra i vari dispositivi della rete. Infatti verranno utilizzati
+dei plugin da parte dei partecipanti che servono a: 
+\begin{itemize}
+    \item autenticazione
+    \item controllo accesso
+    \item crittografia
+    \item login
+    \item data tagging
+\end{itemize}
+(foglio 3 pag 718)Per effettuare l'autenticazione un partecipante deve
 risolvere una challenge crittografica richiesta dal sistema di autenticazione
 della rete. Effettuato poi questo calcolo criptografico il risultato viene
-controllato dal sistema di autenticazione, controllando che se il risultato
-inviato corrisponde all'hash della challenge crittografica.
+controllato dal sistema di autenticazione, per verificare se il risultato
+inviato corrisponde all'hash del risultato della challenge crittografica.
 
+Questo attacco è stato scoperto con Proverif un tool che viene usato
+per individuare vulnerabilità nei protocolli crittografici. 
+Utilizzato in molti studi, come ad esempio l'analisi della posta elettronica
+certificata e l'analisi del TLS 1.3.
 
+% https://bblanche.gitlabpages.inria.fr/proverif/manual.pdf
 \subsubsection{Dettagli attacco AFTER foglio 3}
-L'attacco DDoS si svolge proprio durante la fase di autenticazione del protocollo
-DDS security 1.1, in particolare quando un nuovo dispositivo legittimo si vuole
-collegare alla rete e comincia a mandare una richiesta di autenticazione
-all'ente di controllo. La richiesta del partecipante poi viene intercettata
-dall'attaccante che modifica i valori all'interno del pacchetto delle
-challenge crittografica. Modificando ogni volta questi valori, l'attaccante
-comincia a mandare tante richieste crittografiche alla sua vittima.
+L'attacco DDoS avviene durante la fase di autenticazione del protocollo
+DDS security 1.1, in particolare quando un nuovo dispositivo tenta di
+collegarsi alla rete e manda una richiesta di autenticazione
+all'ente di controllo. La richiesta del partecipante viene poi intercettata
+dall'attaccante che modifica i valori della challenge crittografica 
+all'interno del pacchetto. Modificando ripetutamente questi valori, l'attaccante
+inizia a inviare molteplici richieste crittografiche alla sua vittima.
 Il partecipante comincerà a calcolare queste challenge per effettuare
-l'autenticazione investendo tutte le risorse necessarie.
-Dato che molto probabilmente chi riceve questo attacco è un dispositivo IOT
-che non dispone di una potenza di calcolo molto elevata e si ritroverà
-occupato per tutto il tempo necessario per risolvere le challenge crittografiche
+l'autenticazione, consumando tutte le sue risorse.
+Dato che, la vittima è probabilmente un dispositivo IoT
+che non dispone di una potenza di calcolo molto elevata, si ritroverà
+occupata per tutto il tempo necessario a risolvere le challenge crittografiche
 ricevute dall'attaccante, bloccando così il suo funzionamento.
 
 
 \subsubsection{Conclusioni AFTER foglio 3}
 Una raccomandazione per mitigare questo attacco può essere quello di cambiare delle
-policy QoS in modo tale da impostare un tempo limite massimo per effettuare
-l'autenticazione. Impostando un limite simile queste policy possono prevenire
+policy QoS impostando un tempo limite massimo per effettuare
+l'autenticazione. Queste policy possono prevenire
 che i partecipanti si ritrovino sopraffatti dalle troppe richieste di
 autenticazione. Un allarme potrebbe essere anche utile per identificare possibili
-tentativi DDoS di questo tipo così allertando un amministratore. (parlare di proverif)
+tentativi DDoS di questo tipo allertando così un amministratore. (parlare di proverif)
 
 
 \section{Attacchi di enumerazione e di sniffing}
