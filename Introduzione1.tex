@@ -13,8 +13,8 @@ l'attaccante. In molti casi un dispositivo ha già la possibilità di controllo
 di un partecipante all'interno della rete o ha la possibilità di modificare
 dei file di configurazione all'interno del network stesso.
 
-Di seguito la versione del DDS con lo standard OMG utilizzata in tutti i casi è
-la 1.4
+Queste vulnerabilità riguardano la versione del DDS 1.4 con le specifiche 
+dello standard OMG.
 
 
 
@@ -42,7 +42,7 @@ Il sequence number serve al DataReader per sincronizzarsi con il DataWriter
 durante la ricezione dei pacchetto.
 Infatti il DataReader quando riceve il sequence number all'interno di un HEARTBEAT
 può identificare se ci sono o no dei pacchetti mancanti e in caso segnalarli al
-DataWriter.
+DataWriter.\cite{White2017AnII}
 
 
 Un DataWriter inoltre può richiedere un messaggio ACKNACK da un DataReader se
@@ -57,7 +57,7 @@ non sono sufficienti per coprire la rete da questo tipo di attacco:
     valori negativi
     \item un altro controllo serve a determinare se l'ultimo sequence number 
     appena ricevuto non ha un valore più alto di quello ricevuto in precedenza
-\end{itemize}
+\end{itemize}\cite{White2017AnII}
 \subsubsection{Dettagli attacco AFTER}
 
 Per sfruttare questa vulnerabilità l'attaccante deve utilizzare qualche 
@@ -72,7 +72,7 @@ sequence number superiore a quello appena ricevuto. Di conseguenza il DataReader
 non elaborerà più i messaggi legittimi mandati dal DataWriter,
 dato che hanno sequence numember più piccoli, bloccando così la sua
 esecuzione indefinitamente. Solo un messaggio HEARTBEAT con un sequence number
-maggiore a quello del DataReader farà ripristinare la sua esecuzione.
+maggiore a quello del DataReader farà ripristinare la sua esecuzione.\cite{White2017AnII}
 
 
 \subsubsection{Conclusioni AFTER}
@@ -94,17 +94,17 @@ dei plugin da parte dei partecipanti che servono a:
     \item crittografia
     \item login
     \item data tagging
-\end{itemize}
+\end{itemize}\cite{ddssecurity1.1}
 (foglio 3 pag 718)Per effettuare l'autenticazione un partecipante deve
 risolvere una challenge crittografica richiesta dal sistema di autenticazione
 della rete. Effettuato poi questo calcolo crittografico, il risultato viene
 controllato dal sistema di autenticazione per verificare se esso corrisponda
-all'hash del risultato della challenge crittografica.
+all'hash del risultato della challenge crittografica.\cite{DBLP:conf/asiaccs/WangLG24}
 
 Questo attacco è stato scoperto con Proverif, un tool che viene usato
 per individuare vulnerabilità nei protocolli crittografici. 
 È stato utilizzato in molti studi, come ad esempio nell'analisi della 
-posta elettronica certificata e nell'analisi del TLS 1.3.
+posta elettronica certificata e nell'analisi del TLS 1.3.\cite{proverifmanual}
 
 % https://bblanche.gitlabpages.inria.fr/proverif/manual.pdf
 \subsubsection{Dettagli attacco AFTER foglio 3}
@@ -120,7 +120,7 @@ l'autenticazione, consumando tutte le sue risorse.
 Dato che, la vittima è probabilmente un dispositivo IoT
 che non dispone di una potenza di calcolo molto elevata, si ritroverà
 occupata per tutto il tempo necessario a risolvere le challenge crittografiche
-ricevute dall'attaccante, bloccando così il suo funzionamento.
+ricevute dall'attaccante, bloccando così il suo funzionamento.\cite{DBLP:conf/asiaccs/WangLG24}
 
 
 \subsubsection{Conclusioni AFTER foglio 3}
@@ -129,8 +129,8 @@ policy QoS impostando un tempo limite massimo per effettuare
 l'autenticazione. Queste policy possono fare in modo
 che i partecipanti non si ritrovino sopraffatti dalle troppe richieste di
 autenticazione. Un allarme potrebbe essere anche utile per identificare possibili
-tentativi DDoS di questo tipo, allertando così un amministratore. (parlare di proverif)
-
+tentativi DDoS di questo tipo, allertando così un amministratore.
+\cite{DBLP:conf/asiaccs/WangLG24}
 
 \section{Attacchi di enumerazione e di sniffing}
 Dal foglio 2
@@ -139,7 +139,7 @@ attacchi di tipo attivo può essere molto utile per un attaccante che prova
 a penetrare una rete DDS. In molti casi tutto quello che deve fare l'attaccante
 è osservare i messaggi che vengono scambiati all'interno del network.
 Successivamente quando si ottengono informazioni a sufficienza sarà più
-facile per l'attaccante trovare un vettore di attacco.
+facile per l'attaccante trovare un vettore di attacco.\cite{White2017AnII}
 
 
 \subsection{Enumeration sniff foglio 2 e foglio 5}
@@ -147,7 +147,7 @@ facile per l'attaccante trovare un vettore di attacco.
 Prendendo in considerazione, il protocollo RTPS e il suo modulo discovery,
 possiamo notare che di default sono molto "verbose", cioè scambiano 
 informazioni in
-chiaro durante le comunicazioni tra i vari dispositivi. Il modulo 
+chiaro durante le comunicazioni tra i vari dispositivi.\cite{White2017AnII} Il modulo 
 discovery del protocollo RTPS a sua volta si suddivide in
 altri 2 protocolli fondamentali, che sono necessari per le specifiche DDS:
 % (foglio 5 pag 123)
@@ -160,6 +160,7 @@ individuare la presenza dei partecipanti alla rete. In particolar modo
 il funzionamento si basa su un messaggi di tipo multicast e unicast che vengono
 mandati a tutti i dispositivi del network per informare chi è presente attualmente.
 % (foglio 5 pag 125)
+\cite{dds1.4}
 
 
 \subsubsection{Dettagli attacco AFTER}
@@ -171,7 +172,7 @@ non viene specificato bene di quale pacchetto si parla, ma guardando la document
 da pag 125 del foglio 5, stiamo analizzando il pacchetto SPDPdiscoveredParticipandData)
 (da scrivere in corsivo) l'indirizzo ip dell'host, il prefisso GUID dell'RTPS,
 la versione dell RTPS, L'ID del venditore, informazioni riguardanti la sincronizzazione
-ed infine il contenuto dei submessages.
+ed infine il contenuto dei submessages.\cite{White2017AnII}
 
 
 
@@ -179,6 +180,10 @@ ed infine il contenuto dei submessages.
 \subsubsection{Conclusioni AFTER}
 Di solito questo tipo di attacco è difficile da identificare e possono essere
 effettuati anche non avendo un dispositivo autenticato all'interno della rete.
+
+Una soluzione potrebbe essere usare l'estensione del protocollo DDS security o 
+eseguire la connessione tra i nodi tramite un tunnel con WireGuard per criptare
+le comunicazioni.
 
 
 \section{QoS Exploitation Attack foglio 1}
@@ -248,7 +253,7 @@ modi:
     del DataReader, quindi, quest'ultimo potrebbe anche perdere dei pacchetti 
     che gli sono stati inviati.
 \end{itemize}
-
+\cite{dds1.4}
 
 
 
@@ -262,7 +267,7 @@ In una rete dove si utilizza un OWNERSHIP-kind di tipo EXCLUSIVE è possibile
 utilizzare l'OWNERSHIP-strength a favore
 dell'attaccante. Infatti è possibile far ricevere informazioni a un DataWriter
 in maniera errata, dato che quest'ultimo non riceverà più informazioni da
-una fonte affidabile.
+una fonte affidabile.\cite{DBLP:conf/malware/MichaudDL18}
 
 
 \subsubsection{Foglio 4-B Dettagli attacco}
@@ -276,6 +281,7 @@ dell'attaccante con OWNERSHIP-strength superiore a quello utilizzato dal
 DataWriter originario.
 Ora i DataReader che sono iscritti al topic bersaglio
 ricevono le informazioni dal DataWriter dell'attaccante.
+\cite{DBLP:conf/malware/MichaudDL18}
 
 
 \subsubsection{Foglio 4-B Conclusioni}
@@ -286,7 +292,7 @@ del topic. Se l'attaccante, dovesse riuscire a modificare i valori del topic con
 questo attacco, potrebbe causare in certi casi molti danni,
 specialmente se il DataWriter dell'attaccante riuscisse a mandare degli aggiornamenti
 del topic senza essere scoperto.
-
+\cite{DBLP:conf/malware/MichaudDL18}
 
 Una soluzione utile a risolvere questo vettore di attacco potrebbe essere l'utilizzo
 dell'estensione DDS security che rende impossibile capire qual è il topic bersaglio
@@ -304,7 +310,7 @@ per compromettere
 la comunicazione. Questo test è stato dimostrato con RTI Shapes Demo che 
 implementa una
 soluzione DDS di RTI corrispondente alle specifiche dello standard OMG.
-
+\cite{DBLP:conf/malware/MichaudDL18}
 
 
 \subsubsection{Foglio 4-D Dettagli attacco}
@@ -329,7 +335,7 @@ ottiene un completo annullamento delle comunicazioni con un LIFESPAN < 80ms
 utilizzando il la RELIABILITY di tipo BEST-EFFORT, per ottenere lo stesso
 risultato con RELIABILITY di tipo RELIABLE dobbiamo impostare un
 LIFESPAN < 0.8ms.
-
+\cite{DBLP:conf/malware/MichaudDL18}
 
 \subsubsection{Foglio 4-D Conclusioni}
 Inizialmente molte reti DDS hanno impostato la RELIABILITY
@@ -341,16 +347,10 @@ in modo tale da avvertire un operatore umano se molti pacchetti vengono
 scartati perché arrivati con un LIFESPAN scaduto. Questo controllo potrebbe
 essere anche utile, nel caso in cui il DataWriter e il DataReader si trovassero
 distanti fisicamente tra di loro, per verificare la qualità del collegamento.
+\cite{DBLP:conf/malware/MichaudDL18}
 
 
 
-
-
-
-
-
-\subsubsection{Questa è una sottosottosezione}
-La teoria dell'attacco ci dice che se 
 
 % Definizione di un colore personalizzato
 \definecolor{customgray}{rgb}{0.70, 0.70, 0.70} % Grigio chiaro
@@ -374,35 +374,35 @@ La teoria dell'attacco ci dice che se
             \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Software}}} &
             \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Soluzione}}} \\
             \hline
-            \tabularCenterstack{c}{Discovery \\ devices[2]} &
+            \tabularCenterstack{c}{Discovery \\ devices\cite{White2017AnII}} &
             \tabularCenterstack{c}{Verbose nature \\ of RTPS} &
             \tabularCenterstack{c}{DDSI-RTPS} &
             \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
             \tabularCenterstack{c}{Sniffer \\ python} &
-            \tabularCenterstack{c}{-} \\
+            \tabularCenterstack{c}{WireGuard} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{DDos[2]} &
+            \tabularCenterstack{c}{DDos\cite{White2017AnII}} &
             \tabularCenterstack{c}{Heartbeat \\ sequence number} &
             \tabularCenterstack{c}{DDSI-RTPS} &
             \tabularCenterstack{c}{DataReader} &
             \tabularCenterstack{c}{Sniffer \\ python} &
             \tabularCenterstack{c}{-} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{DDoS[3]} &
+            \tabularCenterstack{c}{DDoS\cite{DBLP:conf/asiaccs/WangLG24}} &
             \tabularCenterstack{c}{Authentication \\ challenge} &
             \tabularCenterstack{c}{DDS security 1.1 \\ Discovery protoc.} &
             \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
             \tabularCenterstack{c}{Proverif} &
-            \tabularCenterstack{c}{Scandenza richieste \\ di autenticazione} \\
+            \tabularCenterstack{c}{Scadenza richieste \\ di autenticazione} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{QoS policy[4]} &
+            \tabularCenterstack{c}{QoS policy\cite{DBLP:conf/malware/MichaudDL18}} &
             \tabularCenterstack{c}{ownership-strength} &
             \tabularCenterstack{c}{DDSI-RTPS} &
             \tabularCenterstack{c}{DataReader} &
             \tabularCenterstack{c}{RTI \\ shapes} &
             \tabularCenterstack{c}{DDS security} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{QoS policy[4]} &
+            \tabularCenterstack{c}{QoS policy\cite{DBLP:conf/malware/MichaudDL18}} &
             \tabularCenterstack{c}{LIFESPAN} &
             \tabularCenterstack{c}{DDSI-RTPS} &
             \tabularCenterstack{c}{DataReader} &
