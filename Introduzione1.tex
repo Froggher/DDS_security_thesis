@@ -69,7 +69,81 @@ ad esempio i subscriber possono avere cambiare i topic a cui
 sono iscritti e/o i publisher possono smettere di pubblicare nuove
 informazioni su un determinato topic.\cite{OH2010318}
 
+\section{Specifiche DDS}
+Quello che abbiamo visto é il modello base del dds
+ora ci aggiungiamo quello e qualláltro
 
+\subsection{Come viene utilizzato dagli applicativi}
+
+% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:glossary:d:domain_participant
+% Aggiungere la fonte
+
+% @misc{DomainParticipantomg,
+% 	title = {{Domain Participant [DDS Foundation Wiki]}},
+% 	year = {2025},
+% 	month = feb,
+% 	note = {[Online; accessed 5. Feb. 2025]},
+% 	url = {https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:glossary:d:domain_participant}
+% }
+
+
+% Aggiungere domnio definizione con relativa foto insimistica
+% https://community.rti.com/static/documentation/connext-dds/current/doc/manuals/connext_dds_professional/users_manual/users_manual/Fundamentals_of_DDS_Domains_and_DomainPa.htm
+
+% Utile per dopo
+% https://fast-dds.docs.eprosima.com/en/latest/fastdds/getting_started/definitions.html
+
+% @misc{ddsdomaineprosima,
+% 	title = {{1.1. What is DDS? {\ifmmode---\else\textemdash\fi} Fast DDS 3.1.1 documentation}},
+% 	year = {2025},
+% 	month = jan,
+% 	note = {[Online; accessed 5. Feb. 2025]},
+% 	url = {https://fast-dds.docs.eprosima.com/en/latest/fastdds/getting_started/definitions.html}
+% }
+
+
+Questo modello si occupa di integrare in maniera autonoma lo
+scambio dati dei dispositivi per poi renderli disponibili alle
+varie applicazioni che ne hanno bisogno. Le varie integrazioni avvengono
+tramite l'utilizzo di API (Application Programming Interface) che rendono
+molto piú semplici procedure come la gestione delle
+interazioni tra i publisher e i subscriber che avvienne tramite
+due interfacce chiamate rispettivamente DataWriter e DataReader.
+\begin{itemize}
+    \item DataWriter: é l'interfaccia usata dagli applicativi 
+    per comunicare i
+    data-objects con un loro specifico data type ai publisher.
+    Ricevuti questi data-objects il publisher potrá mandare le
+    informazioni ricevute dall'applicativo ai relativi subscriber.
+    QoS rispettato.......
+    \item DataReader: é l'interfaccia usata dagli applicativi per
+    ricevere i data-objects con i loro data type pubblicati in
+    precedenza da un publisher. QoS rispettato.......
+\end{itemize}\cite{dds1.4}
+
+I topic vengono utilizzati per identificare il tipo di dato che viene
+scambiato tra i publishers e i subscribers, creando cosi un collegamento
+tra DataWriter e DataWriter;\cite{topicomg}
+devono avere la caratteristica di essere sempre unici e 
+distinguibili tra di loro. All'interno troviamo il nome 
+(che deve essere nel dominio dove si trova),
+il data type e le policy QoS relative ai data-object.
+
+Un'altra specifica del DDS è la possibilità di avere 
+più DataWriter associati a un publisher e più DataReader associati a 
+un Subscriber. Tuttavia, un DataWriter o un DataReader possono essere 
+associati solamente ad un solo data-type.
+Ad esempio avendo i topic: velocitá e temperatura, dobbiamo utilizzare
+due DataWriter e due DataWriter per effettuare una comunicazione tra
+publisher e subscriber dato che possono gestire un solo data type per volta.
+
+
+% (possibilitá di aggiungere esempi con demo shapes)
+
+
+
+Aggiungere QoS che hanno questi dispositivi
+\cite{dds1.4}
 
 \section{Modello DDS}
 Sto facendo un test di prova riguardante questo testo scritto
