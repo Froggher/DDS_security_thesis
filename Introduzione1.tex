@@ -30,10 +30,38 @@ funzionamento del modello Publish-Subscribe
 che sta alla base di tutto il suo funzionamento.
 Questo sistema di publish e subscribe non funziona come la 
 classica applicazione che siamo abituati a vedere tra server e
-client nell'ambito delle comunicazioni o anche rispetto a 
-modelli Peer-To-Peer. Per funzionare questo modello ha bisogno di
+client tramite protocollo TCP/IP nell'ambito delle comunicazioni. 
+
+
+\subsection{Perché non usiamo una connessione con TCP/IP}
+Prendiamo l'esempio di un collegamento tra una workstation e 
+un sensore per la temperatura. La connessione a livello fisico
+avverrá tramite un collegamento Ethernet. La workstation e il 
+sensore quindi si trovano nello stesso network e possono 
+ora cominciare a comunicare tra di loro. L'obiettivo é quello
+di trasferire i dati dal sensore alla workstation in modo tale
+da poterli visualizzare a schermo.
+Il metodologia piú frequente é quella di utilizzare un socket tramite 
+protocollo TCP/IP, ma non sempre é la soluzione migliore.
+Dei vantaggi del TCP/IP sono la disponibilitá di utilizzo 
+in molte situazioni e nella maggior parte delle connessioni a 
+Internet viene utilizzato questo protocollo.
+Tuttavia, in certe situazioni, TCP/IP non risulta la soluzione migliore,
+specialmente quando dobbiamo collegare un numero di dispositivi al 
+network che puó cambiare. Se nel nostro network tra workstation e 
+sensore della temperatura, aggiungiamo un'altro dispositivo, come un 
+sensore per la temperatura, bisogna creare un nuovo socket 
+TCP/IP per far comunicare il nuovo senore con la workstation.
+Questo succede perchè TCP/IP supportá una comunicazione di tipo 
+one-to-one (uno a uno). Come vedremó nella prossima sottosezione,
+il modello publish/subscribe non ha questa limitazione \cite{1494965}.
+
+\subsection{Struttura modello publish/subscribe}
+% Citazione da mettere
+Per funzionare il modello publish/subscribe ha bisogno di
 elementi che sono necessari per il sistema di scambio delle 
-comunicazioni. Questi elementi, che rappresentano i componenti all'interno
+comunicazioni. 
+Questi elementi, che rappresentano i componenti all'interno
 del modello publish/subscribe, vengono chiamati chiamati entità.
 Il publisher e il Subscriber sono le entità principali
 che possono comunicare tra di loro quando hanno un topic, che
@@ -70,9 +98,9 @@ flessibile e utilizzabile in ambienti real-time dove le fonti delle
 comunicazioni possono cambiare o essere utilizzate da piú dispostivi,
 ad esempio i subscriber possono avere cambiare i topic a cui 
 sono iscritti e/o i publisher possono smettere di pubblicare nuove
-informazioni su un determinato topic.\cite{OH2010318}
+informazioni su un determinato topic \cite{OH2010318}.
 
-\section{Caratterisitche del Data Distribution Service}
+\section{Che cos'é il Data Distribution Service}
 
 Il DDS gestito da OMG è un middleware e uno standard API per una gestione
 dei dati di tipo data-centric. Questo middleware è un software che si trova
@@ -82,7 +110,13 @@ tale da semplificare il lavoro del programmatore che si deve solamente
 occupare di specificare il contesto del dato che deve mandare o ricevere.
 Così facendo non bisogna preoccuparsi dell'invio o della ricezione
 dei messaggi, perchè questa parte viene completamente gestita dal middleware.
-\cite{whatisdds}
+
+Altri vantaggi del DDS includono una architettura adattabile dato che supportá
+degli elementi di auto-scoperta (auto-discovery) in modo tale da aggiungere o 
+rimuovere dispositivi dalla rete in automatico. Rispetto al protocollo TCP/IP 
+il DDS ha la possibilitá di effettuare comunicazioni di tipo uno a molti 
+(one-to-many), molti a molti (many-to-many) e uno a uno (one-to-one)
+ \cite{1494965}.
 
 \subsection{Global Space Data}
 Il DDS a livello concettuale utilizza un concetto chiamato Global Data 
@@ -93,10 +127,7 @@ questa memoria locale fittizia come un'unica risorsa centralizzata.
 In realtá, i dati all'interno di questa memoria possono contenere
 informazioni provenienti da nodi remoti distribuiti per la rete. 
 L'applicativo non deve cosi preoccupandosi dell'accessibilitá dei dati,
-dato che vengono gestiti dal DDS.
-
-Il Global Data Space
-\cite{whatisdds}
+dato che vengono gestiti dal DDS.\cite{whatisdds}
 
 \subsection{Quality of Service (QoS)}
 
