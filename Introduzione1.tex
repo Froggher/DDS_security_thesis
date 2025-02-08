@@ -254,14 +254,19 @@ vogliono analizzare i dati di una gara.
 La struttura del topic avrà due elementi: il primo corrisponde al valore
 della velocità registrata, mentre il secondo mostra l'id-macchina per 
 capire da quale vettura i dati provengono.
+
+\vspace{5mm} % Riusare per codici futuri
 \begin{lstlisting}[language=C++, caption=Esempio di Topic con una key
     usando il linguaggio IDL
-    , label=Topic struct]
+    , label=Topic struct,
+    captionpos=b]
     struct Veicolo { // Nome del topic
         id_macchina; // Key del topic
         velocita;
     }
     \end{lstlisting}
+\vspace{5mm}
+
 Creiamo ora due istanze una con valore 270 (velocità) e con 
 l'id-macchina a 1 e l'altra con un valore di 220 e con id-macchina 
 uguale a 2. Notiamo che l'id-macchina in questo caso fungerà da key 
