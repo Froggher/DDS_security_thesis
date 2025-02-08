@@ -38,3 +38,7 @@ Devo parlare meglio dei protocolli RTPS
 % 	note = {[Online; accessed 5. Feb. 2025]},
 % 	url = {https://fast-dds.docs.eprosima.com/en/latest/fastdds/getting_started/definitions.html}
 % }
+
+# TODO
+Dynamic Discovery, fixare le definizioni di domain,modularitá ed estensioni
+e infine le varie QoS

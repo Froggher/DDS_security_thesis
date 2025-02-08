@@ -84,7 +84,7 @@ predefinita non deve ricevere conferma di ricezione da parte del
 subscriber a cui manda i pacchetti contenenti i dati riguardo il topic.
 In questo modo il publisher puó continuamente mandare nuovi dati
 senza effettuare operazioni di conferma, rendendendo cosí le comunicazioni
-molto piú responsive. 
+molto piú responsive \cite{dds1.4}. 
 
 Un'altra qualitá del modello
 publish/subscribe si manifesta quando
@@ -110,6 +110,12 @@ tale da semplificare il lavoro del programmatore che si deve solamente
 occupare di specificare il contesto del dato che deve mandare o ricevere.
 Così facendo non bisogna preoccuparsi dell'invio o della ricezione
 dei messaggi, perchè questa parte viene completamente gestita dal middleware.
+Prima di questo middleware esistevano solamente soluzioni proprietarie che si 
+basavano sempre sul modello publish/subscribe. Il DDS é stato il primo standard
+a formalizzare le comunicazioni di tipo data-centric. Inizialmente erano 
+disponibili solamente soluzioni proprietarie senza specificare un standard
+univoco. Non avendo avuto uno standard univoco le varie implementazioni non sono
+compatibili tra di loro a differenza del DDS che lo é.
 
 Altri vantaggi del DDS includono una architettura adattabile dato che supportá
 degli elementi di auto-scoperta (auto-discovery) in modo tale da aggiungere o 
@@ -128,6 +134,7 @@ In realtá, i dati all'interno di questa memoria possono contenere
 informazioni provenienti da nodi remoti distribuiti per la rete. 
 L'applicativo non deve cosi preoccupandosi dell'accessibilitá dei dati,
 dato che vengono gestiti dal DDS.\cite{whatisdds}
+
 
 \subsection{Quality of Service (QoS)}
 
@@ -168,6 +175,13 @@ la Istanza, il Domain e il Domain Participant.
 Ognuna di queste identitá deve tener conto del set suo di policies QoS configurate
 che ne definiscono il comportamento. Queste policy verranno analizzate 
 nel piú nel dettaglio in una prossima sezione.
+
+Il linguaggio utilizzato da queste entitá si chiama Interface 
+Definition Language(IDL),
+viene gestito anch'esso da OMG. Molto simile a un linguaggio tipizzato 
+simile a C++, supportá data types come char, int, double, float etc
+\cite{1494965} \dots
+
 
 \subsection{Publisher e Subscriber}
 
@@ -213,30 +227,41 @@ abbiamo la necessitá di approfondirli quando vengono utilizzati
 con le specifiche del DDS.
 
 I topic vengono utilizzati per identificare il tipo di dato che viene
-scambiato tra i publishers e i subscribers, creando cosi un collegamento
-tra DataWriter e DataWriter;\cite{topicomg}
-devono avere la caratteristica di essere sempre
-distinguibili tra di loro. All'interno troviamo il nome 
+scambiato tra i publishers e i subscribers, creando cosi un punto
+di connessione 
+tra DataWriter e DataWriter\cite{topicomg} .
+All'interno troviamo il nome del topic
 (che deve essere nel dominio dove si trova),
-il data type e le policy QoS relative ai topic.
+i data types del topic e le policy QoS relative ai topic.
+Il nome del topic deve essere una stringa che serve 
+a identificare il topic all'interno di un dominio e quindi deve essere
+univoca.
 
 
 
 
-\subsection{Instanza}
-Questi topic possono contenere più istanze che vengono
-descritte e distinte dai valori unici delle keys.\cite{Instance81:online}
-Le keys non sono altro che descrittori, che possono essere
-formate da una lista di campi dati che servono a distinguere
-le diverse istanze. Le istanze infatti sono presenti per
-ogni flusso di data (data-stream) e per distinguerle
-utlizziamo la loro key, necessaria per associare al flusso 
-di data l'instanza corretta.
+\subsection{Key e Instanza}
+Uno o piú data types di un topic possono diventare una chiave (key) per 
+quel particolare topic. Queste chiavi ci permettono di suddivedere meglio
+i dati per un singolo topic, dividendo i dati che hanno il valore contenuto
+nella key diverso. Ogni suddivisione che effettuiamo tramite una key crea 
+un'istanza diversa. L'istanza al suo interno contiene i data-values che 
+vengono ricevuti da un qualche flusso di data (data-stream).
+ \cite{Instance81:online}.
+
 Per fare un esempio prendiamo il topic velocità in un contesto dove si
 vogliono analizzare i dati di una gara.
 La struttura del topic avrà due elementi: il primo corrisponde al valore
 della velocità registrata, mentre il secondo mostra l'id-macchina per 
 capire da quale vettura i dati provengono.
+\begin{lstlisting}[language=C++, caption=Esempio di Topic con una key
+    usando il linguaggio IDL
+    , label=Topic struct]
+    struct Veicolo { // Nome del topic
+        id_macchina; // Key del topic
+        velocita;
+    }
+    \end{lstlisting}
 Creiamo ora due istanze una con valore 270 (velocità) e con 
 l'id-macchina a 1 e l'altra con un valore di 220 e con id-macchina 
 uguale a 2. Notiamo che l'id-macchina in questo caso fungerà da key 
@@ -244,6 +269,9 @@ dell'istanza per distinguere la provenienza dei dati, in questo
 modo possiamo controllare le due macchine con due istanze ciascuna.
 
 % Magari anche con RTI shapes
+
+
+    
 
 
 \subsection{Domain}
