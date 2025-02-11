@@ -40,5 +40,7 @@ Devo parlare meglio dei protocolli RTPS
 % }
 
 # TODO
-Dynamic Discovery, fixare le definizioni di domain,modularitá ed estensioni
-e infine le varie QoS
+infine le varie QoS, RTPS ,dds security , versioni DDS vecchie, vari vendors.
+
+## Facoltativi
+Aggiungere differenza tra CORBA e DDS

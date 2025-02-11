@@ -104,28 +104,54 @@ informazioni su un determinato topic \cite{OH2010318}.
 
 Il DDS gestito da OMG è un middleware e uno standard API per una gestione
 dei dati di tipo data-centric. Questo middleware è un software che si trova
-tra l'applicativo e il sistema operativo. Viene utilizzato un modello
+tra l'applicativo e il livello di trasposto della rete. 
+% fare disegno layers osi
+Viene utilizzato il DCPS (Data-Centric Publish-Subscribe) 
+che é un modello di comunicazione simile a quello
 di tipo publish/subscribe, ma con un approccio più data-centric, in modo
 tale da semplificare il lavoro del programmatore che si deve solamente
 occupare di specificare il contesto del dato che deve mandare o ricevere.
 Così facendo non bisogna preoccuparsi dell'invio o della ricezione
 dei messaggi, perchè questa parte viene completamente gestita dal middleware.
-Prima di questo middleware esistevano solamente soluzioni proprietarie che si 
-basavano sempre sul modello publish/subscribe. Il DDS é stato il primo standard
-a formalizzare le comunicazioni di tipo data-centric. Inizialmente erano 
-disponibili solamente soluzioni proprietarie senza specificare un standard
-univoco. Non avendo avuto uno standard univoco le varie implementazioni non sono
-compatibili tra di loro a differenza del DDS che lo é.
+% Il DDS é stato il primo standard
+% a formalizzare le comunicazioni di tipo data-centric. Inizialmente erano 
+% disponibili solamente soluzioni proprietarie senza specificare un standard
+% univoco. Non avendo avuto uno standard univoco le varie implementazioni dei vendors
+% non erano
+% compatibili tra di loro a differenza del DDS.
+
+% Magari fare la differenza tra data centri e message centric
 
 Altri vantaggi del DDS includono una architettura adattabile dato che supportá
-degli elementi di auto-scoperta (auto-discovery) in modo tale da aggiungere o 
-rimuovere dispositivi dalla rete in automatico. Rispetto al protocollo TCP/IP 
+degli elementi di auto-scoperta (auto-discovery) o Dynamic Discovery 
+in modo tale da aggiungere o 
+rimuovere dispositivi dalla rete in modo automatico, anche a runtime.
+Il Dynamic Discovery inoltre puó capire quali tipologie di dati sono 
+necessarie per questo nuovo dispositivo. Ogni nuovo partecipante 
+utilizza le stesse API per comunicare con l'applicativo perché 
+non c'é bisogno di configurare le impostazioni degli indirizzi IP o 
+preoccuparsi della diversa architettura dei nuovi dispositivi.
+Rispetto al protocollo TCP/IP 
 il DDS ha la possibilitá di effettuare comunicazioni di tipo uno a molti 
 (one-to-many), molti a molti (many-to-many) e uno a uno (one-to-one)
  \cite{1494965}.
+ 
+ 
+ \subsection{Quality of Service (QoS)}
+
+ Per soddisfare i diversi requisiti di una trasmissione dati, 
+ il Data Distribution Service (DDS) utilizza un insieme di policy di 
+ Quality of Service (QoS). Queste policy permettono di controllare, 
+ regolare e ottimizzare lo scambio di dati tra i vari componenti 
+ all'interno del middleware. Le policy QoS possono variare 
+ significativamente in base al tipo di comunicazione richiesta, 
+ offrendo una gestione altamente flessibile e granulare. 
+ Ogni elemento del middleware può essere configurato 
+ con policy specifiche, consentendo un adattamento preciso alle 
+ esigenze dell'applicazione.
 
 \subsection{Global Space Data}
-Il DDS a livello concettuale utilizza un concetto chiamato Global Data 
+Il DDS utilizza un sistema chiamato Global Data 
 Space (spazio dati globale) che consente agli applicativi
 di accedere a una sorta di memoria locale tramite API.
 L'applicativo nella scrittura o nella ricezione dei dati utilizzerá 
@@ -133,27 +159,42 @@ questa memoria locale fittizia come un'unica risorsa centralizzata.
 In realtá, i dati all'interno di questa memoria possono contenere
 informazioni provenienti da nodi remoti distribuiti per la rete. 
 L'applicativo non deve cosi preoccupandosi dell'accessibilitá dei dati,
-dato che vengono gestiti dal DDS.\cite{whatisdds}
+dato che vengono gestiti come se si trovassero tutti in unico punto \cite{whatisdds}.
 
 
-\subsection{Quality of Service (QoS)}
+\subsection{Architettura DDS}
+Lo standard DDS definito dall'OMG è composto da due layer: 
+il DDS e il
+DDSI (DDS Interoperability).
+    \begin{itemize}
+        \item DDS: é il layer fondamentale in cui troviamo il DCPS
+        (Data-Centric Publish-Subscribe),
+        il modello di comunicazione simile a quello di tipo publish/subscribe,
+        che definisce come far comunicare piú applicazioni tra di loro tramite
+        il Global Space Data. In questo layer vengono inoltre 
+        definite le policies QoS \cite{Michaud2017Apr}.
+        \item DDSI: é il layer che si occupa di garantire l'interoperabilità
+        tra le diverse implementazioni del DDS, ad
+        esempio quando provengono da vendors diversi.
+        All'interno di questo layer troviamo l'RTPS 
+        (Real-Time Publish-Subscribe Protocol), un protocollo che permette ai 
+        vari dispositivi DDS di comunicare e scoprirsi tra di loro
+        (Dynamic Discovery).
+        RTPS é il wire protocol ufficiale dello standard DDS, con standard definito da OMG,
+        che definisce il formato dei messaggi e impone le regole che 
+        permettono una trasmissione di dati standardizzata. 
+        Se questo wire protocol non é presente,
+        le varie implementazioni del DDS non possono 
+        comunicare tra di loro \cite{essay93639}.
+    \end{itemize} 
 
-Per soddisfare i diversi requisiti di una trasmissione dati, 
-il Data Distribution Service (DDS) utilizza un insieme di policy di 
-Quality of Service (QoS). Queste policy permettono di controllare, 
-regolare e ottimizzare lo scambio di dati tra i vari componenti 
-all'interno del middleware. Le policy QoS possono variare 
-significativamente in base al tipo di comunicazione richiesta, 
-offrendo una gestione altamente flessibile e granulare. 
-Ogni elemento del middleware può essere configurato 
-con policy specifiche, consentendo un adattamento preciso alle 
-esigenze dell'applicazione.
-
-\subsection{Dynamic Discovery}
 
 
-\subsection{Modularitá ed estensioni}
-Ad esempio DDS security
+% \subsection{Dynamic Discovery}
+% \cite{whatisdds}
+
+
+
 
 % \subsection{In che contesti viene utilizzato e perché}
 
@@ -165,9 +206,10 @@ Ad esempio DDS security
 
 % https://www.dds-foundation.org/what-is-dds-3/
 
-\section{Le entitá del DDS}
-Il DDS per operare utilizza le entitá, che rappresentano gli elementi necessari
-per il funzionamento del middleware. Hanno il compito di gestire i dati
+\section{Le entitá del DCPS}
+Il layer DDS per operare utilizza delle entitá definite dal DCPS, 
+che rappresentano gli elementi necessari
+per il funzionamento dell'intero middleware. Hanno il compito di gestire i dati
 scambiati tra i vari partecipanti all'interno del sistema. 
 Le entitá principali del DDS sono: 
 il publisher, il subscriber, il DataWriter, il DataReader, il Topic,
@@ -281,7 +323,9 @@ modo possiamo controllare le due macchine con due istanze ciascuna.
 
 \subsection{Domain}
 L'entitá del dominio rapresenta uno spazio logico definito con
-lo scopo di contenere Topics e data-types. 
+lo scopo di mettere in comunicazione i vari applicativi tra di loro.
+All'interno possiamo trovare i vari Topic che collegano gli applicativi
+con i loro rispettivi data-types.
 Le proprietá del domain sono:
 \begin{itemize}
     \item Ogni dominio viene identificato da un id per 
@@ -301,12 +345,16 @@ Le proprietá del domain sono:
 
 \subsection{DomainParticipant}
 L'entitá del DomainParticipant viene utilizzata da un'applicazione
-per entrare all'interno di un domain. 
+per entrare all'interno di un Domain del DDS. 
 Rappresenta la prima entitá creata da un'applicazione che verrá 
-utilizzata per creare altre entitá. Ha il compito di inizializzare
-le comunicazioni con il domain attraverso il processo di discovery.
-Il processo di discovery consente alle entitá appartenenti allo 
+utilizzata per creare altre entitá come DataWriter e DataReader 
+al suo interno. Ha il compito di inizializzare
+le comunicazioni con il Domain dove si trova attraverso 
+il processo di discovery.
+Questo processo consente alle entitá appartenenti allo 
 stesso domain di trovarsi e connettere automaticamente.
+Il DomainParticipant é un insieme di entitá che rispondono ad 
+un determinato applicativo all'interno della rete DDS.
 % Processo discovery non ancora introdotto
 Le proprietá del DomainParticipant sono:
 \begin{itemize}
@@ -318,9 +366,9 @@ Le proprietá del DomainParticipant sono:
 \end{itemize}\cite{domainparticipantrti}
 
 
+\subsection{Le policy QoS in dettaglio}
 
-
-\section{Modello DDS}
+\section{Il protocollo RTPS}
 Sto facendo un test di prova riguardante questo testo scritto
 tipo lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
 lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
