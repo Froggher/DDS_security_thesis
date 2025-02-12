@@ -180,11 +180,12 @@ DDSI (DDS Interoperability).
         (Real-Time Publish-Subscribe Protocol), un protocollo che permette ai 
         vari dispositivi DDS di comunicare e scoprirsi tra di loro
         (Dynamic Discovery).
-        RTPS é il wire protocol ufficiale dello standard DDS, con standard definito da OMG,
+        RTPS é il wire protocol ufficiale dello standard DDS, 
+        con standard definito da OMG,
         che definisce il formato dei messaggi e impone le regole che 
         permettono una trasmissione di dati standardizzata. 
         Se questo wire protocol non é presente,
-        le varie implementazioni del DDS non possono 
+        diverse implementazioni del DDS non possono 
         comunicare tra di loro \cite{essay93639}.
     \end{itemize} 
 
@@ -366,16 +367,110 @@ Le proprietá del DomainParticipant sono:
 \end{itemize}\cite{domainparticipantrti}
 
 
-\subsection{Le policy QoS in dettaglio}
+\section{Le policy QoS nel dettaglio}
+A livello logico, le specifiche del DDS
+definiscono un insieme di polices QoS
+che le entitá del DCPS devono rispettare. Qui di seguito vengono
+proposte le categorie QoS piú rilevanti.
+\begin{itemize}
+    \item Ownership: questo valore specifica se un dato
+    puó essere aggiornato da piú 
+    (SHARED ownership) o un solo (EXCLUSIVE ownership) publisher.
+    Se abbiamo impostato un ownership di tipo EXCLUSIVE, per decidere il 
+    publisher che ha la possibilità di aggiornare il dato, viene 
+    utilizzato l'ownership STRENGTH.
+    \item Liveness: viene utilizzato per specificare se é necessaria
+    una comunicazione di tipo attivo, rispetto ad una di tipo 
+    intermittente.
+    \item Reliability: specifica se in una comunicazione tutti i dati
+    trasferiti tra publisher e subscriber devono essere consegnati, oppure
+    se é accettabile anche la perdita di alcuni dati.
+    \item Lifespan: specifica tempo di scadenza dei dati pubblicati da 
+    un publisher.
+    \item History: specifica quanti e come i dati devono essere 
+    mantenuti in un 
+    subscriber dopo averli ricevuti.
+    \item Durability: specifica se i dati inviati in precedenza sono
+    disponibili per i nuovi subscriber appena entrati nella rete.
+\end{itemize}
+Le configurazioni 
+delle policy vengono trasmesse alle varie entitá dal DomainParticipant
+come i publiher e i subscriber.
+Tuttavia le policy di un publisher e un subscriber devono essere compatibili.
+Se cosí non fosse, la comuncazione tra i due potrebbe essere compromessa
+\cite{Michaud2017Apr}.
+
 
 \section{Il protocollo RTPS}
-Sto facendo un test di prova riguardante questo testo scritto
-tipo lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
-lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum
+RTPS (Real-Time Publish-Subscribe Protocol) é il wire-protocol 
+nativo utilizzato dal DDS. Esso consente di trasferire i dati provenienti
+dal layer DDS a quello di trasporto della rete.
+Solitamente viene utilizzato in combinazione con il protocollo
+best-effort
+UDP/IP, che risulta ottimale per le comunicazioni di tipo real-time, tuttavia 
+protocolli connection-oriented come il TCP/IP possono essere utilizzati. 
+RTPS include molti vantaggi ideali per il DDS:
+\begin{itemize}
+    \item Connettivitá plug and play: le nuove applicazioni possono unirsi o 
+    lasciare la rete a proprio piacimento.
+    \item Tolleranza ai guasti: non ci sono presenti punti singoli di 
+    guasto perchè i dati vengono distribuiti e replicati tra le varie 
+    entitá DDS che sfruttano il Global Data Space.
+    \item Type-safety: gli errori di programmazione vengono gestiti 
+    in modo tale da non compromettere il funzionamento 
+    dei dispositivi remoti.
+\end{itemize}
+L'RTPS é suddiviso in quattro moduli differenti: lo structure module, il 
+messages module, behavior module e il discovery module \cite{ddsrtps}.
+
+\subsection{Structure module}
+Questo modulo si occupa di associare le entitá DDS alle corrispondenti
+entitá RTPS. Queste entitá RTPS (come DataReader e DataWriter) sono utilizzate 
+per rappresentare le entitá del DDS all'interno del protocollo RTPS \cite{ddsrtps}.
+
+\subsection{Behavior module}
+Il behavior module definisce delle regole di comunicazione durante 
+una seguenza di messaggi tra
+due o piú entita RTPS, che sono i RTPS Writers e i RTPS Readers.
+Queste regole servono a mantenere l'interoperabilità tra le varie 
+implementazioni del DDS \cite{ddsrtps}.
+
+\subsection{Messages module}
+Il messages module si occupa di descrivere il formato dei messaggi scambiati
+tra i RTPS Writers e i RTPS Readers. Questi messaggi RTPS sono composti da un header
+seguito da dei sottomessaggi. Nell'header troviamo informazioni relative al
+protocollo RTPS, come la sua versione, il nome del vendor dell'implementazione
+usata e il mittente. Nel sottomessaggi invece possiamo trovare un submessage
+header e una serie elementi del sottomessaggio. Nel submessage header 
+troviamo l'id che 
+identifica di che tipo di sottomessaggio, eventuali flag e la lunghezza in bytes 
+del sottomessaggio. Le tipologie di sottomessaggi piú importanti, identificate
+dal submessage header, sono:
+\begin{itemize}
+    \item DATA: in questo sottomessaggio vengono trasferiti dall'RTPS Writers
+    all'RTPS Reader i dati effettivi relativi ad un topic.
+    \item HEARTBEAT: viene mandato da un RTPS Writer a un RTPS Reader per 
+    comunicare il numero di nuovi (sequence number) dati che il 
+    Writer ha disponibili.
+    \item ACKNACK: utilizzato per comunicare lo stato di un RTPS Reader 
+    al corrispondente RTPS Writer per informarlo riguardo i dati ricevuti
+    e quelli mancanti. Questo sottomessaggio con il con la flag FINAL 
+    impostata consente di far rimanere il Reader sincronizzato con 
+    Writer \cite{ddsrtps}.
+\end{itemize}
+
+
+\subsection{Discovery module}
+Questo modulo garantisce che i nuovi partecipanti DDS (publisher e subscriber)
+riescano a identificarsi tra di loro in modo tale da inizializzare una 
+possibile comunicazione. Questo modulo é responsabile del Dynamic Discovery
+delle entitá del DDS all'interno della stessa rete. Il Dynamic Discovery
+utilizza messaggi di tipo multicast e unicast per informare gli altri partecipanti
+di un nuovo dispositivo connesso alla rete, pronto a ricevere comunicazioni
+dal resto delle entitá. Il discovery module é composto da due protocolli chiamati
+Simple Participant Discovery Protocol (SPDP) e 
+Simple Endpoint Discovery Protocol (SEDP). SPDP ha il compito di scoprire nuovi 
+partecipanti, mentre l'SEPD si occupa di scambiare tra le entitá le informazioni
+di topics, DataWriter e DataReader. In particolare l'SPDP serve per collegare
+tramite topic i DataReaders ai DataWriters \cite{ddsrtps}.
+

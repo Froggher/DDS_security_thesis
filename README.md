@@ -40,7 +40,9 @@ Devo parlare meglio dei protocolli RTPS
 % }
 
 # TODO
-infine le varie QoS, RTPS ,dds security , versioni DDS vecchie, vari vendors.
+dds security , versioni DDS vecchie, vari vendors.
 
+# Soluzioni (dopo)
+wireguard
 ## Facoltativi
-Aggiungere differenza tra CORBA e DDS
+Aggiungere differenza tra CORBA e DDS,  
