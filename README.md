@@ -46,3 +46,4 @@ dds security , versioni DDS vecchie, vari vendors.
 wireguard
 ## Facoltativi
 Aggiungere differenza tra CORBA e DDS,  
+Aggiungeere altro attacco DDS security che si basa su i permessi

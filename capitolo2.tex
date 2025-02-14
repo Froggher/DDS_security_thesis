@@ -95,11 +95,17 @@ dei plugin da parte dei partecipanti che servono a:
     \item login
     \item data tagging
 \end{itemize}\cite{ddssecurity1.1}
-(foglio 3 pag 718)Per effettuare l'autenticazione un partecipante deve
-risolvere una challenge crittografica richiesta dal sistema di autenticazione
-della rete. Effettuato poi questo calcolo crittografico, il risultato viene
-controllato dal sistema di autenticazione per verificare se esso corrisponda
-all'hash del risultato della challenge crittografica.\cite{DBLP:conf/asiaccs/WangLG24}
+Un'entitá deve effettuare l'autenticazione nel caso in cui apre una nuova
+comunicazione con una nuova entità prima sconosciuta. Queste due entitá
+prima effettuare la comunicazione devono scambiarsi le chiavi in modo
+sicuro tramite Diffie-Hellman in modo tale da poter crittare i successivi
+messaggi. Durante l'utilizzo del protocollo Diffie-Hellman vengono utilizzate
+le challenge, che sono valori che variano nel tempo, per calcolare 
+la firma digitale richiesta dal protocollo \cite{DBLP:conf/asiaccs/WangLG24}.
+
+% controllare sta robbba
+
+
 
 Questo attacco è stato scoperto con Proverif, un tool che viene usato
 per individuare vulnerabilità nei protocolli crittografici. 
@@ -111,11 +117,12 @@ posta elettronica certificata e nell'analisi del TLS 1.3.\cite{proverifmanual}
 L'attacco DDoS avviene durante la fase di autenticazione del protocollo
 DDS security 1.1, in particolare quando un nuovo dispositivo tenta di
 collegarsi alla rete e manda una richiesta di autenticazione
-all'ente di controllo. La richiesta del partecipante viene poi intercettata
+all'entità con cui vuole aprire una comunicazione. 
+La richiesta del partecipante viene poi intercettata
 dall'attaccante che modifica i valori della challenge crittografica 
 all'interno del pacchetto. Modificando ripetutamente questi valori, l'attaccante
 inizia a inviare molteplici richieste crittografiche alla sua vittima.
-Il partecipante comincerà a calcolare queste challenge per effettuare
+Il partecipante comincerà a calcolare questi calcoli crittografici per effettuare
 l'autenticazione, consumando tutte le sue risorse.
 Dato che, la vittima è probabilmente un dispositivo IoT
 che non dispone di una potenza di calcolo molto elevata, si ritroverà
@@ -417,7 +424,6 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento.
         }
         \caption{La versione DDS in tutti i casi è la 1.4}
     \end{table}
-
 
 
 

@@ -303,11 +303,11 @@ capire da quale vettura i dati provengono.
     usando il linguaggio IDL
     , label=Topic struct,
     captionpos=b]
-    struct Veicolo { // Nome del topic
-        id_macchina; // Key del topic
-        velocita;
-    }
-    \end{lstlisting}
+struct Veicolo { // Nome del topic
+    id_macchina; // Key del topic
+    velocita;
+}
+\end{lstlisting}
 \vspace{5mm}
 
 Creiamo ora due istanze una con valore 270 (velocità) e con 
@@ -473,4 +473,154 @@ Simple Endpoint Discovery Protocol (SEDP). SPDP ha il compito di scoprire nuovi
 partecipanti, mentre l'SEPD si occupa di scambiare tra le entitá le informazioni
 di topics, DataWriter e DataReader. In particolare l'SPDP serve per collegare
 tramite topic i DataReaders ai DataWriters \cite{ddsrtps}.
+
+\section{DDS Security}
+Nelle specifiche del DDS non vien presa in considerazione la sicurezza, quindi
+un'applicazione che utilizza il DDS di base può essere esposta a numerosi a 
+rischi. Per ovviare a questo problema, OMG ha definito un nuovo standard 
+chiamato DDS security. Il DDS security è un estensione del DDS con 
+l'obiettivo di mitigare una moltitudine di vettori d'attacco come 
+le letture e scritture dei messaggi scambiati tra i partecipanti di un 
+dominio DDS. Questa estensione è composta da cinque plugin:
+\begin{itemize}
+    \item Authentication Service Plugin: serve per effettuare l'autenticazione 
+    delle entitá DDS. L'autenticazione è valida anche tra i diversi 
+    DomainParticipant che si trovano all'interno dello stesso dominio DDS.
+    \item Access Control Service Plugin: ha lo scopo di imporre delle 
+    delle policies alle entitá DDS autenticate. Ad esempio limtare la
+    la pubblicazione di nuovi dati o la creazione di nuovi topic.
+    \item Cryptographic Service Plugin: gestisce tutte le operazioni 
+    relative alla crittografia, come la crittografia, la decrittazione,
+    le firme digitali. Ha anche il compito di controllare l'integrità
+    dei messaggi.
+    \item Logging Service Plugin: permette di effettuare un audit di 
+    tutte le operazioni DDS rilevanti all'interno di un dominio.
+    \item Data Tagging Service Plugin: fornisce dei metodi per implentare
+    un tag su tutti i dati trasferiti. 
+\end{itemize}
+Anche se il DDS security riesce a risolvere molti problemi legati alla
+sicurezza del DDS, non sempre è possbile utilizzarlo. Questo succede 
+perchè per la configurazione può richiedere molto tempo per essere 
+impostata, soprattutto su sistemi DDS già esistenti e sprovvisti di 
+questa estensione.
+Il partecipante con la sicurezza più debole rappresenta la sicurezza
+complessiva dell'intero sistema \cite{Michaud2017Apr}. 
+
+Il DDS security può essere usato anche non implementando tutti i plugin:
+gli ultimi due sono facoltativi e vengono raramente usati \cite{essay93639}. 
+
+
+\subsection{Authentication Service Plugin}
+Senza questo modulo chiunque potrebbe entrare a far parte del dominio
+del DDS, ponendo un grave rischio per la sicurezza. Per ovviare a questa
+falla, l'Authentication Service Plugin consente, a ogni dispositivo che 
+vuole entrare del dominio DDS, la possibilità di autenticarsi.
+Prima di effettuare l'autenticazione tutti i partecipanti devono 
+configuare un loro certificato, le loro chiavi private, mentre 
+l'amministratore deve creare un Certificato root che deve 
+essere riconosciuto da tutte le entitá autorizzate. 
+
+\subsubsection{Processo di autenticazione}
+
+L'autenticazione di due entitá in modo sicuro viene effettuata
+tramite il protocollo Diffie-Hellman, che consente la trasmissione 
+di chiavi in modo sicuro anche in canali di comunicazione non sicuri.
+Le due entità utilizzando Diffie-Hellman otterranno una chiave 
+segreta condivisa da entrambi. Così facendo la chiave non viene mai 
+trasmessa direttamente, evitando di essere intercettata da 
+possibili attaccanti. 
+
+Per rafforzare ulteriormente la sicurezza e prevenire attacchi replay 
+(riutilizzo di messaggi intercettati) o di impersonificazione, vengono 
+utilizzate le challenge. Queste challenge corrispondo a valori 
+casuali che cambiano nel tempo e vengono utilizzati durante il 
+calcolo della firma digitale che si effettua nel protocollo
+Diffie-Hellman.
+Dato che che queste challenge cambiano periodicamente
+i vecchi messaggi intercettati dagli attaccanti non possono essere 
+più riutilizzati dagli attaccanti.
+
+Completato questo scambio di chiavi, la fase di autenticazione si
+conclude. Queste chiavi verranno poi utilizzate da protocolli di 
+crittazione come l'RSA (Rivest-Shamir-Adleman) per effettuare 
+comunicazioni in modo sicuro. Infatti non sarà possibile per un 
+attaccante spiare o cambiare il contenuto dei messaggi 
+\cite{DBLP:conf/asiaccs/WangLG24}.
+
+
+\subsection{Access Control Service Plugin}
+Questo plugin gestisce i permessi delle entitá all'interno di 
+un dominio DDS. É possibile configurare questi permessi con una 
+granularitá molto fine. Dei possibili permessi possono essere:
+aggiornare un determinato topic da parte di 
+un DataWriter, far entrare una determinata entitá
+all'interno di un dominio, eliminare un topic, entrare o 
+uscire da determinati domains etc\dots
+
+Access Control Service Plugin per funzionare ha bisogno di due 
+file in formato XML che devono essere entrambi firmati da 
+un CA: il governance document e il permissions document.
+Il governance document rimane uguale per tutti i dispositivi 
+all'interno dell'intero dominio DDS e si occupa di gestire 
+permessi generali a livello di dominio. Il permissions document,
+invece é unico per ogni dispositivo e si occupa di gestire i 
+permessi del singolo partecipante.
+Questi vengono ricevuti dai partecipanti durante la fase di
+autenticazione e devono rimanere sempre disponibili \cite{essay93639}.
+
+
+
+\vspace{5mm} % Riusare per codici futuri
+\begin{lstlisting}[language=XML, caption=Esempio di permissions
+    document{,} tratto da documento di riferimento 
+    del DDS Security vers. 1.1 \cite{ddssecurity1.1}.
+    , label=XML permission file,
+    captionpos=b]
+...
+    <permissions>
+        <grant name="ShapesPermission">
+            <subject_name>CN=DDS Shapes Demo</subject_name>
+            <validity>
+                <not_before>2013-10-26T00:00:00</not_before>
+                <not_after>2018-10-26T22:45:30</not_after>
+            </validity>
+            <allow_rule>
+                <domains>
+                    <id>0</id>
+                </domains>
+            </allow_rule>
+            <deny_rule>
+                <domains>
+                    <id>0</id>
+                </domains>
+                <publish>
+                    <topics>
+                        <topic>Circle1</topic>
+                    </topics>
+                </publish>
+...
+    \end{lstlisting}
+\vspace{5mm}
+
+\subsubsection{Processo di controllo permessi}
+Un esempio di processo di controllo accessi potrebbe accadere
+quando un'entitá richiede l'autorizzazione per creare un nuovo topic.
+Le altre identitá hanno il compito di verificare se l'operazione 
+richiesta di creazione di un nuovo topic viene consentitá
+dai i files di permessi a loro disposizione. Per effettuare 
+questa operazione il partecipante che richiede l'autorizzazione 
+deve mandare il suo permission document, il topic che creare e 
+e i suoi metadati. Successivamente un altro partecipante,
+che ha il compito di autorizzare l'entitá che ha richiesto 
+la nuova creazione di un topic, riceverá il messaggio
+che quest'ultimo ha mandato. Ora questo partecipante
+controllerá che il permesso 
+ricevuto ha una firma digitale valida e che i metadati 
+ricevuti corrispondono ai metadati contenuti all'interno 
+del permesso ricevuto. Facendo questo ulteriore controllo 
+possiamo verificare che il partecipante che vuole creare il 
+nuovo topic sia lo stesso di quello indicato nel permesso 
+ricevuto in precedenza. Così facendo gli attacchi di 
+impersonificazione possono essere mitigati 
+\cite{DBLP:conf/asiaccs/WangLG24}.
 
