@@ -389,6 +389,7 @@ come i publisher, i subscriber, i topic, i DataWriters etc\dots
 Tuttavia, le policy di un publisher e un subscriber devono essere compatibili.
 Se cosí non fosse, la comuncazione tra i due potrebbe essere compromessa
 \cite{Michaud2017Apr}.
+\label{Le policy QoS nel dettaglio}
 
 
 \section{Il protocollo RTPS}
@@ -448,7 +449,7 @@ identificate dal suo header, sono:
     e quelli mancanti. Questo sottomessaggio, con la flag FINAL 
     impostata, consente di far rimanere il Reader sincronizzato con l'RTPS
     Writer \cite{ddsrtps}.
-\end{itemize}
+\end{itemize} \label{Messages module}
 
 
 \subsection{Discovery module}
@@ -465,6 +466,7 @@ Simple Endpoint Discovery Protocol (SEDP). SPDP ha il compito di scoprire nuovi
 partecipanti, mentre l'SEPD si occupa di scambiare tra le entitá le informazioni
 di topics, DataWriter e DataReader. In particolare l'SEDP serve per collegare
 tramite topic i DataReaders ai DataWriters \cite{ddsrtps}.
+\label{Discovery module}
 
 \section{DDS Security}
 Nelle specifiche del DDS non viene presa in considerazione la sicurezza, quindi
@@ -502,6 +504,7 @@ protetta \cite{Michaud2017Apr}.
 Il DDS security può essere usato anche non implementando tutti i plugin;
 gli ultimi due sono facoltativi e vengono 
 raramente usati \cite{essay93639}. 
+\label{DDS Security}
 
 
 \subsection{Authentication Service Plugin}
@@ -547,9 +550,10 @@ comunicazioni in modo sicuro. Infatti non sarà possibile per un
 attaccante spiare o cambiare il contenuto dei messaggi dato 
 che questi sono criptati 
 \cite{DBLP:conf/asiaccs/WangLG24}.
-
+\label{Processo di autenticazione}
 
 \subsection{Access Control Service Plugin}
+
 Questo plugin gestisce i permessi delle entitá all'interno di 
 un domain DDS. É possibile configurare questi permessi con una 
 granularitá molto fine. Dei possibili permessi possono essere:
@@ -602,6 +606,7 @@ autenticazione e devono rimanere sempre disponibili \cite{essay93639}.
 ...
     \end{lstlisting}
 \vspace{5mm}
+\label{Access Control Service Plugin}
 
 \subsubsection{Processo di controllo permessi}
 Un esempio di processo di controllo access avviene
