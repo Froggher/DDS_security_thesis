@@ -2,16 +2,17 @@
 
 
 In questo capitolo ci occuperemo di analizzare e comprendere delle vulnerabilità
-del protocollo DDS standard OMG (Object Management Group). In particolare
+del middleware DDS standard OMG (Object Management Group) \cite{8469351}. 
+In particolare
 verrà analizzato il vettore d'attacco, il protocollo utilizzato, il bersaglio
 dell'attacco e infine verrà proposta una soluzione applicabile per
-mitigare possibili attacchi non autorizzati. Nel prossimo capitolo grazie all'aiuto
-del software --inserire software-- riusciremo a capire come queste vulnerabilità
-possono essere ricreate in un ambiente simulato.
-Queste vulnerabilità hanno una base di appoggio solida per 
-l'attaccante. In molti casi un dispositivo ha già la possibilità di controllo
-di un partecipante all'interno della rete o ha la possibilità di modificare
-dei file di configurazione all'interno del network stesso.
+mitigare i possibili attacchi. %  Nel prossimo capitolo grazie all'aiuto
+% del software --inserire software-- riusciremo a capire come queste vulnerabilità
+% possono essere ricreate in un ambiente simulato.
+Queste vulnerabilità in molti casi, possono essere sfruttate 
+quando un partecipante del domain DDS é sotto il controllo di un attaccante
+o quando é possibile modificare i file di configurazione delle policy QoS 
+del domain.
 
 Queste vulnerabilità riguardano la versione del DDS 1.4 con le specifiche 
 dello standard OMG.
@@ -30,14 +31,15 @@ all'interno un domain DDS.
 Per effettuare questi scambi di messaggi vengono utilizzati dei sottomessaggi,
 in particolare l'HEARTBEAT e l'ACKNACK.
 L'HEARTBEAT contiene al suo interno il sequence number che tiene traccia 
-del numero di aggiornamenti di un topic da parte di DataWriter, mentre il
-l'ACKNACK serve per confermare al DataWriter la ricezione di nuovi dati 
+del numero di aggiornamenti di un topic da parte di DataWriter, mentre
+l'ACKNACK inviato da un DataReader
+serve per confermare al DataWriter la ricezione di nuovi dati 
 riguardo un topic.
 Quando il DataReader riceve il sequence number all'interno di un HEARTBEAT
 può identificare se ci sono o no dei pacchetti mancanti e in caso segnalarli al
 DataWriter \cite{White2017AnII}.
 Inoltre se il parametro FINAL é attivo in un sottomessaggio HEARTBEAT, il DataReader 
-deve rispondere al DataWriter con ACKNACK dopo aver ricevuto nuovi aggiornamenti.
+deve sempre rispondere al DataWriter con ACKNACK dopo aver ricevuto nuovi aggiornamenti.
 Il DataWriter, nel frattempo, rimarrá in attesa del sottomessaggio 
 ACKNACK prima di 
 inviare nuovi aggiornamenti al DataReader.
@@ -47,9 +49,9 @@ DataWriter.
 I controlli del sequence number all'interno dell'HEARTBEAT 
 non sono sufficienti per mitigare questo attacco:
 \begin{itemize}
-    \item un primo controllo viene effettuato per verificare che non ci siano 
+    \item Un primo controllo viene effettuato per verificare che non ci siano 
     valori negativi;
-    \item un altro controllo serve a determinare se l'ultimo sequence number
+    \item Un altro controllo serve a determinare se l'ultimo sequence number
     appena ricevuto ha un valore minore rispetto a quello ricevuto in precedenza
     \cite{White2017AnII};
 \end{itemize}
@@ -87,8 +89,8 @@ sequence number.
 
 \section{DDoS sfruttando estensione DDS security}
 Questo vettore di attacco si trova nell'estensione del DDS chiamata
-DDS security, descritto nella sezione~\ref{DDS Security}. 
-In particolare la versione utilizzata é la versione 1.1.
+DDS security, descritto nella sezione~\ref{DDS Security}; 
+in particolare la versione utilizzata é la versione 1.1.
 Il DDS security si occupa di stabilire una
 connessione sicura tra i vari dispositivi della rete, utilizzando 
 dei plugin per effettuare: autenticazione, controllo accesso, crittografia,
@@ -96,14 +98,16 @@ logine e data logging \cite{ddssecurity1.1}.
 
 Ogni partecipante del domain DDS deve essere autenticato reciprocamente
 dalle altre entitá appartenenti allo stesso domain.
-Successivamente due entitá
-prima effettuare la comunicazione devono scambiarsi le chiavi private
+Successivamente due entitá,
+per iniziare una comunicare tra di loro, devono prima
+scambiarsi le chiavi private
 in modo
 sicuro tramite protocollo Diffie-Hellman in modo tale da poter 
 crittare i successivi
 messaggi. Nell'utilizzo di Diffie-Hellman vengono utilizzate
 le challenge (sottosezione ~\ref{Processo di autenticazione}), 
-che sono valori che variano nel tempo, inseriti durante il calcolo
+che corrispondono a valori che variano nel tempo, 
+inseriti durante il calcolo
 della firma digitale richiesta dal protocollo. 
 Queste challenge vengono utilizzate per rendere le varie sessioni 
 di autenticazione uniche evitando cosí attacchi di tipo replay
@@ -167,10 +171,10 @@ altri 2 protocolli, che sono necessari per le specifiche DDS:
 
 \subsection{Dettagli attacco}
 Per questo attacco ci focalizzeremo in particolare sull'SPDP che serve ad
-individuare la presenza dei partecipanti alla rete. In particolar modo
+individuare la presenza dei partecipanti al resto delle
+entità nel domain. In particolar modo
 il funzionamento si basa su un messaggi di tipo multicast che vengono
-mandati a tutti i dispositivi riguardo ai partecipanti attivi 
-nel domain
+mandati a tutti i dispositivi riguardo ai partecipanti attivi
 % (foglio 5 pag 125)
 \cite{ddsrtps}.
 
@@ -187,8 +191,9 @@ ed infine il contenuto dei sottomessaggi \cite{White2017AnII}.
 
 \subsection{Conclusioni}
 Prendere informazioni DDS senza effettuare veri e propri
-attacchi di tipo attivo può essere molto utile per un attaccante che prova
-a penetrare una rete DDS. In molti casi tutto quello che deve fare l'attaccante
+attacchi di tipo attivo può essere molto utile per un attaccante che 
+ha il compito di penetrare in modo attivo
+una rete DDS. In molti casi tutto quello che deve fare l'attaccante
 è osservare i messaggi che vengono scambiati all'interno del network.
 Successivamente quando si ottengono informazioni a sufficienza sarà più
 facile per l'attaccante trovare altre vulnerabilità
@@ -217,7 +222,7 @@ le comunicazioni.
 
 
 
-\section{Modifica maligna di ownership strength}
+\section{Modifica maligna di OWNERSHIP strength}
 
 \begin{figure}[H]
     \centering
@@ -229,7 +234,7 @@ le comunicazioni.
 % che spiegano meglio i concetti introduttivi
 
 
-Questo attacco é possibile solo se certe policy QoS vengono
+Questo attacco é realizzabile solo se certe policy QoS vengono
 modificate durante l'esecuzione della rete, specialmente il parametro
 OWNERSHIP-KIND che gestisce quanti DataWriter possono scrivere per un
 determinato topic. Una descrizione accurata di altre policy QoS viene 
@@ -237,17 +242,16 @@ effettuata nella sottosezione~\ref{Le policy QoS nel dettaglio}.
 Questo parametro può essere impostato in due modi diversi:
 \begin{itemize}
     \item SHARED: in questo modo più di un DataWriter possono aggiornare le
-    informazioni di un topic. Inoltre un DataReader si può iscrivere a
-    qualsiasi scrittore dello stesso topic.
+    informazioni di un topic.
     \item EXCLUSIVE: solo un DataWriter può aggiornare le informazioni di un
     topic. Il DataWriter che ha il permesso di scrittura per il topic è quello
     che dispone di un OWNERSHIP-strength con valore più alto.
 \end{itemize}
 % https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership
 % https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership_strength
-In una rete dove si utilizza un OWNERSHIP-kind di tipo EXCLUSIVE è possibile
-utilizzare l'OWNERSHIP-strength a favore
-dell'attaccante. Infatti è possibile far ricevere informazioni a un DataWriter
+In una rete dove si utilizza un OWNERSHIP-kind di tipo EXCLUSIVE è consente
+all'attaccante di utilizzare l'OWNERSHIP-strength a suo favore.
+Infatti è possibile far ricevere informazioni a un DataWriter
 in maniera errata, dato che quest'ultimo non riceverà più informazioni da
 una fonte affidabile 
 \cite{DBLP:conf/malware/MichaudDL18}.
@@ -257,9 +261,10 @@ una fonte affidabile
 L'attaccante, con un DataWriter in suo possesso all'interno di una rete DDS,
 può sfruttare il fatto che il topic preso di mira può essere aggiornato
 solo dal DataWriter con l'OWNERSHIP-strength più alta.
-Per effettuare questo attacco, tutto quello che serve, è sapere il topic che
-si vuole modificare, le policy QoS in uso e il valore dell ownership-strength.
-L'ultimo passo è quello di impostare il topic scelto nel DataWriter
+Per effettuare questo attacco, tutto quello che serve, è 
+essere a conoscenza del topic che
+si vuole modificare, le policy QoS in uso e il valore dell OWNERSHIP-strength.
+L'ultimo passo è quello di impostare la policy QoS nel DataWriter
 dell'attaccante con OWNERSHIP-strength superiore a quello utilizzato dal
 DataWriter originario.
 Ora i DataReader che sono iscritti al topic bersaglio
@@ -268,9 +273,13 @@ ricevono le informazioni dal DataWriter dell'attaccante
 
 
 \subsection{Conclusioni}
+Questa vulnerabilità é stata analizzata con l'ausilio di RTI Shapes Demo, un 
+software che emula una rete DDS corrispondente alle specifiche 
+dello standard OMG, sviluppato da Real-Time Innovations (RTI).
+
 L'OWNERSHIP-kind di tipo EXCLUSIVE è utilizzata in contesti dove le
 informazioni ricevute dal DataReader devono essere accurate dato che un singolo
-scrittore (in molti casi si tratta di un sensore) può mandare nuovi aggiornamenti
+DataWriter (in molti casi si tratta di un sensore) può mandare nuovi aggiornamenti
 del topic. Se l'attaccante, dovesse riuscire a modificare i valori del topic con
 questo attacco, potrebbe causare molti danni,
 specialmente se il DataWriter dell'attaccante riesce a mandare degli aggiornamenti
@@ -279,7 +288,7 @@ al topic senza essere scoperto
 
 Una soluzione utile per mitigare questo attacco potrebbe essere l'utilizzo
 dell'estensione DDS security. Utilizzando i plugin relativi al controllo accesso,
-come illustrato nella sottosezione~ref{Access Control Service Plugin}, permette
+come illustrato nella sottosezione~\ref{Access Control Service Plugin}, permette
 di evitare che un attaccante possa modificare le policy QoS come 
 l'OWNERSHIP-strength.
 
@@ -291,10 +300,11 @@ che regola il parametro LIFESPAN. Questa regola corrisponde al tempo limite mass
 di validitá per la
 lettura di pacchetti da parte di un DataReader. Per determinare se un pacchetto
 di un determinato topic è scaduto viene utilizzato il timestamp di creazione
-aggiungendo il LIFESPAN impostato; se questo expiration time risulta
+aggiungendo il LIFESPAN impostato; se questo risultato chiamato 
+expiration time risulta
 superiore all'orario durante la ricezione del DataReader, allora il pacchetto
 ricevuto è ancora valido. 
-Per funzionare gli orologi del DataWriter e del DataReader
+Per funzionare gli orologi interni del DataWriter e del DataReader
 devono essere sincronizzati tra di loro.
 
 Un'altra policy da considerare è quella riguardo all'affidabilità
@@ -314,7 +324,7 @@ modi:
 Se il LIFESPAN dei pacchetti, contenenti i dati del topic,
 viene impostato con valori molto piccoli, si verificheranno problemi di comunicazione
 tra DataWriter e DataReader, dato che non sará possbile effettuare la lettura di 
-certi pacchetti inviati. Impostando il valore RELIABLE tra le policy QoS di
+certi pacchetti inviati. Impostando il valore RELIABLE tra le policy QoS con
 RELIABILITY é possibile mitigare 
 solo parzialmente questa vulnerabilitá
 \cite{DBLP:conf/malware/MichaudDL18}.
@@ -323,12 +333,12 @@ solo parzialmente questa vulnerabilitá
 
 
 \subsection{Dettagli attacco}
-Avendo sotto controllo i parametri LIFESPAN e RELIABLE, l'attaccante può modificare le
+Avendo sotto controllo i parametri LIFESPAN e RELIABLE, l'attaccante modificherá le
 policy dei DataWriter in modo tale da avere il LIFESPAN molto piccolo. Così
 facendo, i pacchetti spediti dal publisher arriveranno già scaduti al DataReader,
 rendendoli inutilizzabili. In certi casi il pacchetto che deve essere inviato
 viene distrutto dallo stesso DataWriter all'interno della sua coda prima dell'invio. 
-In questo questa vulnerabilità è stato verificata impostando il valore di
+Questa vulnerabilità è stato verificata impostando il valore di
 LIFESPAN < 80ms dove si è visto che nessun pacchetto raggiunge il DataReader.
 Se si aumenta il valore tra gli 80ms e i 100ms già si può notare che dei pacchetti
 vengono letti con successo dal DataReader, mentre altri vengono eliminati prima
@@ -336,8 +346,8 @@ della lettura. Infine impostando un valore LIFESPAN >= 120ms si può notare che
 la comunicazione tra publisher e subscriber avviene senza nessun problema.
 
 Un dettaglio da aggiungere è che se si imposta la policy
-dell'affidabilità (RELIABILITY) con valore RELIABLE, i millisecondi utilizzati
-dal LIFESPAN per compromettere le comunicazioni tra DataReader e DataWriter
+dell'affidabilità (RELIABILITY) con valore RELIABLE, i millisecondi necessari
+del LIFESPAN per compromettere le comunicazioni tra DataReader e DataWriter
 devono essere moltiplicati per un fattore di 0.01. Quindi, ad esempio se si
 ottiene un completo annullamento delle comunicazioni con un LIFESPAN < 80ms
 utilizzando il la RELIABILITY di tipo BEST-EFFORT, per ottenere lo stesso
@@ -346,14 +356,16 @@ LIFESPAN < 0.8ms
 \cite{DBLP:conf/malware/MichaudDL18}.
 
 \subsection{Conclusioni}
-Questo test è stato dimostrato con RTI Shapes Demo che 
+Anche questo test è stato dimostrato con RTI Shapes Demo che 
 implementa una
 soluzione DDS di RTI corrispondente alle specifiche dello standard OMG.
 Inizialmente molte reti DDS hanno impostato la RELIABILITY
-di tipo BEST-EFFORT che è l'impostazione predefinita. Quindi nella maggior parte
+di tipo BEST-EFFORT che è l'impostazione predefinita,
+in modo tale da rendere possibili comunicazioni di tipo realtime.
+Quindi nella maggior parte
 dei casi l'attaccante non si deve preoccupare di modificare questo parametro.
 
-Una possibile soluzione sarebbe quella di impostare qualche tipo di controllo
+Una possibile soluzione cosniste nell'implementare qualche tipo di controllo
 in modo tale da avvertire un operatore umano se molti pacchetti vengono
 scartati perché arrivati con un LIFESPAN scaduto. Questo controllo potrebbe
 essere anche utile, nel caso in cui il DataWriter e il DataReader si trovassero
@@ -386,17 +398,17 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
             \hline
             \tabularCenterstack{c}{Discovery \\ devices \cite{White2017AnII}} &
             \tabularCenterstack{c}{Verbose nature \\ of RTPS} &
-            \tabularCenterstack{c}{DDSI-RTPS} &
+            \tabularCenterstack{c}{RTPS-SDPD} &
             \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
             \tabularCenterstack{c}{Sniffer \\ python} &
-            \tabularCenterstack{c}{WireGuard} \\
+            \tabularCenterstack{c}{DDS security/ \\ WireGuard} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             \tabularCenterstack{c}{DDos \cite{White2017AnII}} &
             \tabularCenterstack{c}{Heartbeat \\ sequence number} &
-            \tabularCenterstack{c}{DDSI-RTPS} &
+            \tabularCenterstack{c}{RTPS} &
             \tabularCenterstack{c}{DataReader} &
             \tabularCenterstack{c}{Sniffer \\ python} &
-            \tabularCenterstack{c}{-} \\
+            \tabularCenterstack{c}{DDS security: \\ Auth Control} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             \tabularCenterstack{c}{DDoS \cite{DBLP:conf/asiaccs/WangLG24}} &
             \tabularCenterstack{c}{Authentication \\ challenge} &
@@ -406,18 +418,18 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
             \tabularCenterstack{c}{Scadenza richieste \\ di autenticazione} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             \tabularCenterstack{c}{QoS policy \cite{DBLP:conf/malware/MichaudDL18}} &
-            \tabularCenterstack{c}{ownership-strength} &
-            \tabularCenterstack{c}{DDSI-RTPS} &
+            \tabularCenterstack{c}{Policy: \\ Ownership} &
+            \tabularCenterstack{c}{RTPS} &
             \tabularCenterstack{c}{DataReader} &
             \tabularCenterstack{c}{RTI \\ shapes} &
             \tabularCenterstack{c}{DDS security: \\ Access Control} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             \tabularCenterstack{c}{QoS policy \cite{DBLP:conf/malware/MichaudDL18}} &
-            \tabularCenterstack{c}{LIFESPAN} &
-            \tabularCenterstack{c}{DDSI-RTPS} &
+            \tabularCenterstack{c}{Policy: \\ Lifespan} &
+            \tabularCenterstack{c}{RTPS} &
             \tabularCenterstack{c}{DataReader} &
             \tabularCenterstack{c}{RTI \\ shapes} &
-            \tabularCenterstack{c}{Controllo per \\ LIFESPAN scartati} \\
+            \tabularCenterstack{c}{Controllo per \\ Lifespan scartati} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             
             % Aggiungere altre linee
@@ -425,7 +437,7 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
             \hline
         \end{tabular}
         }
-        \caption{La versione DDS in tutti i casi è la 1.4}
+        \caption{Riassunto delle vulnerabilità del DDS analizzate.}
     \end{table}
 
 
