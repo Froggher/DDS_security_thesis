@@ -40,10 +40,13 @@ Devo parlare meglio dei protocolli RTPS
 % }
 
 # TODO
-dds security , versioni DDS vecchie, vari vendors.
+vari vendors.
+wireshark
+Introduzione a shapes rti
 
 # Soluzioni (dopo)
 wireguard
+
 ## Facoltativi
 Aggiungere differenza tra CORBA e DDS,  
 Aggiungeere altro attacco DDS security che si basa su i permessi

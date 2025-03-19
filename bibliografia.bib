@@ -268,12 +268,12 @@ note = "[Online; accessed 2025-02-05]"
 
 
 @misc{essay93639,
-            year = {2022},
-          author = {J.J. {Rengers}},
-           month = {November},
-           title = {DDS in a Zero Trust Cloud Native Environment in the Naval Domain},
-        abstract = {The Data Distribution Service (DDS) is a middleware service that implements a publish-subscribe pattern. A novel approach in naval domain is the transition towards a cloud-native environment to build scalable, resilient, and flexible systems. Another requirement for ICS systems that is becoming more important is security. The problem however is that the DDS was not designed with security and flexibility in mind. This research investigates how the DDS can be deployed securely on a zero-trust network using cloud-native technologies. Two solutions are proposed. Solution one is based on the DDS Security standard that implements security on the application layer. Solution 2 is based on node-to-node encrypted tunnels, implementing security on the transport layer. Both designs were proposed based on the initial requirements and an analysis on the threats that a cloud-native DDS implementation can face on a zero-trust network. To analyse the performance of both solutions, the round-trip time and throughput were measured under different situations. The experiments show that there is no significant difference in the performance of both solutions. This leads to the conclusion that solution 1 should be favourable because it is aware of the DDS entities and can therefore offer more granular security.},
-             url = {http://essay.utwente.nl/93639/}
+  year = {2022},
+  author = {J.J. {Rengers}},
+  month = {November},
+  title = {DDS in a Zero Trust Cloud Native Environment in the Naval Domain},
+  abstract = {The Data Distribution Service (DDS) is a middleware service that implements a publish-subscribe pattern. A novel approach in naval domain is the transition towards a cloud-native environment to build scalable, resilient, and flexible systems. Another requirement for ICS systems that is becoming more important is security. The problem however is that the DDS was not designed with security and flexibility in mind. This research investigates how the DDS can be deployed securely on a zero-trust network using cloud-native technologies. Two solutions are proposed. Solution one is based on the DDS Security standard that implements security on the application layer. Solution 2 is based on node-to-node encrypted tunnels, implementing security on the transport layer. Both designs were proposed based on the initial requirements and an analysis on the threats that a cloud-native DDS implementation can face on a zero-trust network. To analyse the performance of both solutions, the round-trip time and throughput were measured under different situations. The experiments show that there is no significant difference in the performance of both solutions. This leads to the conclusion that solution 1 should be favourable because it is aware of the DDS entities and can therefore offer more granular security.},
+  url = {http://essay.utwente.nl/93639/}
 }
 
 @misc{ddsrtps,
@@ -294,4 +294,36 @@ note = "[Online; accessed 2025-02-05]"
 	month = feb,
 	note = {[Online; accessed 12. Feb. 2025]},
 	url = {https://www.eprosima.com/developer-resources/whitepapers/rtps}
+}
+
+@article{8371326,
+  author={Liang, Hongliang and Pei, Xiaoxiao and Jia, Xiaodong and Shen, Wuwei and Zhang, Jian},
+  journal={IEEE Transactions on Reliability}, 
+  title={Fuzzing: State of the Art}, 
+  year={2018},
+  volume={67},
+  number={3},
+  pages={1199-1218},
+  abstract={As one of the most popular software testing techniques, fuzzing can find a variety of weaknesses in a program, such as software bugs and vulnerabilities, by generating numerous test inputs. Due to its effectiveness, fuzzing is regarded as a valuable bug hunting method. In this paper, we present an overview of fuzzing that concentrates on its general process, as well as classifications, followed by detailed discussion of the key obstacles and some state-of-the-art technologies which aim to overcome or mitigate these obstacles. We further investigate and classify several widely used fuzzing tools. Our primary goal is to equip the stakeholder with a better understanding of fuzzing and the potential solutions for improving fuzzing methods in the spectrum of software testing and security. To inspire future research, we also predict some future directions with regard to fuzzing.},
+  keywords={Fuzzing;Computer bugs;Software testing;Security;Fuzzing;reliability;security;software testing;survey},
+  doi={10.1109/TR.2018.2834476},
+  ISSN={1558-1721},
+  month={Sep.},}
+
+@inproceedings{10.1145/3691620.3695073,
+  author = {Ryu, Dohyun and Kim, Giyeol and Lee, Daeun and Kim, Seongjin and Bae, Seungjin and Rhee, Junghwan and Kim, Taegyu},
+  title = {Differential Fuzzing for Data Distribution Service Programs with Dynamic Configuration},
+  year = {2024},
+  isbn = {9798400712487},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3691620.3695073},
+  doi = {10.1145/3691620.3695073},
+  abstract = {Data Distribution Service (DDS) is a distributed network protocol widely used in cyber-physical systems. DDS provides flexible configurations defined in the formal design specification for safety and security. However, DDS programs suffer from both semantic bugs violating design specifications and software implementation bugs. To discover bugs, network protocol fuzzers have focused on testing client-server models by mutating input packets. However, they are unsuitable for fuzzing DDS programs due to a lack of consideration of the DDS-specific features, such as the DDS-specific input spaces (e.g., dynamic network topology formation and QoS and DDS security configurations) and impacts of DDS-specific semantic bugs (e.g., incorrect topology construction).In this paper, we propose DDSFuzz, a fuzzing framework effective for DDS programs by leveraging the DDS-specific features. Specifically, we develop a DDS dynamic network configuration input generator integrated with a customized state-of-the-art packet input mutator. This configuration input generator produces inputs while considering DDS-specific input spaces, DDS topologies, and parameter configurations and dependencies. This scheme enables DDSFuzz to test code that can be executable in certain DDS network configurations. Furthermore, our differential-fuzzing-based bug detector uncovers DDS-specific semantic bugs, built upon DDS-specific APIs and listeners. We evaluate DDSFuzz with three major DDS programs: Fast DDS, Cyclone DDS, and OpenDDS. As a result, DDSFuzz found 20 bugs, and seven CVEs have been assigned. Furthermore, DDSFuzz shows an average of 6.44 times higher code coverage than that of existing fuzzers showing the effectiveness of DDS bug detection.},
+  booktitle = {Proceedings of the 39th IEEE/ACM International Conference on Automated Software Engineering},
+  pages = {807–818},
+  numpages = {12},
+  keywords = {differential fuzzing, data distribution service, cyber-physical systems},
+  location = {Sacramento, CA, USA},
+  series = {ASE '24}
 }
