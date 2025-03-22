@@ -648,3 +648,65 @@ soluzioni open source, ma in molti casi quest'ultime hanno degli svantaggi,
 come la mancanza di tool specifici per analizzare i vari messaggi 
 scambiati tra le varie entità della rete \cite{DDSimplementationRTI}.
 
+
+
+% Definizione di un colore personalizzato
+\definecolor{customgray}{rgb}{0.70, 0.70, 0.70} % Grigio chiaro
+
+% Regolazione dello spessore delle linee
+\setlength{\arrayrulewidth}{1.0pt} % Spessore linee generali
+\renewcommand{\arraystretch}{1.2} % Altezza righe
+
+
+\begin{table}[H]
+    \centering
+    \rowcolors{2}{black!5}{white}
+    \resizebox{\linewidth}{!}{%
+        \begin{tabular}{|c|c|c|c|c|c|}
+            \hline
+            \rowcolor{customgray}
+            \multicolumn{1}{|>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Implementazione}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Sviluppatore}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Tipo di licenza}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Linguaggi} \\ \textbf{supportati}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Anno} \\ \textbf{creazione}}} \\
+            \hline
+            \tabularCenterstack{c}{Fast DDS \cite{FastDDS}} &
+            \tabularCenterstack{c}{eProsima} &
+            \tabularCenterstack{c}{Apache License 2.0} &
+            \tabularCenterstack{c}{C++,\\ Python} &
+            \tabularCenterstack{c}{2014} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            \tabularCenterstack{c}{Connext DDS \cite{DDSconnext}} &
+            \tabularCenterstack{c}{Real-Time \\ Innovations} &
+            \tabularCenterstack{c}{Closed source} &
+            \tabularCenterstack{c}{C, C\#, C++, \\Python, Java} &
+            \tabularCenterstack{c}{2005} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            \tabularCenterstack{c}{OpenDDS \cite{OpenDDS1}} &
+            \tabularCenterstack{c}{Object Computing} &
+            \tabularCenterstack{c}{Open source \\ (custom)} &
+            \tabularCenterstack{c}{C++, Java} &
+            \tabularCenterstack{c}{2005} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            \tabularCenterstack{c}{Cyclone DDS \cite{CycloneDDS}} &
+            \tabularCenterstack{c}{Eclipse Foundation} &
+            \tabularCenterstack{c}{Open source \\ (custom)} &
+            \tabularCenterstack{c}{C, C++, \\ Python} &
+            \tabularCenterstack{c}{2011} \\
+            \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            \tabularCenterstack{c}{CoreDX \cite{CoreDX}} &
+            \tabularCenterstack{c}{Twin Oaks \\ Computing} &
+            \tabularCenterstack{c}{Closed source} &
+            \tabularCenterstack{c}{C, C\#, C++, \\ Java} &
+            \tabularCenterstack{c}{2009} \\
+            % \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
+            
+            % Aggiungere altre linee
+
+            \hline
+        \end{tabular}
+        }
+        \caption{Esempi di implementazioni DDS.}
+    \end{table}
+
