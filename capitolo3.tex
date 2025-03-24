@@ -25,7 +25,7 @@ possibili all'interno di un software.
 Inizialmente i primi tool di fuzzing non erano molto 
 semplici da utilizzare o conosciuti, ma con il tempo questi strumenti
 sono migliorati rendendoli più user-friendly aumentando così la 
-loro frequenza di uso per testare softwares. I software che possono 
+loro frequenza di uso per testare software. Quest'ultimi possono
 essere sottoposti a questo tipo di test possono essere 
 di ogni tipo: compilatori, applicazioni, protocolli network 
 e kernel \cite{8371326}.
@@ -42,16 +42,16 @@ che si vuole testare input regolari e irregolari,
 in modo tale da poter 
 accedere ad ogni parte del codice con ogni tipo di input possibile.
 In questo modo è possibile analizzare il comportamento del software
-ed è possbile distinguere casi anomali o insicuri che non dovrebberò
+ed è possibile distinguere casi anomali o insicuri che non dovrebbero
 essere possibili. Infatti quando questo test è attivo il fuzzer riceverà
 varie informazioni riguardanti lo stato e l'output del programma, in 
-modo tale da poter distiguere il suo comportamento. Se viene scoperto
+modo tale da poter distinguere il suo comportamento. Se viene scoperto
 qualche comportamento anomalo (ad esempio un segmentation fault) il 
 fuzzer segnalerà in un log gli input utilizzati in modo tale da poter 
 segnalare il bug.
 
 Tuttavia dato che questi test sono generalizzati per essere compatibili
-con vari software, si creà una sorta di imprecisione nel mandare i vari 
+con vari software, si crea una sorta di imprecisione nel mandare i vari 
 input. Questi input a volte non sono variegati a sufficienza 
 per analizzare ogni singola parte del software che stiamo analizzando.
 Inoltre in molti casi può anche succedere che vengono creati
@@ -66,7 +66,7 @@ più generico.
 DDSFuzz essendo specializzato per il DDS prende in considerazione 
 molte sue caratteristiche che non sono presenti in altri software
 o protocolli. La prima considerazione che viene 
-effettuata da DDSFuzz che avviene durante l'esecuzione del middleware DDS é
+effettuata da DDSFuzz che avviene durante l'esecuzione del middleware DDS è
 la topologia della rete che può mutare nel tempo creando problemi per i
 fuzzer tradizionali che non si adattano ai suoi cambiamenti. Infatti certi
 dispositivi si possono connettere o disconnettere dalla rete a loro 
@@ -84,21 +84,21 @@ Finita l'esecuzione di DDSFuzz ci ritroviamo con due tipologie
 di bug che possiamo riscontrare in un applicativo DDS:
 \begin{itemize}
     \item BUG TRADIZIONALI: racchiude tutti i classici bug 
-    che sono presenti anche in altri software, un esempio puó 
+    che sono presenti anche in altri software, un esempio può 
     essere un buffer overflow;
     \item BUG SEMANTICI: questo bug avviene quando viene violata
     una norma definita dallo standard DDS, come 
     ad esempio un bypass dell'autenticazione. 
     Dato che il loro comportamento
-    non é facilmente categorizzabile risulta piú difficile individuarli;
+    non è facilmente categorizzabile risulta più difficile individuarli;
 \end{itemize}
 Uno dei maggiori punti di forza di DDSFuzz sta proprio nel trovare
 questi bug semantici, quasi impossibili da identificare per gli altri 
 fuzzer. Durante l'esecuzione di DDSFuzz vengono eseguite in parallelo 
 tre implementazioni (Fast DDS \cite{FastDDS}, Cyclone DDS \cite{CycloneDDS}, 
 OpenDDS \cite{OpenDDS1}) vendor 
-del DDS in modo tale da indentificare
-se i risulatati dei test input rimangono consistenti tra di loro in 
+del DDS in modo tale da identificare
+se i risultati dei test input rimangono consistenti tra di loro in 
 ognuna delle esecuzioni. 
 Se otteniamo una soluzione differente in una sola 
 delle implementazioni utilizzate possiamo dire che quest'ultima ha un 
@@ -106,10 +106,10 @@ comportamento anomalo generato da un bug di tipo semantico
 \cite{10.1145/3691620.3695073}. 
 
 \subsection{Composizione di DDSFuzz}
-DDSFuzz é composto da tre elementi principali chiamati: 
+DDSFuzz è composto da tre elementi principali chiamati: 
 DDS input generator, DDS program executor e bug detector.
 \begin{itemize}
-    \item DDS INPUT GENERATOR: Si cccupa di generare degli input 
+    \item DDS INPUT GENERATOR: Si occupa di generare degli input 
     specifici per il DDS prendendo in considerazione la topologia
     della rete, delle policy QoS e dei parametri di sicurezza del 
     DDS security. In questo modo non vengono generati test inutili 
@@ -119,9 +119,9 @@ DDS input generator, DDS program executor e bug detector.
     protocollo RTPS in modo tale che il DDS program executor utilizzare 
     immediatamente questi input generati;
     \item DDS PROGRAM EXECUTOR: ricevuti gli input generati 
-    li invierá alle
-    tre implementazioni del DDS, mandando feedbacks al DDS input generator
-    sulla validitá e efficacia dei test generati;
+    li invierà alle
+    tre implementazioni del DDS, mandando feedback  al DDS input generator
+    sulla validità e efficacia dei test generati;
     \item BUG DETECTOR: a differenza di altri bug detector provenienti da 
     fuzzer tool generici, quest'ultimo riesce a distinguere tra bug 
     di tipo tradizionale e bug semantici, grazie all'analisi

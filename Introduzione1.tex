@@ -11,10 +11,10 @@ DDS security che si occupa di rendere più sicuro lo standard DDS
 aggiungendo l'autenticazione e una 
 implementazione della cifratura dei pacchetti scambiati tra i vari
 dispositivi connessi nella rete. 
-Infine verra mostrato in quali contesti attuali il DDS viene
+Infine verrà mostrato in quali contesti attuali il DDS viene
 utilizzato con le sue diverse implementazioni.
 
-In questa tesi potrebbe venire omessa la specifica OMG perchè 
+In questa tesi potrebbe venire omessa la specifica OMG perché 
 faremo riferimento
 esclusivamente al DDS conforme all'Object Management Group. Questo 
 standard ha delle specifiche tecniche ben precise, consentendo
@@ -23,7 +23,7 @@ a tanti altri numerosi vantaggi \cite{dds1.4}.
 
 
 \section{Modello publish/subscribe}
-Prima di parlare del DDS, é necessario capire il 
+Prima di parlare del DDS, è necessario capire il 
 funzionamento del modello Publish-Subscribe 
 che sta alla base del suo funzionamento.
 Questo modello di publish e subscribe non funziona come la 
@@ -34,14 +34,14 @@ client tramite protocollo TCP/IP nell'ambito delle comunicazioni.
 \subsection{Perché non usiamo una connessione con TCP/IP}
 Prendiamo l'esempio di un collegamento tra una workstation e 
 un sensore per la temperatura. La connessione a livello fisico
-avverrá tramite un collegamento Ethernet. La workstation e il 
+avverrà tramite un collegamento Ethernet. La workstation e il 
 sensore quindi si trovano nello stesso network e possono 
-ora cominciare a comunicare tra di loro. L'obiettivo é quello
+ora cominciare a comunicare tra di loro. L'obiettivo è quello
 di trasferire i dati dal sensore alla workstation in modo tale
 da poterli visualizzare a schermo.
-La metodologia piú frequente é quella di utilizzare un socket tramite 
-protocollo TCP/IP, ma non sempre questa é la soluzione migliore.
-Alcuni vantaggi del TCP/IP sono la disponibilitá di utilizzo 
+La metodologia più frequente è quella di utilizzare un socket tramite 
+protocollo TCP/IP, ma non sempre questa è la soluzione migliore.
+Alcuni vantaggi del TCP/IP sono la disponibilità di utilizzo 
 in molte applicazioni e nella maggior parte 
 delle connessioni a Internet.
 Tuttavia, in certe implementazioni, TCP/IP non risulta la soluzione migliore,
@@ -50,8 +50,8 @@ network che può variare nel tempo. Se nel nostro network tra workstation e
 sensore della temperatura, aggiungiamo un altro dispositivo, come un 
 sensore per la temperatura, bisognerebbe creare un nuovo socket 
 TCP/IP per far comunicare il nuovo sensore con la workstation.
-Questo é necessario perchè TCP/IP supportá una comunicazione di tipo 
-one-to-one (uno a uno). Come vedremó nella prossima sottosezione,
+Questo è necessario perché TCP/IP supporta una comunicazione di tipo 
+one-to-one (uno a uno). Come vedremo nella prossima sottosezione,
 il modello publish/subscribe non ha questa limitazione \cite{1494965}.
 
 \subsection{Struttura modello publish/subscribe}
@@ -62,31 +62,31 @@ che permettono lo scambio di messaggi all'interno del network.
 La comunicazione avviene 
 quando hanno un topic, che
 rappresenta una tipologia di dati (ad esempio temperatura, 
-distanza, velocitá, etc...)é in comune tra di loro.
+distanza, velocità, etc...)è in comune tra di loro.
 \begin{itemize}
     \item Publisher: colui che pubblica nuovi dati riguardanti dei
     topic rendendoli accessibili ai subscriber iscritti. 
     Di solito si tratta di un sensore.
     \item Subscriber: è colui che si iscrive ai topic del publisher, 
     cominciando
-    cosí a ricevere nuovi dati sul topic scelto. Spesso si tratta
+    così a ricevere nuovi dati sul topic scelto. Spesso si tratta
     di un dispositivo utilizzato per visualizzare informazioni, come uno
     schermo.
 \end{itemize}
 Chiamiamo entità tutti i dispositivi che fanno parte del modello 
 publish/subscribe.
-Una caratteristica di queste entitá é che possono essere aggiunte o rimosse
+Una caratteristica di queste entità è che possono essere aggiunte o rimosse
 da una rete senza nessun problema, dato che le 
-comunicazioni avvengono in modalitá asincrona \cite{dds1.4}. 
+comunicazioni avvengono in modalità asincrona \cite{dds1.4}. 
 
 Inoltre questo modello risulta molto
 flessibile e adatto in ambienti real-time dove le informazioni
-possono cambiare o essere utilizzate da piú dispostivi.
+possono cambiare o essere utilizzate da più dispositivi.
 I subscriber, ad esempio possono cambiare i topic a cui 
 sono iscritti e i publisher possono smettere di pubblicare nuovi
 aggiornamenti su un determinato topic anche a runtime \cite{OH2010318}.
 
-\section{Che cos'é il Data Distribution Service}
+\section{Che cos'è il Data Distribution Service}
 
 Il DDS gestito da OMG è un middleware e uno standard API con una gestione
 dei dati di tipo data-centric. 
@@ -96,16 +96,16 @@ middleware è un software che si trova tra l'applicativo e il livello
 del sistema operativo.
 % fare disegno layers osi
 Il DDS si basa sul DCPS (Data-Centric Publish-Subscribe) 
-che é un modello di comunicazione simile a quello
+che è un modello di comunicazione simile a quello
 di tipo publish/subscribe, ma con un approccio più data-centric, in modo
 tale da semplificare il lavoro del programmatore che si deve solamente
 occupare di specificare il contesto del dato che deve mandare o ricevere.
 Con data-centric infatti, specifichiamo che il focus del modello DCPS 
 è incentrato 
-sui dati stessi, anzichè sulle entitá che li scambiano \cite{whatisdds}.
+sui dati stessi, anziché sulle entità che li scambiano \cite{whatisdds}.
 Così facendo non bisogna preoccuparsi dell'invio o della ricezione
-dei messaggi, perchè questa parte viene completamente gestita dal middleware.
-% Il DDS é stato il primo standard
+dei messaggi, perché questa parte viene completamente gestita dal middleware.
+% Il DDS è stato il primo standard
 % a formalizzare le comunicazioni di tipo data-centric. Inizialmente erano 
 % disponibili solamente soluzioni proprietarie senza specificare un standard
 % univoco. Non avendo avuto uno standard univoco le varie implementazioni dei vendors
@@ -114,7 +114,7 @@ dei messaggi, perchè questa parte viene completamente gestita dal middleware.
 
 % Magari fare la differenza tra data centri e message centric
 
-Altri vantaggi del DDS includono una architettura adattabile che supportá
+Altri vantaggi del DDS includono una architettura adattabile che supporta
 degli elementi di auto-scoperta (auto-discovery) o Dynamic Discovery 
 in modo tale da aggiungere o 
 rimuovere dispositivi dalla rete in modo automatico, anche a runtime.
@@ -123,7 +123,7 @@ ha bisogno questo nuovo dispositivo.
 
 Inoltre ogni nuovo partecipante 
 utilizzerà sempre le stesse API per comunicare con l'applicativo dato che 
-non c'é bisogno di configurare le impostazioni degli indirizzi IP o 
+non c'è bisogno di configurare le impostazioni degli indirizzi IP o 
 preoccuparsi delle diverse architetture \cite{1494965}.
  
  
@@ -137,7 +137,7 @@ all'interno del middleware. Queste policy QoS possono variare
 significativamente in base al tipo di comunicazione richiesta, 
 offrendo una gestione altamente flessibile e granulare. 
 Ogni elemento del middleware può essere configurato 
-con policy specifiche, in modo tale da addattarsi alle 
+con policy specifiche, in modo tale da adattarsi alle 
 esigenze dell'applicazione.
 
 \subsection{Global Space Data}
@@ -145,11 +145,11 @@ Il DDS utilizza il Global Data
 Space (spazio dati globale), un'area logica condivisa 
 che consente agli applicativi
 di accedere a una sorta di memoria locale tramite API.
-L'applicativo nella scrittura o nella ricezione dei dati utilizzerá 
+L'applicativo nella scrittura o nella ricezione dei dati utilizzerà 
 questa memoria locale fittizia come un'unica risorsa centralizzata.
 Tuttavia, i dati all'interno di questa memoria possono contenere
 informazioni provenienti da nodi remoti distribuiti per la rete. 
-L'applicativo non deve cosi preoccuparsi dell'accessibilitá dei dati,
+L'applicativo non deve cosi preoccuparsi dell'accessibilità dei dati,
 poiché questi vengono gestiti come se si trovassero tutti in unico punto 
 \cite{whatisdds}.
 
@@ -159,20 +159,20 @@ Lo standard DDS definito dall'OMG è composto da due layer:
 il DDS e il
 DDSI (DDS Interoperability).
     \begin{itemize}
-        \item DDS: é il layer fondamentale in cui troviamo il DCPS
+        \item DDS: è il layer fondamentale in cui troviamo il DCPS
         (Data-Centric Publish-Subscribe),
         il modello di comunicazione simile a quello di tipo publish/subscribe,
-        che si occupa di mettere in comuncazione piú applicazioni 
+        che si occupa di mettere in comunicazione più applicazioni 
         tra di loro. In questo layer vengono inoltre 
         definite le policy QoS \cite{Michaud2017Apr}.
-        \item DDSI: é il layer che si occupa di garantire l'interoperabilità
+        \item DDSI: è il layer che si occupa di garantire l'interoperabilità
         tra le diverse implementazioni del DDS, ad
         esempio quando provengono da vendors diversi.
         All'interno di questo layer troviamo l'RTPS 
         (Real-Time Publish-Subscribe Protocol), un protocollo che permette ai 
         vari dispositivi DDS di comunicare e scoprirsi tra di loro
         (Dynamic Discovery).
-        RTPS é il wire-protocol (un protocollo che permette lo scambio di 
+        RTPS è il wire-protocol (un protocollo che permette lo scambio di 
         messaggi del DDS al layer di trasporto di rete 
         del modello ISO OSI) ufficiale del DDS, 
         con standard definito da OMG,
@@ -201,31 +201,31 @@ DDSI (DDS Interoperability).
 
 % https://www.dds-foundation.org/what-is-dds-3/
 
-\section{Le entitá del DCPS}
-Il layer DDS per operare utilizza le entitá definite dal DCPS, 
+\section{Le entità del DCPS}
+Il layer DDS per operare utilizza le entità definite dal DCPS, 
 che rappresentano gli elementi necessari
 per il funzionamento dell'intero middleware. Queste hanno il compito di 
 gestire i dati
 scambiati tra i vari partecipanti all'interno del sistema. 
-Le entitá principali del DDS sono: 
+Le entità principali del DDS sono: 
 il publisher, il subscriber, il DataWriter, il DataReader, il Topic,
 la Istanza, il Domain e il Domain Participant.
 Ognuna di queste entità deve tener conto del suo set di policy 
 QoS configurate
 che ne definiscono il comportamento. Queste policy verranno analizzate 
-piú nel dettaglio nella sezione~\ref{Le policy QoS nel dettaglio}.
-% Aggiungere riferimentio
+più nel dettaglio nella sezione~\ref{Le policy QoS nel dettaglio}.
+% Aggiungere riferimento
 
-Il linguaggio utilizzato da queste entitá si chiama Interface 
+Il linguaggio utilizzato da queste entità si chiama Interface 
 Definition Language (IDL) e anch'esso è standardizzato da OMG. 
 IDL è un linguaggio tipizzato 
-simile a C++ che supportá data types come char, int, double, float etc
+simile a C++ che supporta data types come char, int, double, float etc
 \cite{1494965} \dots
 
 
 \subsection{Publisher e Subscriber}
-Publisher e subscriber sono entità che abbiamo giá incontrato
-in precedenza nel modello publish/subscribe. Queste due entitá 
+Publisher e subscriber sono entità che abbiamo già incontrato
+in precedenza nel modello publish/subscribe. Queste due entità 
 mantengono lo stesso ruolo all'interno del modello DCPS.
 
 \subsection{DataWriter e DataReader}
@@ -236,37 +236,37 @@ mentre il subscriber si interfaccia tramite un DataReader.
 Il DataWriter e il DataReader sono interfacce, 
 perché l'applicativo
 può mandare e ricevere dati
-tramite queste due entitá fondamentali. 
+tramite queste due entità fondamentali. 
 Questi dati scambiati tra middleware e applicativo
 sono i data type e i data-values. I data type consentono di 
 descrivere la struttura e il formato del dato, mentre i data-value
 sono i dati veri e propri che rispettano le specifiche data type.
 \begin{itemize}
-    \item DataWriter: é l'interfaccia usata dagli applicativi 
+    \item DataWriter: è l'interfaccia usata dagli applicativi 
     per spedire i
     data-values con un loro specifico data type ai publisher.
-    Ricevuti questi data-values il publisher spedirá le
+    Ricevuti questi data-values il publisher spedirà le
     informazioni ricevute dall'applicativo ai relativi subscriber.
-    \item DataReader: é l'interfaccia usata dagli applicativi per
+    \item DataReader: è l'interfaccia usata dagli applicativi per
     ricevere i data-values con i rispettivi data type pubblicati in
     precedenza da un publisher \cite{dds1.4}.
 \end{itemize}
-É possibile
-associare piú DataReaders ad un unico publisher e piú DataWriters ad
+È possibile
+associare più DataReaders ad un unico publisher e più DataWriters ad
 un unico subscriber. Tuttavia, un DataWriter può essere associato solo ad un 
 Publisher e un DataReader solo ad un Subscriber. 
-Questo avviene perchè
+Questo avviene perché
 i DataReaders e DataWriters possono utilizzare un solo data type alla volta, 
 mentre 
 i publisher e i subscribers, non avendo questa limitazione, possono gestire 
-piú DataWriters e DataReaders alla volta.
+più DataWriters e DataReaders alla volta.
 
 % Inserire immagine
 
 \subsection{Topic}
 % Specificare dove sono stati introdotti
-Nel modello publish/subscribe abbiamo giá introdotto i topic, ma 
-abbiamo la necessitá di approfondirli quando vengono utilizzati
+Nel modello publish/subscribe abbiamo già introdotto i topic, ma 
+abbiamo la necessità di approfondirli quando vengono utilizzati
 con le specifiche del DDS.
 
 I topic vengono utilizzati per identificare il data type
@@ -280,8 +280,8 @@ che serve per identificarlo
 tra gli altri topic del domain.
 
 
-\subsection{Key e Instanza}
-Uno o piú data types di un topic possono diventare la chiave (key) del topic. 
+\subsection{Key e Istanza}
+Uno o più data types di un topic possono diventare la chiave (key) del topic. 
 Queste chiavi ci permettono di suddividere
 i data-values di un topic, dividendoli a seconda della chiave.
 Ogni suddivisione che effettuiamo tramite una key diversa crea 
@@ -308,7 +308,7 @@ struct Veicolo { // Nome del topic
 \vspace{5mm}
 
 Creiamo ora due istanze, una con valore 270 per la velocità e con 
-l'id-macchina uguale a 1 e l'altra con un valore di 220 per la velocita e 
+l'id-macchina uguale a 1 e l'altra con un valore di 220 per la velocità e 
 con id-macchina 
 uguale a 2. L'id-macchina fungerà da key 
 del topic per distinguere la provenienza dei dati; in questo
@@ -318,43 +318,43 @@ modo possiamo così controllare le due macchine con due istanze ciascuna.
 
 
 \subsection{Domain}
-L'entitá del domain (dominio) rappresenta uno spazio logico definito che
+L'entità del domain (dominio) rappresenta uno spazio logico definito che
 ha lo scopo di mettere in comunicazione i vari applicativi tra di loro.
 All'interno possiamo trovare i vari topic che collegano gli applicativi
 con i loro rispettivi data-types.
-L'entitá domain é caratterizzata dalle seguenti proprietá:
+L'entità domain è caratterizzata dalle seguenti proprietà:
 \begin{itemize}
     \item Ogni domain viene identificato da un id 
     per renderlo univoco.
-    \item Ogni entitá del DDS puó appartenere
+    \item Ogni entità del DDS può appartenere
     ad un solo domain.
-    \item Le entitá all'interno del domain possono interagire
-    solamente con le altre entitá all'interno dello stesso domain
+    \item Le entità all'interno del domain possono interagire
+    solamente con le altre entità all'interno dello stesso domain
     \item Due applicativi DDS per poter comunicare tra di loro
     hanno bisogno di entrare nello stesso domain.
-    \item Un applicativo puó far parte di piú domain creando 
-    piú istanze dell'entitá DomainParticipant in ogni
+    \item Un applicativo può far parte di più domain creando 
+    più istanze dell'entità DomainParticipant in ogni
     domain in cui vuole interagire \cite{domainrti}.
 \end{itemize}
 
-% (possibilitá di aggiungere esempi con demo shapes)
+% (possibilità di aggiungere esempi con demo shapes)
 
 \subsection{DomainParticipant}
-L'entitá del DomainParticipant all'interno di un Domain del DDS,
+L'entità del DomainParticipant all'interno di un Domain del DDS,
 viene utilizzata dagli applicativi e 
-rappresenta la prima entitá creata da un'applicazione che verrá 
+rappresenta la prima entità creata da un'applicazione che verrà 
 impiegata per creare DataWriters e DataReaders. 
-Questa entitá ha il compito di inizializzare
+Questa entità ha il compito di inizializzare
 le comunicazioni con il Domain attraverso 
 il processo di discovery.
-Questo processo consente alle entitá appartenenti allo 
+Questo processo consente alle entità appartenenti allo 
 stesso domain di trovarsi e connettersi automaticamente.
 % Processo discovery non ancora introdotto
-L'entitá DomainParticipant é caratterizzata dalle seguenti proprietá:
+L'entità DomainParticipant è caratterizzata dalle seguenti proprietà:
 \begin{itemize}
-    \item Il DomainParticipant come le altre entitá, puó 
+    \item Il DomainParticipant come le altre entità, può 
     esistere solo all'interno di un dominio.
-    \item Il DomainParticipant é responsabile della scoperta di altri
+    \item Il DomainParticipant è responsabile della scoperta di altri
     DomainParticipant all'interno del domain \cite{domainparticipantrti}.
 \end{itemize}
 
@@ -362,22 +362,22 @@ L'entitá DomainParticipant é caratterizzata dalle seguenti proprietá:
 \section{Le policy QoS nel dettaglio}
 A livello logico, le specifiche del DDS
 definiscono un insieme di policy QoS
-che le entitá del DCPS devono rispettare. Qui di seguito vengono
-proposte le categorie QoS piú rilevanti.
+che le entità del DCPS devono rispettare. Qui di seguito vengono
+proposte le categorie QoS più rilevanti.
 \begin{itemize}
     \item Ownership: questo valore specifica se un topic
-    puó essere aggiornato da piú 
+    può essere aggiornato da più 
     (SHARED ownership) o da un solo (EXCLUSIVE ownership) publisher.
     Se abbiamo impostato un ownership di tipo EXCLUSIVE, per decidere il 
     publisher che ha la possibilità di aggiornare il topic, viene 
     utilizzato l'ownership STRENGTH.
-    \item Liveness: viene utilizzato per specificare se é necessaria
+    \item Liveness: viene utilizzato per specificare se è necessaria
     una comunicazione di tipo attivo, rispetto ad una di tipo 
     intermittente.
     \item Reliability: specifica se in una comunicazione tutti i dati
     trasferiti tra publisher e subscriber devono essere consegnati
     per intero, oppure
-    se é accettabile anche la perdita di alcuni dati.
+    se è accettabile anche la perdita di alcuni dati.
     \item Lifespan: specifica il tempo di scadenza dei dati pubblicati da 
     un publisher.
     \item History: specifica quanti e come i dati devono essere 
@@ -387,16 +387,16 @@ proposte le categorie QoS piú rilevanti.
     disponibili per i nuovi subscriber appena entrati nel domain.
 \end{itemize}
 Le configurazioni 
-delle policy vengono trasmesse alle varie entitá dal DomainParticipant
+delle policy vengono trasmesse alle varie entità dal DomainParticipant
 come i publisher, i subscriber, i topic, i DataWriters etc\dots
 Tuttavia, le policy di un publisher e un subscriber devono essere compatibili.
-Se cosí non fosse, la comuncazione tra i due potrebbe essere compromessa
+Se così non fosse, la comunicazione tra i due potrebbe essere compromessa
 \cite{Michaud2017Apr}.
 \label{Le policy QoS nel dettaglio}
 
 
 \section{Il protocollo RTPS}
-RTPS (Real-Time Publish-Subscribe Protocol) é il wire-protocol 
+RTPS (Real-Time Publish-Subscribe Protocol) è il wire-protocol 
 nativo utilizzato dal DDS che consente di trasferire i dati provenienti
 dal layer DDS a quello di trasporto della rete.
 Solitamente questo viene utilizzato in combinazione con il protocollo
@@ -405,28 +405,28 @@ UDP/IP, che risulta ottimale per le comunicazioni di tipo real-time. Tuttavia
 anche i protocolli connection-oriented come il TCP/IP possono essere utilizzati. 
 RTPS include molti vantaggi ideali per il DDS:
 \begin{itemize}
-    \item Connettivitá plug and play: le nuove applicazioni possono unirsi o 
+    \item Connettività plug and play: le nuove applicazioni possono unirsi o 
     lasciare il domain a proprio piacimento.
     \item Tolleranza ai guasti: non sono presenti singoli punti di 
-    guasto perchè i dati vengono distribuiti e replicati tra le varie 
-    entitá DDS che adoperano il Global Data Space.
+    guasto perché i dati vengono distribuiti e replicati tra le varie 
+    entità DDS che adoperano il Global Data Space.
     \item Type-safety: gli errori di programmazione vengono gestiti 
     in modo tale da non compromettere il funzionamento 
     dei dispositivi remoti.
 \end{itemize}
-L'RTPS é suddiviso in quattro moduli differenti: lo structure module, il 
+L'RTPS è suddiviso in quattro moduli differenti: lo structure module, il 
 messages module, behavior module e il discovery module \cite{ddsrtps}.
 
 \subsection{Structure module}
-Questo modulo si occupa di associare le entitá DDS alle corrispondenti
-entitá RTPS. Queste entitá RTPS sono utilizzate 
-per rappresentare le entitá del DDS (come DataReader e DataWriter) 
+Questo modulo si occupa di associare le entità DDS alle corrispondenti
+entità RTPS. Queste entità RTPS sono utilizzate 
+per rappresentare le entità del DDS (come DataReader e DataWriter) 
 all'interno del protocollo RTPS \cite{ddsrtps}.
 
 \subsection{Behavior module}
 Il behavior module definisce delle regole di comunicazione durante 
-una seguenza di messaggi tra
-due o piú entitá RTPS, che sono i RTPS Writers e i RTPS Readers.
+una sequenza di messaggi tra
+due o più entità RTPS, che sono i RTPS Writers e i RTPS Readers.
 Esse servono a mantenere l'interoperabilità tra le varie 
 implementazioni (anche di diversi vendors) del DDS \cite{ddsrtps}.
 
@@ -437,9 +437,9 @@ seguito da dei sottomessaggi. Nell'header troviamo informazioni relative al
 protocollo RTPS, cioè la sua versione, il nome del vendor dell'implementazione
 usata e il mittente. Nel sottomessaggi invece possiamo trovare un header
 e una serie elementi. Nell'header del sottomessaggio
-é presente l'id che ne
+è presente l'id che ne
 identifica il tipo, eventuali flag e la lunghezza in bytes 
-del sottomessaggio stesso. Le tipologie dei sottomessaggi piú importanti, 
+del sottomessaggio stesso. Le tipologie dei sottomessaggi più importanti, 
 identificate dal suo header, sono:
 \begin{itemize}
     \item DATA: in questo sottomessaggio vengono trasferiti dall'RTPS Writers
@@ -458,15 +458,15 @@ identificate dal suo header, sono:
 \subsection{Discovery module}
 Questo modulo garantisce che i nuovi partecipanti DDS (publisher e subscriber)
 riescano a identificarsi in automatico tra di loro in modo tale da inizializzare una 
-possibile comunicazione. Questo modulo é responsabile dell'auto-scoperta 
+possibile comunicazione. Questo modulo è responsabile dell'auto-scoperta 
 (Dynamic Discovery)
-delle entitá del DDS all'interno dello stesso domain. Il Dynamic Discovery
+delle entità del DDS all'interno dello stesso domain. Il Dynamic Discovery
 utilizza messaggi di tipo multicast e unicast per informare gli altri partecipanti
 di un nuovo dispositivo connesso alla rete, pronto a comunicare con il
-resto delle entitá. Il discovery module é composto da due protocolli chiamati
+resto delle entità. Il discovery module è composto da due protocolli chiamati
 Simple Participant Discovery Protocol (SPDP) e 
 Simple Endpoint Discovery Protocol (SEDP). SPDP ha il compito di scoprire nuovi 
-partecipanti, mentre l'SEPD si occupa di scambiare tra le entitá le informazioni
+partecipanti, mentre l'SEPD si occupa di scambiare tra le entità le informazioni
 di topics, DataWriter e DataReader. In particolare l'SEDP serve per collegare
 tramite topic i DataReaders ai DataWriters \cite{ddsrtps}.
 \label{Discovery module}
@@ -481,10 +481,10 @@ la lettura e la scrittura dei messaggi scambiati tra i partecipanti di un
 domain DDS. Questa estensione è composta da cinque plugin:
 \begin{itemize}
     \item Authentication Service Plugin: serve per effettuare l'autenticazione 
-    delle entitá DDS. Senza l'autenticazione le entità non possono
+    delle entità DDS. Senza l'autenticazione le entità non possono
     comunicare tra di loro.
     \item Access Control Service Plugin: ha lo scopo di imporre 
-    delle policy alle entitá DDS autenticate. Ad esempio limitare
+    delle policy alle entità DDS autenticate. Ad esempio limitare
     la pubblicazione di nuovi dati o la creazione di nuovi topic.
     \item Cryptographic Service Plugin: gestisce tutte le operazioni 
     crittografiche, come la crittografia, la decrittazione e
@@ -492,7 +492,7 @@ domain DDS. Questa estensione è composta da cinque plugin:
     dei messaggi.
     \item Logging Service Plugin: permette di effettuare un audit di 
     tutte le operazioni DDS rilevanti all'interno di un domain.
-    \item Data Tagging Service Plugin: fornisce dei metodi per implentare
+    \item Data Tagging Service Plugin: fornisce dei metodi per implementare
     un tag su tutti i dati trasferiti. 
 \end{itemize}
 Anche se il DDS security riesce a risolvere molti problemi legati alla
@@ -501,7 +501,7 @@ la sua configurazione può richiedere molto tempo per essere
 impostata, soprattutto su sistemi DDS già esistenti e sprovvisti di 
 questa estensione.
 Il partecipante più vulnerabile rappresenta la sicurezza
-complessiva dell'intero sistema, quindi ogni entitá deve essere
+complessiva dell'intero sistema, quindi ogni entità deve essere
 protetta \cite{Michaud2017Apr}. 
 
 Il DDS security può essere usato anche non utilizzando tutti i plugin;
@@ -514,11 +514,11 @@ raramente usati \cite{essay93639}.
 Senza questo modulo chiunque potrebbe entrare a far parte nel domain
 del DDS, ponendo un grave rischio alla sicurezza. Per ovviare a questa
 falla, l'Authentication Service Plugin richiede, a ogni dispositivo che 
-vuole entrare del domain DDS, la necessitá di autenticarsi.
+vuole entrare del domain DDS, la necessità di autenticarsi.
 Prima di effettuare l'autenticazione tutti i partecipanti devono 
 avere un loro certificato e le loro chiavi private, mentre 
 l'amministratore deve creare un certificato root(o Certificate Authority, CA) 
-che deve essere riconosciuto da tutte le entitá autorizzate. 
+che deve essere riconosciuto da tutte le entità autorizzate. 
 L'autenticazione tra le entità avviene in modo reciproco, 
 in modo tale che ciascun partecipante verifichi l'identità dell'altro
 tramite un controllo dei certificati.
@@ -526,13 +526,13 @@ tramite un controllo dei certificati.
 
 \subsubsection{Processo di autenticazione}
 % Quali sono le due identità
-L'autenticazione di due entitá viene effettuata
+L'autenticazione di due entità viene effettuata
 tramite il protocollo Diffie-Hellman, che consente la trasmissione 
 di chiavi in modo sicuro anche in canali di comunicazione non protetti.
 Le due entità utilizzando Diffie-Hellman otterranno una chiave 
 segreta condivisa da entrambi. Implementando questo 
-protocollo la chiave non verrá mai 
-trasmessa direttamente, evitando cosí di essere intercettata da 
+protocollo la chiave non verrà mai 
+trasmessa direttamente, evitando così di essere intercettata da 
 possibili attaccanti. 
 
 Per rafforzare ulteriormente la sicurezza e prevenire attacchi replay 
@@ -545,7 +545,7 @@ Dato che che queste challenge cambiano periodicamente,
 i vecchi messaggi intercettati dagli attaccanti non possono essere 
 più riutilizzati.
 
-La fase di autentincazione si conclude quando viene completato
+La fase di autenticazione si conclude quando viene completato
 lo scambio delle chiavi.
 Queste chiavi verranno poi utilizzate da protocolli di 
 crittazione come l'RSA (Rivest-Shamir-Adleman) per effettuare 
@@ -557,11 +557,11 @@ che questi sono criptati
 
 \subsection{Access Control Service Plugin}
 
-Questo plugin gestisce i permessi delle entitá all'interno di 
-un domain DDS. É possibile configurare questi permessi con una 
-granularitá molto fine. Dei possibili permessi possono essere:
+Questo plugin gestisce i permessi delle entità all'interno di 
+un domain DDS. È possibile configurare questi permessi con una 
+granularità molto fine. Dei possibili permessi possono essere:
 aggiornare un determinato topic da parte di 
-un DataWriter, far entrare una determinata entitá
+un DataWriter, far entrare una determinata entità
 all'interno di un domain, eliminare un topic, entrare o 
 uscire da determinati domains etc\dots
 
@@ -571,7 +571,7 @@ un CA: il governance document e il permissions document.
 Il governance document rimane uguale per tutti i dispositivi 
 all'interno del domain DDS e si occupa di gestire 
 permessi generali a livello di domain. Il permissions document,
-invece, é unico per ogni dispositivo e si occupa di gestire i 
+invece, è unico per ogni dispositivo e si occupa di gestire i 
 permessi del singolo partecipante.
 Questi vengono ricevuti dai partecipanti durante la fase di
 autenticazione e devono rimanere sempre disponibili \cite{essay93639}.
@@ -615,13 +615,13 @@ autenticazione e devono rimanere sempre disponibili \cite{essay93639}.
 Un esempio di processo di controllo permessi avviene
 quando un DataWriter richiede l'autorizzazione per creare un nuovo topic.
 Le altre entità hanno il compito di verificare se l'operazione 
-richiesta dal DataWriter viene consentitá
+richiesta dal DataWriter viene consentita
 dai files di permessi a loro disposizione. Per effettuare 
 questa operazione il partecipante, che richiede l'autorizzazione ,
 deve mandare il proprio permission document, il topic che intende creare e 
 i propri metadati. Successivamente un altro partecipante,
 che ha il compito di autorizzare il DataWriter,
-riceverá il messaggio ed effettuerá le seguenti
+riceverà il messaggio ed effettuerà le seguenti
 verifiche:
 \begin{enumerate}
     \item Verifica che la firma digitale del permesso ricevuto sia valida.
@@ -642,7 +642,7 @@ definiti da OMG infatti sono disponibili al pubblico e servono
 per mantenere una certa consistenza, portabilità e interoperabilità
 tra le varie implementazioni del DDS. Bisogna ricordare che un open 
 standard non equivale però a un software open source. Quindi lo
-sviluppo dell'applicativo é gestito dalle software house che possono 
+sviluppo dell'applicativo è gestito dalle software house che possono 
 decidere come gestire il codice sorgente. Sul mercato sono comunque presenti
 soluzioni open source, ma spesso queste presentano alcuni svantaggi,
 come la mancanza di tool specifici per analizzare i vari messaggi 
@@ -707,6 +707,6 @@ scambiati tra le entità della rete \cite{DDSimplementationRTI}.
             \hline
         \end{tabular}
         }
+        
         \caption{Esempi di implementazioni DDS.}
     \end{table}
-

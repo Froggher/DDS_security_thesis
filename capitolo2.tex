@@ -10,8 +10,8 @@ mitigare i possibili attacchi. %  Nel prossimo capitolo grazie all'aiuto
 % del software --inserire software-- riusciremo a capire come queste vulnerabilità
 % possono essere ricreate in un ambiente simulato.
 Queste vulnerabilità in molti casi, possono essere sfruttate 
-quando un partecipante del domain DDS é sotto il controllo di un attaccante
-o quando é possibile modificare i file di configurazione delle policy QoS 
+quando un partecipante del domain DDS è sotto il controllo di un attaccante
+o quando è possibile modificare i file di configurazione delle policy QoS 
 del domain.
 
 Queste vulnerabilità riguardano la versione del DDS 1.4 con le specifiche 
@@ -38,9 +38,9 @@ riguardo un topic.
 Quando il DataReader riceve il sequence number all'interno di un HEARTBEAT
 può identificare se ci sono o no dei pacchetti mancanti e in caso segnalarli al
 DataWriter \cite{White2017AnII}.
-Inoltre se il parametro FINAL é attivo in un sottomessaggio HEARTBEAT, il DataReader 
+Inoltre se il parametro FINAL è attivo in un sottomessaggio HEARTBEAT, il DataReader 
 deve sempre rispondere al DataWriter con ACKNACK dopo aver ricevuto nuovi aggiornamenti.
-Il DataWriter, nel frattempo, rimarrá in attesa del sottomessaggio 
+Il DataWriter, nel frattempo, rimarrà in attesa del sottomessaggio 
 ACKNACK prima di 
 inviare nuovi aggiornamenti al DataReader.
 Questo sistema aiuta il DataReader a rimanere sempre sincronizzato con il 
@@ -81,7 +81,7 @@ Di solito questo tipo di attacco è difficile da identificare.
 Un messaggio HEARTBEAT riguarda un solo topic, quindi il resto delle
 comunicazioni che avvengono su topic differenti o anche sullo stesso 
 topic, ma con un DataReader diverso, non subiranno cambiamenti.
-Questa vulnerabilità puó essere mitigata utilizzando l'estensione
+Questa vulnerabilità può essere mitigata utilizzando l'estensione
 DDS security in modo tale da crittografare i messaggi e rendere 
 impossibile per l'attaccante effettuare modifiche al 
 sequence number. 
@@ -90,15 +90,15 @@ sequence number.
 \section{DDoS sfruttando estensione DDS security}
 Questo vettore di attacco si trova nell'estensione del DDS chiamata
 DDS security, descritto nella sezione~\ref{DDS Security}; 
-in particolare la versione utilizzata é la versione 1.1.
+in particolare la versione utilizzata è la versione 1.1.
 Il DDS security si occupa di stabilire una
 connessione sicura tra i vari dispositivi della rete, utilizzando 
 dei plugin per effettuare: autenticazione, controllo accesso, crittografia,
-logine e data logging \cite{ddssecurity1.1}.
+login e data logging \cite{ddssecurity1.1}.
 
 Ogni partecipante del domain DDS deve essere autenticato reciprocamente
-dalle altre entitá appartenenti allo stesso domain.
-Successivamente due entitá,
+dalle altre entità appartenenti allo stesso domain.
+Successivamente due entità,
 per iniziare una comunicare tra di loro, devono prima
 scambiarsi le chiavi private
 in modo
@@ -110,7 +110,7 @@ che corrispondono a valori che variano nel tempo,
 inseriti durante il calcolo
 della firma digitale richiesta dal protocollo. 
 Queste challenge vengono utilizzate per rendere le varie sessioni 
-di autenticazione uniche evitando cosí attacchi di tipo replay
+di autenticazione uniche evitando così attacchi di tipo replay
 \cite{DBLP:conf/asiaccs/WangLG24}.
 
 % controllare sta robbba
@@ -125,7 +125,7 @@ La richiesta del partecipante viene intercettata
 dall'attaccante che modifica i valori della challenge crittografica 
 all'interno del pacchetto. Modificando ripetutamente questi valori, l'attaccante
 inizia a inviare molteplici richieste crittografiche alla sua vittima.
-Il partecipante cosí comincerà a calcolare le firme digitali per effettuare
+Il partecipante così comincerà a calcolare le firme digitali per effettuare
 l'autenticazione, consumando tutte le sue risorse.
 Dato che, la vittima è probabilmente un dispositivo IoT
 (Internet of Things)
@@ -142,7 +142,7 @@ per individuare vulnerabilità nei protocolli crittografici.
 posta elettronica certificata e nell'analisi del TLS 1.3 \cite{proverifmanual}.
 % https://bblanche.gitlabpages.inria.fr/proverif/manual.pdf
 
-Una raccomandazione per mitigare questo attacco é quello di cambiare delle
+Una raccomandazione per mitigare questo attacco è quello di cambiare delle
 policy QoS impostando un tempo limite massimo per effettuare
 l'autenticazione. Queste policy possono fare in modo
 che i partecipanti non si trovino sopraffatti dalle troppe richieste di
@@ -157,7 +157,7 @@ Prendendo in considerazione, il protocollo RTPS,
 descritto nella sottosezione~\ref{Discovery module}, e il suo modulo discovery,
 possiamo notare che di default i messaggi sono molto "verbose", 
 scambiando le informazioni in
-chiaro durante le comunicazioni tra i vari partercipanti \cite{White2017AnII}.
+chiaro durante le comunicazioni tra i vari partecipanti \cite{White2017AnII}.
 Il modulo 
 discovery del protocollo RTPS a sua volta si suddivide in
 altri 2 protocolli, che sono necessari per le specifiche DDS:
@@ -180,12 +180,12 @@ mandati a tutti i dispositivi riguardo ai partecipanti attivi
 
 L'attaccante sniffando questi messaggi (all'interno di un domain DDS)
 di tipo multicast RTPS-SPDP,
-utilizzando anche un semplice script python, infatti potrá 
+utilizzando anche un semplice script Python, infatti potrà 
 vedere il loro contenuto in maniera chiara.
 
 All'interno di un pacchetto di questo tipo possiamo trovare:
-l'indirizzo ip dell'host, il prefisso GUID dell'RTPS,
-la versione dell RTPS, l'ID del venditore, informazioni riguardanti la sincronizzazione
+l'indirizzo IP dell'host, il prefisso GUID dell'RTPS,
+la versione dellRTPS, l'ID del venditore, informazioni riguardanti la sincronizzazione
 ed infine il contenuto dei sottomessaggi \cite{White2017AnII}.
 
 
@@ -234,7 +234,7 @@ le comunicazioni.
 % che spiegano meglio i concetti introduttivi
 
 
-Questo attacco é realizzabile solo se certe policy QoS vengono
+Questo attacco è realizzabile solo se certe policy QoS vengono
 modificate durante l'esecuzione della rete, specialmente il parametro
 OWNERSHIP-KIND che gestisce quanti DataWriter possono scrivere per un
 determinato topic. Una descrizione accurata di altre policy QoS viene 
@@ -273,7 +273,7 @@ ricevono le informazioni dal DataWriter dell'attaccante
 
 
 \subsection{Conclusioni}
-Questa vulnerabilità é stata analizzata con l'ausilio di RTI Shapes Demo, un 
+Questa vulnerabilità è stata analizzata con l'ausilio di RTI Shapes Demo, un 
 software che emula una rete DDS corrispondente alle specifiche 
 dello standard OMG, sviluppato da Real-Time Innovations (RTI).
 
@@ -297,7 +297,7 @@ l'OWNERSHIP-strength.
 
 Un'altra policy QoS che può essere usata come vettore di attacco è quella
 che regola il parametro LIFESPAN. Questa regola corrisponde al tempo limite massimo 
-di validitá per la
+di validità per la
 lettura di pacchetti da parte di un DataReader. Per determinare se un pacchetto
 di un determinato topic è scaduto viene utilizzato il timestamp di creazione
 aggiungendo il LIFESPAN impostato; se questo risultato chiamato 
@@ -323,17 +323,17 @@ modi:
 % https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:reliability
 Se il LIFESPAN dei pacchetti, contenenti i dati del topic,
 viene impostato con valori molto piccoli, si verificheranno problemi di comunicazione
-tra DataWriter e DataReader, dato che non sará possbile effettuare la lettura di 
+tra DataWriter e DataReader, dato che non sarà possibile effettuare la lettura di 
 certi pacchetti inviati. Impostando il valore RELIABLE tra le policy QoS con
-RELIABILITY é possibile mitigare 
-solo parzialmente questa vulnerabilitá
+RELIABILITY è possibile mitigare 
+solo parzialmente questa vulnerabilità
 \cite{DBLP:conf/malware/MichaudDL18}.
 
 % https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:lifespan
 
 
 \subsection{Dettagli attacco}
-Avendo sotto controllo i parametri LIFESPAN e RELIABLE, l'attaccante modificherá le
+Avendo sotto controllo i parametri LIFESPAN e RELIABLE, l'attaccante modificherà le
 policy dei DataWriter in modo tale da avere il LIFESPAN molto piccolo. Così
 facendo, i pacchetti spediti dal publisher arriveranno già scaduti al DataReader,
 rendendoli inutilizzabili. In certi casi il pacchetto che deve essere inviato
@@ -361,11 +361,11 @@ implementa una
 soluzione DDS di RTI corrispondente alle specifiche dello standard OMG.
 Inizialmente molte reti DDS hanno impostato la RELIABILITY
 di tipo BEST-EFFORT che è l'impostazione predefinita,
-in modo tale da rendere possibili comunicazioni di tipo realtime.
+in modo tale da rendere possibili comunicazioni di tipo real-time.
 Quindi nella maggior parte
 dei casi l'attaccante non si deve preoccupare di modificare questo parametro.
 
-Una possibile soluzione cosniste nell'implementare qualche tipo di controllo
+Una possibile soluzione consiste nell'implementare qualche tipo di controllo
 in modo tale da avvertire un operatore umano se molti pacchetti vengono
 scartati perché arrivati con un LIFESPAN scaduto. Questo controllo potrebbe
 essere anche utile, nel caso in cui il DataWriter e il DataReader si trovassero
@@ -400,14 +400,14 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
             \tabularCenterstack{c}{Verbose nature \\ of RTPS} &
             \tabularCenterstack{c}{RTPS-SDPD} &
             \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
-            \tabularCenterstack{c}{Sniffer \\ python} &
+            \tabularCenterstack{c}{Sniffer \\ Python} &
             \tabularCenterstack{c}{DDS security/ \\ WireGuard} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             \tabularCenterstack{c}{DDos \cite{White2017AnII}} &
             \tabularCenterstack{c}{Heartbeat \\ sequence number} &
             \tabularCenterstack{c}{RTPS} &
             \tabularCenterstack{c}{DataReader} &
-            \tabularCenterstack{c}{Sniffer \\ python} &
+            \tabularCenterstack{c}{Sniffer \\ Python} &
             \tabularCenterstack{c}{DDS security: \\ Auth Control} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             \tabularCenterstack{c}{DDoS \cite{DBLP:conf/asiaccs/WangLG24}} &
@@ -439,10 +439,4 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
         }
         \caption{Riassunto delle vulnerabilità del DDS analizzate.}
     \end{table}
-
-
-
-
-
-
 
