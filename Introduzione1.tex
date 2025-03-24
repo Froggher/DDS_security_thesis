@@ -54,6 +54,18 @@ Questo è necessario perché TCP/IP supporta una comunicazione di tipo
 one-to-one (uno a uno). Come vedremo nella prossima sottosezione,
 il modello publish/subscribe non ha questa limitazione \cite{1494965}.
 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm, keepaspectratio]{img/TCP connessione-Pagina-2.jpg}
+    \caption{Un esempio di collegamento tra una workstation e un sensore della temperatura,
+    utilizzando il protocollo TCP.}
+    \label{TCP connection}
+\end{figure}
+
+
+
 \subsection{Struttura modello publish/subscribe}
 % Citazione da mettere
 Per funzionare, il modello publish/subscribe, ha bisogno di
@@ -93,7 +105,16 @@ dei dati di tipo data-centric.
 Prendendo in considerazione il modello ISO OSI 
 (Open Systems Interconnection), questo
 middleware è un software che si trova tra l'applicativo e il livello
-del sistema operativo.
+del trasferimento.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm, keepaspectratio]{img/ModelloISOOSIDDS-Pagina-3.jpg}
+    \caption{Posizione del middleware DDS nel modello ISO/OSI.}
+    \label{DDSISOOSI}
+\end{figure}
+
+
 % fare disegno layers osi
 Il DDS si basa sul DCPS (Data-Centric Publish-Subscribe) 
 che è un modello di comunicazione simile a quello
