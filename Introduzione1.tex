@@ -61,8 +61,8 @@ due elementi chiamati publisher e subscriber,
 che permettono lo scambio di messaggi all'interno del network.
 La comunicazione avviene 
 quando hanno un topic, che
-rappresenta una tipologia di dati (ad esempio temperatura, 
-distanza, velocità, etc...)è in comune tra di loro.
+rappresenta una tipologia di dati (come ad esempio la temperatura, 
+la distanza e la velocità) è in comune tra di loro.
 \begin{itemize}
     \item Publisher: colui che pubblica nuovi dati riguardanti dei
     topic rendendoli accessibili ai subscriber iscritti. 
@@ -213,14 +213,16 @@ la Istanza, il Domain e il Domain Participant.
 Ognuna di queste entità deve tener conto del suo set di policy 
 QoS configurate
 che ne definiscono il comportamento. Queste policy verranno analizzate 
-più nel dettaglio nella sezione~\ref{Le policy QoS nel dettaglio}.
+più nel dettaglio nella Sezione~\ref{Le policy QoS nel dettaglio}.
 % Aggiungere riferimento
 
 Il linguaggio utilizzato da queste entità si chiama Interface 
 Definition Language (IDL) e anch'esso è standardizzato da OMG. 
 IDL è un linguaggio tipizzato 
-simile a C++ che supporta data types come char, int, double, float etc
-\cite{1494965} \dots
+simile a C++ che supporta i seguenti data types: char, octet, short,
+unsigned short, long, unsigned long, long long, unsigned long long, 
+float, double, long double, boolean, enum, array e string
+\cite{1494965}.
 
 
 \subsection{Publisher e Subscriber}
@@ -388,7 +390,7 @@ proposte le categorie QoS più rilevanti.
 \end{itemize}
 Le configurazioni 
 delle policy vengono trasmesse alle varie entità dal DomainParticipant
-come i publisher, i subscriber, i topic, i DataWriters etc\dots
+come i publisher, i subscriber, i topic e i DataWriters.
 Tuttavia, le policy di un publisher e un subscriber devono essere compatibili.
 Se così non fosse, la comunicazione tra i due potrebbe essere compromessa
 \cite{Michaud2017Apr}.
@@ -417,17 +419,18 @@ RTPS include molti vantaggi ideali per il DDS:
 L'RTPS è suddiviso in quattro moduli differenti: lo structure module, il 
 messages module, behavior module e il discovery module \cite{ddsrtps}.
 
-\subsection{Structure module}
-Questo modulo si occupa di associare le entità DDS alle corrispondenti
+\subsection{Structure and behavior module}
+Lo structure module si occupa di associare le entità DDS alle corrispondenti
 entità RTPS. Queste entità RTPS sono utilizzate 
 per rappresentare le entità del DDS (come DataReader e DataWriter) 
-all'interno del protocollo RTPS \cite{ddsrtps}.
+all'interno del protocollo RTPS (come l'RTPS Writers e l'RTPS Readers) 
+\cite{ddsrtps}.
 
-\subsection{Behavior module}
-Il behavior module definisce delle regole di comunicazione durante 
-una sequenza di messaggi tra
-due o più entità RTPS, che sono i RTPS Writers e i RTPS Readers.
-Esse servono a mantenere l'interoperabilità tra le varie 
+Il behavior module, invece, definisce le regole di comunicazione tra
+due o più entità RTPS, che sono i RTPS Writers e i RTPS Readers 
+(definite dal behavior module), durante 
+una sequenza di messaggi.
+Esse consentono di mantenere l'interoperabilità tra le varie 
 implementazioni (anche di diversi vendors) del DDS \cite{ddsrtps}.
 
 \subsection{Messages module}
@@ -562,8 +565,9 @@ un domain DDS. È possibile configurare questi permessi con una
 granularità molto fine. Dei possibili permessi possono essere:
 aggiornare un determinato topic da parte di 
 un DataWriter, far entrare una determinata entità
-all'interno di un domain, eliminare un topic, entrare o 
-uscire da determinati domains etc\dots
+all'interno di un domain, eliminare un topic, iscriversi a un topic, 
+creare un topic con specifici DataReaders e DataWriters e
+entrare o uscire da determinati domains.
 
 L'Access Control Service Plugin per funzionare ha bisogno di due 
 files in formato XML che devono essere entrambi firmati da 

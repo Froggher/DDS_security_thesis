@@ -89,7 +89,7 @@ sequence number.
 
 \section{DDoS sfruttando estensione DDS security}
 Questo vettore di attacco si trova nell'estensione del DDS chiamata
-DDS security, descritto nella sezione~\ref{DDS Security}; 
+DDS security, descritto nella Sezione~\ref{DDS Security}; 
 in particolare la versione utilizzata è la versione 1.1.
 Il DDS security si occupa di stabilire una
 connessione sicura tra i vari dispositivi della rete, utilizzando 
@@ -105,7 +105,7 @@ in modo
 sicuro tramite protocollo Diffie-Hellman in modo tale da poter 
 crittare i successivi
 messaggi. Nell'utilizzo di Diffie-Hellman vengono utilizzate
-le challenge (sottosezione ~\ref{Processo di autenticazione}), 
+le challenge (Sottosezione ~\ref{Processo di autenticazione}), 
 che corrispondono a valori che variano nel tempo, 
 inseriti durante il calcolo
 della firma digitale richiesta dal protocollo. 
@@ -154,8 +154,8 @@ tentativi DDoS di questo tipo, allertando così un amministratore
 \section{Enumeration sniff}
 % Devo spiegare il modulo discovery
 Prendendo in considerazione, il protocollo RTPS,
-descritto nella sottosezione~\ref{Discovery module}, e il suo modulo discovery,
-possiamo notare che di default i messaggi sono molto "verbose", 
+descritto nella Sottosezione~\ref{Discovery module}, e il suo modulo discovery,
+possiamo notare che di default i messaggi sono molto verbose, 
 scambiando le informazioni in
 chiaro durante le comunicazioni tra i vari partecipanti \cite{White2017AnII}.
 Il modulo 
@@ -238,7 +238,7 @@ Questo attacco è realizzabile solo se certe policy QoS vengono
 modificate durante l'esecuzione della rete, specialmente il parametro
 OWNERSHIP-KIND che gestisce quanti DataWriter possono scrivere per un
 determinato topic. Una descrizione accurata di altre policy QoS viene 
-effettuata nella sottosezione~\ref{Le policy QoS nel dettaglio}.
+effettuata nella Sottosezione~\ref{Le policy QoS nel dettaglio}.
 Questo parametro può essere impostato in due modi diversi:
 \begin{itemize}
     \item SHARED: in questo modo più di un DataWriter possono aggiornare le
@@ -288,7 +288,7 @@ al topic senza essere scoperto
 
 Una soluzione utile per mitigare questo attacco potrebbe essere l'utilizzo
 dell'estensione DDS security. Utilizzando i plugin relativi al controllo accesso,
-come illustrato nella sottosezione~\ref{Access Control Service Plugin}, permette
+come illustrato nella Sottosezione~\ref{Access Control Service Plugin}, permette
 di evitare che un attaccante possa modificare le policy QoS come 
 l'OWNERSHIP-strength.
 
