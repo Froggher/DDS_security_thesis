@@ -13,20 +13,64 @@ di comunicazione tra i vari dispositivi connessi.
 
 
 \section{WireShark}
-WireShark è un tool che ci consente di analizzare moltissimi protocolli 
-come il TCP, HTTP e RTPS. Quest'ultimo è il protocollo utilizzato  
-per lo scambio dei messaggi tra le entità del DDS. In particolare WireShark
-ci consente di analizzare nel dettaglio i pacchetti RTPS con il loro 
-contenuto.
+WireShark è un tool di tipo packet-sniffing che ci consente di 
+interagire e visualizzare il contenuto dei pacchetti scambiati da 
+diversi protocolli di rete. Ha ottenuto un grande successo 
+grazie alla sua interfaccia user-friendly e al suo codice sorgente 
+open-source con licenza di utilizzo libero. I pacchetti possono 
+essere analizzati sia in real-time che in modalità statica utilizzando 
+un file di tipo PCAP (packet capture). 
 
+Questo tool è anche compatibile con il protocollo RTPS che viene
+adoperato dalle entità del DDS per comunicare tra di loro 
+come descritto nella Sottosezione~\ref{Messages module}.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=15.2cm, keepaspectratio]{img/wiresharkexampleshapes.png}
-    \caption{Esempio di cattura di un pacchetto RTPS di tipo Data, con topic
+    \includegraphics[width=15.2cm, keepaspectratio]{img/Info_ts e info_DST-Pagina-4.jpg}
+    \caption{Esempio di cattura di un pacchetto RTPS con topic 
     Square tramite WireShark.}
     \label{wireskartshapesdemo}
 \end{figure}
 
+\subsection{Pacchetti RTPS}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15.2cm, keepaspectratio]{img/Header e sottomessaggi esempio shapes2.jpg}
+    \caption{Pacchetto RTPS contente l'HEADER (in blu) e due sottomessaggi (in giallo).}
+    \label{headersubmessagedemo}
+\end{figure}
+
+
+
+Nella Figura~\ref{headersubmessagedemo}, con l'ausilio di WireShark,
+controllando il contenuto di pacchetto RTPS possiamo osservare la presenza
+di un HEADER e due diversi sottomessaggi. 
+\begin{itemize}
+    \item All'interno dell'HEADER sono presenti
+    diversi metadata, tra cui il guidPrefix, un identificativo univoco che rappresenta
+    il partecipante che ha inviato il pacchetto.
+    \item Il sottomessaggio INFO\_TS ci informa che questo pacchetto è diretto 
+    a più entità all'interno della rete data la mancanza del guidPrefix al 
+    suo interno. Se invece fosse stato un sottomessaggio INFO\_DST,
+    il guidPrefix sarebbe stato 
+    incluso, in quanto il messaggio sarebbe probabilmente diretto a un'unica
+    entità specifica, come avviene, ad esempio, per un sottomessaggio ACKNACK
+    destinato a un DataWriter \cite{rtiwireshark}.
+    \item Il secondo sottomessaggio, che nel nostro caso è di tipo DATA,
+    serve a identificare il tipo di pacchetto.
+\end{itemize}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15.2cm, keepaspectratio]{img/Info_ts e info_DST-Pagina-3.jpg}
+    \caption{A sinistra sono mostrati i sottomessaggi DATA e INFO\_TS, 
+    mentre a destra sono presenti i sottomessaggi ACKNACK e INFO\_DST che
+    includono 
+    il guidPrefix del DataWriter, lo stesso riportato in 
+    Figura~\ref{headersubmessagedemo}.}
+    \label{Info_ts e info_DST}
+\end{figure}
 
 \section{DDSFuzz}
 DDSFuzz è un tool di analisi open source con l'obiettivo di 
@@ -95,7 +139,7 @@ più generico.
 DDSFuzz essendo specializzato per il DDS prende in considerazione 
 molte sue caratteristiche che non sono presenti in altri software
 o protocolli. La prima considerazione che viene 
-effettuata da DDSFuzze e 
+effettuata da DDSFuzz e 
 che avviene durante l'esecuzione del middleware DDS è
 la topologia della rete che può mutare nel tempo creando problemi per i
 fuzzer tradizionali che non si adattano ai suoi cambiamenti. Infatti certi
@@ -123,7 +167,7 @@ di bug che possiamo riscontrare in un applicativo DDS:
     non è facilmente categorizzabile risulta più difficile individuarli;
 \end{itemize}
 Uno dei maggiori punti di forza di DDSFuzz sta proprio nel trovare
-questi bug semantici, quasi impossibili da identificare per gli altri 
+questi bug semantici, quasi impossibili da riconoscere per gli altri 
 fuzzer. Durante l'esecuzione di DDSFuzz vengono eseguite in parallelo 
 tre implementazioni (Fast DDS \cite{FastDDS}, Cyclone DDS \cite{CycloneDDS}, 
 OpenDDS \cite{OpenDDS1}) vendor 
