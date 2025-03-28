@@ -1,16 +1,18 @@
 \chapter{Tools di analisi}
 In questo capitolo verranno esposti vari tools che hanno lo 
-scopo di analizzare il funzionamento del DDS. Questi tools,
+scopo di analizzare il funzionamento del DDS.
+Questi tools,
 a volte,
 vengono anche utilizzati con altri protocolli o 
-altri sistemi di rete, mentre ci sono altri tool come DDSFuzz 
+altri sistemi di rete, mentre ci sono altri tool inclusi DDSFuzz 
 che sono compatibili solamente con il middleware DDS. Molti 
 strumenti sono stati impiegati anche per esaminare il 
 software ROS (Robotic Operation System) che utilizza come 
 sistema di comunicazione un'implementazione del DDS 
 (di solito Fast DDS \cite{FastDDS}) per effettuare lo scambio 
 di comunicazione tra i vari dispositivi connessi.
-
+% Mettere che wireshark e dds replay servono a fare recoinassance
+%dire anche che é stato utilizzato in molti casi rti shapes
 
 \section{WireShark}
 WireShark è un tool di tipo packet-sniffing che ci consente di 
@@ -51,11 +53,11 @@ di un HEADER e due diversi sottomessaggi.
     \item All'interno dell'HEADER sono presenti
     diversi metadata, tra cui il guidPrefix, un identificativo univoco che rappresenta
     il partecipante che ha inviato il pacchetto.
-    \item Il sottomessaggio INFO\_TS ci informa che questo pacchetto è diretto 
-    a più entità all'interno della rete data la mancanza del guidPrefix al 
-    suo interno. Se invece fosse stato un sottomessaggio INFO\_DST,
-    il guidPrefix sarebbe stato 
-    incluso, in quanto il messaggio sarebbe probabilmente diretto a un'unica
+    \item Il sottomessaggio INFO\_TS serve a fornire un timestamp ai destinatari 
+    del pacchetto,
+    quindi non contiene un guidPrefix al 
+    suo interno. Al contrario, un sottomessaggio INFO\_DST include
+    il guidPrefix, in quanto il messaggio è diretto a un'unica
     entità specifica, come avviene, ad esempio, per un sottomessaggio ACKNACK
     destinato a un DataWriter \cite{rtiwireshark}.
     \item Il secondo sottomessaggio, che nel nostro caso è di tipo DATA,
@@ -72,6 +74,72 @@ di un HEADER e due diversi sottomessaggi.
     \label{Info_ts e info_DST}
 \end{figure}
 
+
+\subsection{Un'alternativa a WireShark: eProsima DDS Record \& Replay}
+eProsima DDS Record \& Replay è un software open-source con licenza 
+Apache 2.0 sviluppato da eProsima (gli stessi creatori di Fast DDS) che 
+ci consente di salvare i contenuti del traffico di un network DDS
+all'interno di un file di tipo MCAP, a differenza del formato PCAP 
+utilizzato da WireShark \cite{eProsimaDDSRecordeReplayDocumentation}.
+
+MCAP è un database open-source che serve a salvare il contenuto 
+di più istanze DDS (quindi provenienti da differenti flussi di dati, 
+Sottosezione~\ref{Key e Istanza}), associandolo
+ad un timestamp in modo tale da creare dei dati serializzati
+\cite{mcap}.
+Con questi dati serializzati è possibile vedere con più facilità 
+il loro contenuto in modo tale da poter analizzare al meglio
+il comportamento del traffico della rete, controllando nel dettaglio 
+uno o più partecipanti.   
+
+MCAP è stato creato per loggare dati provenienti da applicazioni 
+che utilizzano un modello publish/subscribe, tra cui il DDS e ROS.
+Quindi diversi applicativi possono interpretare questo formato, 
+inclusa la piattaforma 
+foxglove \cite{foxglove}, 
+che consente una visualizzazione diretta dal browser e da
+eProsima DDS Record \& Replay.
+
+
+\section{eProsima Fast DDS Spy}
+eProsima Fast DDS Spy è un tool, sviluppato da eProsima, 
+open-source con licenza Apache 2.0 accessibile
+tramite interfaccia a riga di comando (CLI) che serve ad monitorare i partecipanti
+e i loro messaggi scambiati all'interno di una rete DDS \cite{FastDDSSpy}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15.2cm, keepaspectratio]{img/fastddsspyintro.png}
+    \caption{Screenshot di Fast DDS Spy appena avviato.}
+    \label{fastddsspyintro}
+\end{figure}
+
+Facile da utilizzare, può essere molto efficace per comprendere 
+al meglio la topologia di una rete DDS. Un attaccate può usare questo 
+tool per capire quali sono le varie entità del network, 
+inclusi il DataWriter, il DataReader i DomainParticipant e i topic.
+Per ciascuna di queste entità è anche possibile ottenere 
+il loro GUID, (guidPrefix)
+una stringa univoca che ci permette di identificare un partecipante.
+Il GUID ottenuto può essere impiegato 
+per filtrare il traffico 
+real-time scambiato
+all'interno della rete.
+
+Un'altra importante funzionalità particolarmente utile per effettuare
+una ricognizione del
+network è offerta dai
+comandi READER <GUID> e WRITER <GUID> (o in alternativa,
+READER VERBOSE e WRITER VERBOSE), che mostrano
+una parte delle policy QoS adoperate dai DataReader e i DataWriter.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm, keepaspectratio]{img/fastddsspyQoS.png}
+    \caption{Esecuzione dei comandi READER <GUID> e WRITER <GUID>.}
+    \label{fastddsspyQoS}
+\end{figure}
+
 \section{DDSFuzz}
 DDSFuzz è un tool di analisi open source con l'obiettivo di 
 effettuare test di tipo fuzz
@@ -79,8 +147,8 @@ in modo da testare vari input che il middleware DDS può
 ricevere durante la sua esecuzione. Prima di questo strumento 
 non esistevano (o non erano disponibili al pubblico) soluzioni
 per effettuare questo tipo di test specifico sul DDS, mancanza
-che questo tool cerca di colmare. Infatti anche se esistono tool 
-come RoboFuzz e Deng, questi ultimi vengono utilizzati solamente
+che DDSFuzz cerca di colmare. Infatti anche se esistono tool 
+inclusi RoboFuzz e Deng, questi ultimi vengono utilizzati solamente
 per testare applicativi ROS (Robotic Operation System), che 
 sfruttano solo una parte delle funzioni del DDS, tralasciando
 funzionalità del middleware che non vengono impegate
@@ -161,7 +229,7 @@ di bug che possiamo riscontrare in un applicativo DDS:
     che sono presenti anche in altri software, un esempio può 
     essere un buffer overflow;
     \item BUG SEMANTICI: questo bug avviene quando viene violata
-    una norma definita dallo standard DDS, come 
+    una norma definita dallo standard DDS,
     ad esempio un bypass dell'autenticazione. 
     Dato che il loro comportamento
     non è facilmente categorizzabile risulta più difficile individuarli;

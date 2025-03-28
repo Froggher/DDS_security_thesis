@@ -47,7 +47,7 @@ delle connessioni a Internet.
 Tuttavia, in certe implementazioni, TCP/IP non risulta la soluzione migliore,
 specialmente quando dobbiamo collegare un numero di dispositivi al 
 network che può variare nel tempo. Se nel nostro network tra workstation e 
-sensore della temperatura, aggiungiamo un altro dispositivo, come un 
+sensore della temperatura, aggiungiamo un altro dispositivo, ad esempio un 
 sensore per la temperatura, bisognerebbe creare un nuovo socket 
 TCP/IP per far comunicare il nuovo sensore con la workstation.
 Questo è necessario perché TCP/IP supporta una comunicazione di tipo 
@@ -73,7 +73,7 @@ due elementi chiamati publisher e subscriber,
 che permettono lo scambio di messaggi all'interno del network.
 La comunicazione avviene 
 quando hanno un topic, che
-rappresenta una tipologia di dati (come ad esempio la temperatura, 
+rappresenta una tipologia di dati (ad esempio la temperatura, 
 la distanza e la velocità) è in comune tra di loro.
 \begin{itemize}
     \item Publisher: colui che pubblica nuovi dati riguardanti dei
@@ -167,11 +167,12 @@ Space (spazio dati globale), un'area logica condivisa
 che consente agli applicativi
 di accedere a una sorta di memoria locale tramite API.
 L'applicativo nella scrittura o nella ricezione dei dati utilizzerà 
-questa memoria locale fittizia come un'unica risorsa centralizzata.
+questa memoria locale fittizia assumendo il ruolo di 
+un'unica risorsa centralizzata.
 Tuttavia, i dati all'interno di questa memoria possono contenere
 informazioni provenienti da nodi remoti distribuiti per la rete. 
 L'applicativo non deve cosi preoccuparsi dell'accessibilità dei dati,
-poiché questi vengono gestiti come se si trovassero tutti in unico punto 
+poiché questi vengono gestiti agendo come se si trovassero tutti in unico punto 
 \cite{whatisdds}.
 
 
@@ -346,9 +347,9 @@ con id-macchina
 uguale a 2. L'id-macchina fungerà da key 
 del topic per distinguere la provenienza dei dati; in questo
 modo possiamo così controllare le due macchine con due istanze ciascuna.
-
+\
 % Magari anche con RTI shapes
-
+\label{Key e Istanza}
 
 \subsection{Domain}
 L'entità del domain (dominio) rappresenta uno spazio logico definito che
@@ -421,7 +422,7 @@ proposte le categorie QoS più rilevanti.
 \end{itemize}
 Le configurazioni 
 delle policy vengono trasmesse alle varie entità dal DomainParticipant
-come i publisher, i subscriber, i topic e i DataWriters.
+tra cui i publisher, i subscriber, i topic e i DataWriters.
 Tuttavia, le policy di un publisher e un subscriber devono essere compatibili.
 Se così non fosse, la comunicazione tra i due potrebbe essere compromessa
 \cite{Michaud2017Apr}.
@@ -435,7 +436,7 @@ dal layer DDS a quello di trasporto della rete.
 Solitamente questo viene utilizzato in combinazione con il protocollo
 best-effort
 UDP/IP, che risulta ottimale per le comunicazioni di tipo real-time. Tuttavia 
-anche i protocolli connection-oriented come il TCP/IP possono essere utilizzati. 
+anche i protocolli connection-oriented incluso il TCP/IP possono essere utilizzati. 
 RTPS include molti vantaggi ideali per il DDS:
 \begin{itemize}
     \item Connettività plug and play: le nuove applicazioni possono unirsi o 
@@ -522,7 +523,7 @@ domain DDS. Questa estensione è composta da cinque plugin:
     delle policy alle entità DDS autenticate. Ad esempio limitare
     la pubblicazione di nuovi dati o la creazione di nuovi topic.
     \item Cryptographic Service Plugin: gestisce tutte le operazioni 
-    crittografiche, come la crittografia, la decrittazione e
+    crittografiche, tra cui la crittografia, la decrittazione e
     le firme digitali. Ha anche il compito di controllare l'integrità
     dei messaggi.
     \item Logging Service Plugin: permette di effettuare un audit di 
@@ -583,7 +584,7 @@ più riutilizzati.
 La fase di autenticazione si conclude quando viene completato
 lo scambio delle chiavi.
 Queste chiavi verranno poi utilizzate da protocolli di 
-crittazione come l'RSA (Rivest-Shamir-Adleman) per effettuare 
+crittazione incluso l'RSA (Rivest-Shamir-Adleman) per effettuare 
 comunicazioni in modo sicuro. Infatti non sarà possibile per un 
 attaccante spiare o cambiare il contenuto dei messaggi dato 
 che questi sono criptati 
@@ -682,7 +683,7 @@ sviluppo dell'applicativo è gestito dalle software house che possono
 decidere come gestire il codice sorgente. Sul mercato sono comunque 
 presenti
 soluzioni open source, ma spesso queste presentano degli svantaggi,
-come la mancanza di supporto per alcuni linguaggi di programmazione 
+tra cui la mancanza di supporto per alcuni linguaggi di programmazione 
 per interagire con le API del middleware
 \cite{DDSimplementationRTI}.
 
