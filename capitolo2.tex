@@ -33,7 +33,8 @@ client tramite protocollo TCP/IP nell'ambito delle comunicazioni.
 
 \subsection{Perché non usiamo una connessione con TCP/IP}
 Prendiamo l'esempio di un collegamento tra una workstation e 
-un sensore per la temperatura. La connessione a livello fisico
+un sensore per la temperatura, come mostrato in 
+Figura~\ref{TCP connection}. La connessione a livello fisico
 avverrà tramite un collegamento Ethernet. La workstation e il 
 sensore quindi si trovano nello stesso network e possono 
 ora cominciare a comunicare tra di loro. L'obiettivo è quello
@@ -97,6 +98,7 @@ possono cambiare o essere utilizzate da più dispositivi.
 I subscriber, ad esempio possono cambiare i topic a cui 
 sono iscritti e i publisher possono smettere di pubblicare nuovi
 aggiornamenti su un determinato topic anche a runtime \cite{OH2010318}.
+\label{publish/subscribe}
 
 \section{Che cos'è il Data Distribution Service}
 
@@ -105,7 +107,7 @@ dei dati di tipo data-centric.
 Prendendo in considerazione il modello ISO OSI 
 (Open Systems Interconnection), questo
 middleware è un software che si trova tra l'applicativo e il livello
-del trasferimento.
+del trasferimento, mostrato in Figura~\ref{DDSISOOSI}.
 
 \begin{figure}[H]
     \centering
@@ -236,13 +238,16 @@ Ognuna di queste entità deve tener conto del suo set di policy
 QoS configurate
 che ne definiscono il comportamento. Queste policy verranno analizzate 
 più nel dettaglio nella Sezione~\ref{Le policy QoS nel dettaglio}.
+Nella Figura~\ref{entitadcps} viene mostrato un esempio di 
+come si relazionano 
+le varie entità DCPS tra di loro.
 % Aggiungere riferimento
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=15.2cm, keepaspectratio]{img/entitadcps .png}
-    \caption{Entità DCPS del DDS. 
-    Fonte: \cite{whatddseprosima}}
+    \caption{Entità DCPS del DDS
+    \cite{whatddseprosima}.}
     \label{entitadcps}
 \end{figure}
 
@@ -259,8 +264,18 @@ float, double, long double, boolean, enum, array e string
 
 \subsection{Publisher e Subscriber}
 Publisher e subscriber sono entità che abbiamo già incontrato
-in precedenza nel modello publish/subscribe. Queste due entità 
-mantengono lo stesso ruolo all'interno del modello DCPS.
+in precedenza nel modello publish/subscribe nella Sezione
+\ref{publish/subscribe}. Queste due entità 
+mantengono lo stesso ruolo all'interno del modello DCPS. 
+Durante l'esecuzione l'applicativo che si interfaccia con il 
+middleware DDS non deve occuparsi 
+di gestire le comunicazioni tra publisher e subscriber, dato 
+che queste verranno gestite automaticamente. 
+Questo consente ai DataWriters e DataReaders di 
+scambiarsi messaggi sfruttando questo canale di comunicazione
+dinamico,
+che può cambiare nel tempo a seconda della topologia della rete, 
+senza richiedere alcun intervento dell'applicativo. 
 
 \subsection{DataWriter e DataReader}
 
@@ -297,7 +312,7 @@ più DataWriters e DataReaders alla volta.
 
 % Inserire immagine
 
-\subsection{Topic}
+\subsection{Topic, Key e Istanza}
 % Specificare dove sono stati introdotti
 Nel modello publish/subscribe abbiamo già introdotto i topic, ma 
 abbiamo la necessità di approfondirli quando vengono utilizzati
@@ -313,9 +328,10 @@ Il nome del topic corrisponde ad una stringa univoca
 che serve per identificarlo 
 tra gli altri topic del domain.
 
+All'interno del topic troviamo sempre una chiave (key) che 
+sono uno o piú data types del topic stesso.
+% \subsection{Key e Istanza}
 
-\subsection{Key e Istanza}
-Uno o più data types di un topic possono diventare la chiave (key) del topic. 
 Queste chiavi ci permettono di suddividere
 i data-values di un topic, dividendoli a seconda della chiave.
 Ogni suddivisione che effettuiamo tramite una key diversa crea 
@@ -326,7 +342,7 @@ flusso di dati (data-stream)
 Per fare un esempio prendiamo il topic velocità in un contesto dove si
 vogliono analizzare i dati di una gara.
 La struttura del topic avrà due data types: il primo corrisponde al valore
-della velocità registrata, mentre il secondo mostra l'id-macchina 
+della velocità registrata, mentre il secondo mostra l'id\_macchina 
 che identifica da quale vettura i dati provengono.
 
 \vspace{5mm} % Riusare per codici futuri
@@ -343,8 +359,8 @@ struct Veicolo { // Nome del topic
 
 Creiamo ora due istanze, una con valore 270 per la velocità e con 
 l'id-macchina uguale a 1 e l'altra con un valore di 220 per la velocità e 
-con id-macchina 
-uguale a 2. L'id-macchina fungerà da key 
+con id\_macchina 
+uguale a 2. L'id\_macchina fungerà da key 
 del topic per distinguere la provenienza dei dati; in questo
 modo possiamo così controllare le due macchine con due istanze ciascuna.
 \
@@ -648,6 +664,16 @@ autenticazione e devono rimanere sempre disponibili \cite{essay93639}.
 \vspace{5mm}
 \label{Access Control Service Plugin}
 
+Un esempio di un permission document é parzialmanente 
+mostrato nel Codice~\ref{Access Control Service Plugin} 
+che ci indica che ha una validità che parte dal 26 ottobre 2013
+fino al 2018 alle 22:45:30. Successivamente viene creata una 
+regola all'interno del dominio con id pari a zero, dove è 
+negato al suo interno ogni possibile pubblicazione sul topic
+CIRCLE 1.
+
+
+
 \subsubsection{Processo di controllo permessi}
 Un esempio di processo di controllo permessi avviene
 quando un DataWriter richiede l'autorizzazione per creare un nuovo topic.
@@ -686,6 +712,14 @@ soluzioni open source, ma spesso queste presentano degli svantaggi,
 tra cui la mancanza di supporto per alcuni linguaggi di programmazione 
 per interagire con le API del middleware
 \cite{DDSimplementationRTI}.
+
+Nella Tabella~\ref{tabimplenetazioniDDS} vengono confrontate
+le principali implementazioni adoperate oggigiorno. 
+Come si può notare dai dati,
+soluzioni proprietarie come RTI Connext DDS 
+dispone di un più ampio supporto per diversi linguaggi di 
+programmazioni rispetto alle alternative open source, tra cui 
+eProsima FastDDS.
 
 
 
@@ -748,4 +782,5 @@ per interagire con le API del middleware
         }
         
         \caption{Esempi di implementazioni DDS.}
+        \label{tabimplenetazioniDDS}
     \end{table}
