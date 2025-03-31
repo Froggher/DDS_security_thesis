@@ -1,376 +1,691 @@
-\chapter{Vulnerabilità standard DDS}
+\chapter{Introduzione al DDS}
+In questo capitolo viene fatta un'introduzione generale dello 
+standard del Data Distribution Service (DDS) gestita
+dall'Object Management Group (OMG) \cite{8469351}. 
+Inizialmente a livello generale 
+per poi andare sempre più nel
+dettaglio per capire il suo funzionamento. Questo ci sarà utile 
+per comprendere le vulnerabilità che verranno analizzate nei
+successivi capitoli. Inoltre verrà introdotta la sua estensione 
+DDS security che si occupa di rendere più sicuro lo standard DDS 
+aggiungendo l'autenticazione e una 
+implementazione della cifratura dei pacchetti scambiati tra i vari
+dispositivi connessi nella rete. 
+Infine verrà mostrato in quali contesti attuali il DDS viene
+utilizzato con le sue diverse implementazioni.
+
+In questa tesi potrebbe venire omessa la specifica OMG perché 
+faremo riferimento
+esclusivamente al DDS conforme all'Object Management Group. Questo 
+standard ha delle specifiche tecniche ben precise, consentendo
+l'interoperabilità tra i diversi vendor che lo rispettano, insieme
+a tanti altri numerosi vantaggi \cite{dds1.4}.
 
 
-In questo capitolo ci occuperemo di analizzare e comprendere delle vulnerabilità
-del middleware DDS standard OMG (Object Management Group) \cite{8469351}. 
-In particolare
-verrà analizzato il vettore d'attacco, il protocollo utilizzato, il bersaglio
-dell'attacco e infine verrà proposta una soluzione applicabile per
-mitigare i possibili attacchi. %  Nel prossimo capitolo grazie all'aiuto
-% del software --inserire software-- riusciremo a capire come queste vulnerabilità
-% possono essere ricreate in un ambiente simulato.
-Queste vulnerabilità in molti casi, possono essere sfruttate 
-quando un partecipante del domain DDS è sotto il controllo di un attaccante
-o quando è possibile modificare i file di configurazione delle policy QoS 
-del domain.
-
-Queste vulnerabilità riguardano la versione del DDS 1.4 con le specifiche 
-dello standard OMG.
+\section{Modello publish/subscribe}
+Prima di parlare del DDS, è necessario capire il 
+funzionamento del modello Publish-Subscribe 
+che sta alla base del suo funzionamento.
+Questo modello di publish e subscribe non funziona come la 
+classica applicazione che siamo abituati a vedere tra server e
+client tramite protocollo TCP/IP nell'ambito delle comunicazioni. 
 
 
+\subsection{Perché non usiamo una connessione con TCP/IP}
+Prendiamo l'esempio di un collegamento tra una workstation e 
+un sensore per la temperatura. La connessione a livello fisico
+avverrà tramite un collegamento Ethernet. La workstation e il 
+sensore quindi si trovano nello stesso network e possono 
+ora cominciare a comunicare tra di loro. L'obiettivo è quello
+di trasferire i dati dal sensore alla workstation in modo tale
+da poterli visualizzare a schermo.
+La metodologia più frequente è quella di utilizzare un socket tramite 
+protocollo TCP/IP, ma non sempre questa è la soluzione migliore.
+Alcuni vantaggi del TCP/IP sono la disponibilità di utilizzo 
+in molte applicazioni e nella maggior parte 
+delle connessioni a Internet.
+Tuttavia, in certe implementazioni, TCP/IP non risulta la soluzione migliore,
+specialmente quando dobbiamo collegare un numero di dispositivi al 
+network che può variare nel tempo. Se nel nostro network tra workstation e 
+sensore della temperatura, aggiungiamo un altro dispositivo, ad esempio un 
+sensore per la temperatura, bisognerebbe creare un nuovo socket 
+TCP/IP per far comunicare il nuovo sensore con la workstation.
+Questo è necessario perché TCP/IP supporta una comunicazione di tipo 
+one-to-one (uno a uno). Come vedremo nella prossima sottosezione,
+il modello publish/subscribe non ha questa limitazione \cite{1494965}.
 
 
-\section{Blocco DataReader tramite sequence number}
-
-%\subsubsection{Prologo}
-Il vettore di attacco si trova nel messages module del protocollo RTPS
-descritto nella Sottosezione~\ref{Messages module}. Questo modulo
-si occupa di scambiare messaggi tra i DataReader e i DataWriter 
-all'interno un domain DDS.
-
-Per effettuare questi scambi di messaggi vengono utilizzati dei sottomessaggi,
-in particolare l'HEARTBEAT e l'ACKNACK.
-L'HEARTBEAT contiene al suo interno il sequence number che tiene traccia 
-del numero di aggiornamenti di un topic da parte di DataWriter, mentre
-l'ACKNACK inviato da un DataReader
-serve per confermare al DataWriter la ricezione di nuovi dati 
-riguardo un topic.
-Quando il DataReader riceve il sequence number all'interno di un HEARTBEAT
-può identificare se ci sono o no dei pacchetti mancanti e in caso segnalarli al
-DataWriter \cite{White2017AnII}.
-Inoltre se il parametro FINAL è attivo in un sottomessaggio HEARTBEAT, il DataReader 
-deve sempre rispondere al DataWriter con ACKNACK dopo aver ricevuto nuovi aggiornamenti.
-Il DataWriter, nel frattempo, rimarrà in attesa del sottomessaggio 
-ACKNACK prima di 
-inviare nuovi aggiornamenti al DataReader.
-Questo sistema aiuta il DataReader a rimanere sempre sincronizzato con il 
-DataWriter.
-
-I controlli del sequence number all'interno dell'HEARTBEAT 
-non sono sufficienti per mitigare questo attacco:
-\begin{itemize}
-    \item Un primo controllo viene effettuato per verificare che non ci siano 
-    valori negativi;
-    \item Un altro controllo serve a determinare se l'ultimo sequence number
-    appena ricevuto ha un valore minore rispetto a quello ricevuto in precedenza
-    \cite{White2017AnII};
-\end{itemize}
-
-
-\subsection{Dettagli attacco}
-
-Per sfruttare questa vulnerabilità l'attaccante deve utilizzare qualche 
-strumento per sniffare la comunicazione tra il DataReader e il DataWriter,
-intercettando i
-sottomessaggi HEARTBEAT. Dopo aver catturato un HEARTBEAT diretto verso 
-un DataReader e modificato 
-il suo sequence number assegnandogli un valore molto alto, 
-l'attaccante lo rinvia al suo destinatario originario.
-Una volta ricevuto il sottomessaggio il DataReader si metterà quindi 
-in attesa di un HEARTBEAT con un sequence number 
-superiore a quello appena ricevuto. Di conseguenza il DataReader
-non elaborerà più i messaggi legittimi mandati dal DataWriter,
-dato che hanno sequence number più piccoli.
-Solo un messaggio HEARTBEAT con un sequence number
-maggiore a quello del DataReader farà ripristinare la sua esecuzione 
-\cite{White2017AnII}.
-
-
-\subsection{Conclusioni}
-Di solito questo tipo di attacco è difficile da identificare. 
-Un messaggio HEARTBEAT riguarda un solo topic, quindi il resto delle
-comunicazioni che avvengono su topic differenti o anche sullo stesso 
-topic, ma con un DataReader diverso, non subiranno cambiamenti.
-Questa vulnerabilità può essere mitigata utilizzando l'estensione
-DDS security in modo tale da crittografare i messaggi e rendere 
-impossibile per l'attaccante effettuare modifiche al 
-sequence number. 
-
-
-\section{DDoS sfruttando estensione DDS security}
-Questo vettore di attacco si trova nell'estensione del DDS chiamata
-DDS security, descritto nella Sezione~\ref{DDS Security}; 
-in particolare la versione utilizzata è la versione 1.1.
-Il DDS security si occupa di stabilire una
-connessione sicura tra i vari dispositivi della rete, utilizzando 
-dei plugin per effettuare: autenticazione, controllo accesso, crittografia,
-login e data logging \cite{ddssecurity1.1}.
-
-Ogni partecipante del domain DDS deve essere autenticato reciprocamente
-dalle altre entità appartenenti allo stesso domain.
-Successivamente due entità,
-per iniziare una comunicare tra di loro, devono prima
-scambiarsi le chiavi private
-in modo
-sicuro tramite protocollo Diffie-Hellman in modo tale da poter 
-crittare i successivi
-messaggi. Nell'utilizzo di Diffie-Hellman vengono utilizzate
-le challenge (Sottosezione ~\ref{Processo di autenticazione}), 
-che corrispondono a valori che variano nel tempo, 
-inseriti durante il calcolo
-della firma digitale richiesta dal protocollo. 
-Queste challenge vengono utilizzate per rendere le varie sessioni 
-di autenticazione uniche evitando così attacchi di tipo replay
-\cite{DBLP:conf/asiaccs/WangLG24}.
-
-% controllare sta robbba
-
-
-\subsection{Dettagli attacco}
-L'attacco DDoS avviene durante la fase di autenticazione del
-DDS security 1.1, in particolare quando un nuovo dispositivo tenta di
-collegarsi alla rete e manda una richiesta di autenticazione
-all'entità con cui vuole aprire una comunicazione. 
-La richiesta del partecipante viene intercettata
-dall'attaccante che modifica i valori della challenge crittografica 
-all'interno del pacchetto. Modificando ripetutamente questi valori, l'attaccante
-inizia a inviare molteplici richieste crittografiche alla sua vittima.
-Il partecipante così comincerà a calcolare le firme digitali per effettuare
-l'autenticazione, consumando tutte le sue risorse.
-Dato che, la vittima è probabilmente un dispositivo IoT
-(Internet of Things)
-che non dispone di una potenza di calcolo molto elevata, si ritroverà
-occupata per tutto il tempo necessario a calcolare diverse firme digitali
-ricevute dall'attaccante, bloccando così il suo funzionamento
-\cite{DBLP:conf/asiaccs/WangLG24}.
-
-
-\subsection{Conclusioni}
-Questo attacco è stato scoperto con Proverif, un tool che viene usato
-per individuare vulnerabilità nei protocolli crittografici. 
-È stato utilizzato in molti studi, ad esempio nell'analisi della 
-posta elettronica certificata e nell'analisi del TLS 1.3 \cite{proverifmanual}.
-% https://bblanche.gitlabpages.inria.fr/proverif/manual.pdf
-
-Una raccomandazione per mitigare questo attacco è quello di cambiare delle
-policy QoS impostando un tempo limite massimo per effettuare
-l'autenticazione. Queste policy possono fare in modo
-che i partecipanti non si trovino sopraffatti dalle troppe richieste di
-autenticazione. Un allarme potrebbe essere utile per identificare possibili
-tentativi DDoS di questo tipo, allertando così un amministratore
-\cite{DBLP:conf/asiaccs/WangLG24}.
-
-
-\section{Enumeration sniff}
-% Devo spiegare il modulo discovery
-Prendendo in considerazione, il protocollo RTPS,
-descritto nella Sottosezione~\ref{Discovery module}, e il suo modulo discovery,
-possiamo notare che di default i messaggi sono molto verbose, 
-scambiando le informazioni in
-chiaro durante le comunicazioni tra i vari partecipanti \cite{White2017AnII}.
-Il modulo 
-discovery del protocollo RTPS a sua volta si suddivide in
-altri 2 protocolli, che sono necessari per le specifiche DDS:
-% (foglio 5 pag 123)
-\begin{itemize}
-    \item Simple Participant Discovery Protocol (SPDP).
-    \item Simple Endpoint Discovery Protocol (SEDP).
-\end{itemize}
-
-
-
-\subsection{Dettagli attacco}
-Per questo attacco ci focalizzeremo in particolare sull'SPDP che serve ad
-individuare la presenza dei partecipanti al resto delle
-entità nel domain. In particolar modo
-il funzionamento si basa su un messaggi di tipo multicast che vengono
-mandati a tutti i dispositivi riguardo ai partecipanti attivi
-% (foglio 5 pag 125)
-\cite{ddsrtps}.
-
-L'attaccante sniffando questi messaggi (all'interno di un domain DDS)
-di tipo multicast RTPS-SPDP,
-utilizzando anche un semplice script Python, infatti potrà 
-vedere il loro contenuto in maniera chiara.
-
-All'interno di un pacchetto di questo tipo possiamo trovare:
-l'indirizzo IP dell'host, il prefisso GUID dell'RTPS,
-la versione dellRTPS, l'ID del venditore, informazioni riguardanti la sincronizzazione
-ed infine il contenuto dei sottomessaggi \cite{White2017AnII}.
-
-
-\subsection{Conclusioni}
-Prendere informazioni DDS senza effettuare veri e propri
-attacchi di tipo attivo può essere molto utile per un attaccante che 
-ha il compito di penetrare in modo attivo
-una rete DDS. In molti casi tutto quello che deve fare l'attaccante
-è osservare i messaggi che vengono scambiati all'interno del network.
-Successivamente quando si ottengono informazioni a sufficienza sarà più
-facile per l'attaccante trovare altre vulnerabilità
-\cite{White2017AnII}.
-
-Di solito questo tipo di attacco è difficile da identificare e possono essere
-effettuati senza lasciare tracce di nessun tipo, dato che l'attaccante non 
-manda pacchetti.
-Una soluzione potrebbe essere usare l'estensione DDS security o 
-eseguire la connessione tra i nodi tramite un tunnel con WireGuard per crittare
-le comunicazioni.
-
-
-
-
-
-
-% \begin{figure}[H]
-%     \centering
-%     \includesvg[width=15cm,keepaspectratio]{img/Policy QoS DDS.drawio.svg}
-%     \caption{Illustrazione policy QoS del DDS}\label{Mappa QoS svg}
-% \end{figure}
-
-
-
-
-
-
-\section{Modifica maligna di OWNERSHIP strength}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=10cm, keepaspectratio]{img/Policy QoS DDS_2.jpg}
-    \caption{Illustrazione policy QoS del DDS}\label{Mappa QoS}
+    \includegraphics[width=12cm, keepaspectratio]{img/TCP connessione-Pagina-2.jpg}
+    \caption{Un esempio di collegamento tra una workstation e un sensore della temperatura,
+    utilizzando il protocollo TCP.}
+    \label{TCP connection}
 \end{figure}
-% AFTER si potrebbe fare nei capitoli introduttivi una mappa che racchiuda
-% i tipi di variabili che usano i QoS (int, double,.. etc) per i capitoli
-% che spiegano meglio i concetti introduttivi
 
 
-Questo attacco è realizzabile solo se certe policy QoS vengono
-modificate durante l'esecuzione della rete, specialmente il parametro
-OWNERSHIP-KIND che gestisce quanti DataWriter possono scrivere per un
-determinato topic. Una descrizione accurata di altre policy QoS viene 
-effettuata nella Sottosezione~\ref{Le policy QoS nel dettaglio}.
-Questo parametro può essere impostato in due modi diversi:
+
+\subsection{Struttura modello publish/subscribe}
+% Citazione da mettere
+Per funzionare, il modello publish/subscribe, ha bisogno di
+due elementi chiamati publisher e subscriber, 
+che permettono lo scambio di messaggi all'interno del network.
+La comunicazione avviene 
+quando hanno un topic, che
+rappresenta una tipologia di dati (ad esempio la temperatura, 
+la distanza e la velocità) è in comune tra di loro.
 \begin{itemize}
-    \item SHARED: in questo modo più di un DataWriter possono aggiornare le
-    informazioni di un topic.
-    \item EXCLUSIVE: solo un DataWriter può aggiornare le informazioni di un
-    topic. Il DataWriter che ha il permesso di scrittura per il topic è quello
-    che dispone di un OWNERSHIP-strength con valore più alto.
+    \item Publisher: colui che pubblica nuovi dati riguardanti dei
+    topic rendendoli accessibili ai subscriber iscritti. 
+    Di solito si tratta di un sensore.
+    \item Subscriber: è colui che si iscrive ai topic del publisher, 
+    cominciando
+    così a ricevere nuovi dati sul topic scelto. Spesso si tratta
+    di un dispositivo utilizzato per visualizzare informazioni, come uno
+    schermo.
 \end{itemize}
-% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership
-% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:ownership_strength
-In una rete dove si utilizza un OWNERSHIP-kind di tipo EXCLUSIVE è consente
-all'attaccante di utilizzare l'OWNERSHIP-strength a suo favore.
-Infatti è possibile far ricevere informazioni a un DataWriter
-in maniera errata, dato che quest'ultimo non riceverà più informazioni da
-una fonte affidabile 
-\cite{DBLP:conf/malware/MichaudDL18}.
+Chiamiamo entità tutti i dispositivi che fanno parte del modello 
+publish/subscribe.
+Una caratteristica di queste entità è che possono essere aggiunte o rimosse
+da una rete senza nessun problema, dato che le 
+comunicazioni avvengono in modalità asincrona \cite{dds1.4}. 
+
+Inoltre questo modello risulta molto
+flessibile e adatto in ambienti real-time dove le informazioni
+possono cambiare o essere utilizzate da più dispositivi.
+I subscriber, ad esempio possono cambiare i topic a cui 
+sono iscritti e i publisher possono smettere di pubblicare nuovi
+aggiornamenti su un determinato topic anche a runtime \cite{OH2010318}.
+
+\section{Che cos'è il Data Distribution Service}
+
+Il DDS gestito da OMG è un middleware e uno standard API con una gestione
+dei dati di tipo data-centric. 
+Prendendo in considerazione il modello ISO OSI 
+(Open Systems Interconnection), questo
+middleware è un software che si trova tra l'applicativo e il livello
+del trasferimento.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=10cm, keepaspectratio]{img/ModelloISOOSIDDS-Pagina-3.jpg}
+    \caption{Posizione del middleware DDS nel modello ISO/OSI.}
+    \label{DDSISOOSI}
+\end{figure}
 
 
-\subsection{Dettagli attacco}
-L'attaccante, con un DataWriter in suo possesso all'interno di una rete DDS,
-può sfruttare il fatto che il topic preso di mira può essere aggiornato
-solo dal DataWriter con l'OWNERSHIP-strength più alta.
-Per effettuare questo attacco, tutto quello che serve, è 
-essere a conoscenza del topic che
-si vuole modificare, le policy QoS in uso e il valore dell OWNERSHIP-strength.
-L'ultimo passo è quello di impostare la policy QoS nel DataWriter
-dell'attaccante con OWNERSHIP-strength superiore a quello utilizzato dal
-DataWriter originario.
-Ora i DataReader che sono iscritti al topic bersaglio
-ricevono le informazioni dal DataWriter dell'attaccante
-\cite{DBLP:conf/malware/MichaudDL18}.
+% fare disegno layers osi
+Il DDS si basa sul DCPS (Data-Centric Publish-Subscribe) 
+che è un modello di comunicazione simile a quello
+di tipo publish/subscribe, ma con un approccio più data-centric, in modo
+tale da semplificare il lavoro del programmatore che si deve solamente
+occupare di specificare il contesto del dato che deve mandare o ricevere.
+Con data-centric infatti, specifichiamo che il focus del modello DCPS 
+è incentrato 
+sui dati stessi, anziché sulle entità che li scambiano \cite{whatisdds}.
+Così facendo non bisogna preoccuparsi dell'invio o della ricezione
+dei messaggi, perché questa parte viene completamente gestita dal middleware.
+% Il DDS è stato il primo standard
+% a formalizzare le comunicazioni di tipo data-centric. Inizialmente erano 
+% disponibili solamente soluzioni proprietarie senza specificare un standard
+% univoco. Non avendo avuto uno standard univoco le varie implementazioni dei vendors
+% non erano
+% compatibili tra di loro a differenza del DDS.
+
+% Magari fare la differenza tra data centri e message centric
+
+Altri vantaggi del DDS includono una architettura adattabile che supporta
+degli elementi di auto-scoperta (auto-discovery) o Dynamic Discovery 
+in modo tale da aggiungere o 
+rimuovere dispositivi dalla rete in modo automatico, anche a runtime.
+Il Dynamic Discovery ha il compito di analizzare quali tipologie di dati 
+ha bisogno questo nuovo dispositivo. 
+
+Inoltre ogni nuovo partecipante 
+utilizzerà sempre le stesse API per comunicare con l'applicativo dato che 
+non c'è bisogno di configurare le impostazioni degli indirizzi IP o 
+preoccuparsi delle diverse architetture \cite{1494965}.
+ 
+ 
+\subsection{Quality of Service (QoS)}
+
+Per soddisfare i diversi requisiti di una trasmissione dati, 
+il Data Distribution Service (DDS) utilizza un insieme di policy
+Quality of Service (QoS). Queste policy permettono di controllare, 
+regolare e ottimizzare lo scambio di dati tra i vari componenti 
+all'interno del middleware. Queste policy QoS possono variare 
+significativamente in base al tipo di comunicazione richiesta, 
+offrendo una gestione altamente flessibile e granulare. 
+Ogni elemento del middleware può essere configurato 
+con policy specifiche, in modo tale da adattarsi alle 
+esigenze dell'applicazione.
+
+\subsection{Global Space Data}
+Il DDS utilizza il Global Data 
+Space (spazio dati globale), un'area logica condivisa 
+che consente agli applicativi
+di accedere a una sorta di memoria locale tramite API.
+L'applicativo nella scrittura o nella ricezione dei dati utilizzerà 
+questa memoria locale fittizia assumendo il ruolo di 
+un'unica risorsa centralizzata.
+Tuttavia, i dati all'interno di questa memoria possono contenere
+informazioni provenienti da nodi remoti distribuiti per la rete. 
+L'applicativo non deve cosi preoccuparsi dell'accessibilità dei dati,
+poiché questi vengono gestiti agendo come se si trovassero tutti in unico punto 
+\cite{whatisdds}.
 
 
-\subsection{Conclusioni}
-Questa vulnerabilità è stata analizzata con l'ausilio di RTI Shapes Demo, un 
-software che emula una rete DDS corrispondente alle specifiche 
-dello standard OMG, sviluppato da Real-Time Innovations (RTI).
+\subsection{Architettura DDS}
+Lo standard DDS definito dall'OMG è composto da due layer: 
+il DDS e il
+DDSI (DDS Interoperability).
+    \begin{itemize}
+        \item DDS: è il layer fondamentale in cui troviamo il DCPS
+        (Data-Centric Publish-Subscribe),
+        il modello di comunicazione simile a quello di tipo publish/subscribe,
+        che si occupa di mettere in comunicazione più applicazioni 
+        tra di loro. In questo layer vengono inoltre 
+        definite le policy QoS \cite{Michaud2017Apr}.
+        \item DDSI: è il layer che si occupa di garantire l'interoperabilità
+        tra le diverse implementazioni del DDS, ad
+        esempio quando provengono da vendors diversi.
+        All'interno di questo layer troviamo l'RTPS 
+        (Real-Time Publish-Subscribe Protocol), un protocollo che permette ai 
+        vari dispositivi DDS di comunicare e scoprirsi tra di loro
+        (Dynamic Discovery).
+        RTPS è il wire-protocol (un protocollo che permette lo scambio di 
+        messaggi del DDS al layer di trasporto di rete 
+        del modello ISO OSI) ufficiale del DDS, 
+        con standard definito da OMG,
+        che definisce il formato dei messaggi e impone le regole che 
+        permettono una trasmissione standardizzata di scambio dati. 
+        Se questo wire-protocol non fosse presente,
+        le diverse implementazioni del DDS non potrebbero 
+        comunicare tra di loro \cite{essay93639}.
+    \end{itemize} 
 
-L'OWNERSHIP-kind di tipo EXCLUSIVE è utilizzata in contesti dove le
-informazioni ricevute dal DataReader devono essere accurate dato che un singolo
-DataWriter (in molti casi si tratta di un sensore) può mandare nuovi aggiornamenti
-del topic. Se l'attaccante, dovesse riuscire a modificare i valori del topic con
-questo attacco, potrebbe causare molti danni,
-specialmente se il DataWriter dell'attaccante riesce a mandare degli aggiornamenti
-al topic senza essere scoperto
-\cite{DBLP:conf/malware/MichaudDL18}.
-
-Una soluzione utile per mitigare questo attacco potrebbe essere l'utilizzo
-dell'estensione DDS security. Utilizzando i plugin relativi al controllo accesso,
-come illustrato nella Sottosezione~\ref{Access Control Service Plugin}, permette
-di evitare che un attaccante possa modificare le policy QoS inclusa 
-l'OWNERSHIP-strength.
 
 
-\section{Modifica maligna di LIFESPAN QoS}
+% \subsection{Dynamic Discovery}
+% \cite{whatisdds}
 
-Un'altra policy QoS che può essere usata come vettore di attacco è quella
-che regola il parametro LIFESPAN. Questa regola corrisponde al tempo limite massimo 
-di validità per la
-lettura di pacchetti da parte di un DataReader. Per determinare se un pacchetto
-di un determinato topic è scaduto viene utilizzato il timestamp di creazione
-aggiungendo il LIFESPAN impostato; se questo risultato chiamato 
-expiration time risulta
-superiore all'orario durante la ricezione del DataReader, allora il pacchetto
-ricevuto è ancora valido. 
-Per funzionare gli orologi interni del DataWriter e del DataReader
-devono essere sincronizzati tra di loro.
 
-Un'altra policy da considerare è quella riguardo all'affidabilità
-(RELIABILITY) dei dati riguardanti un topic che può essere impostata in due
-modi:
+
+
+% \subsection{In che contesti viene utilizzato e perché}
+
+% \subsection{Versioni DDS}
+
+
+
+% Schema layer middleware
+
+% https://www.dds-foundation.org/what-is-dds-3/
+
+\section{Le entità del DCPS}
+Il layer DDS per operare utilizza le entità definite dal DCPS, 
+che rappresentano gli elementi necessari
+per il funzionamento dell'intero middleware. Queste hanno il compito di 
+gestire i dati
+scambiati tra i vari partecipanti all'interno del sistema. 
+Le entità principali del DDS sono: 
+il publisher, il subscriber, il DataWriter, il DataReader, il Topic,
+la Istanza, il Domain e il Domain Participant.
+Ognuna di queste entità deve tener conto del suo set di policy 
+QoS configurate
+che ne definiscono il comportamento. Queste policy verranno analizzate 
+più nel dettaglio nella Sezione~\ref{Le policy QoS nel dettaglio}.
+% Aggiungere riferimento
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=15.2cm, keepaspectratio]{img/entitadcps .png}
+    \caption{Entità DCPS del DDS. 
+    Fonte: \cite{whatddseprosima}}
+    \label{entitadcps}
+\end{figure}
+
+
+
+Il linguaggio utilizzato da queste entità si chiama Interface 
+Definition Language (IDL) e anch'esso è standardizzato da OMG. 
+IDL è un linguaggio tipizzato 
+simile a C++ che supporta i seguenti data types: char, octet, short,
+unsigned short, long, unsigned long, long long, unsigned long long, 
+float, double, long double, boolean, enum, array e string
+\cite{1494965}.
+
+
+\subsection{Publisher e Subscriber}
+Publisher e subscriber sono entità che abbiamo già incontrato
+in precedenza nel modello publish/subscribe. Queste due entità 
+mantengono lo stesso ruolo all'interno del modello DCPS.
+
+\subsection{DataWriter e DataReader}
+
+Per comunicare tra loro, un publisher si interfaccia tramite
+DataWriter, 
+mentre il subscriber si interfaccia tramite un DataReader.
+Il DataWriter e il DataReader sono interfacce, 
+perché l'applicativo
+può mandare e ricevere dati
+tramite queste due entità fondamentali. 
+Questi dati scambiati tra middleware e applicativo
+sono i data type e i data-values. I data type consentono di 
+descrivere la struttura e il formato del dato, mentre i data-value
+sono i dati veri e propri che rispettano le specifiche data type.
 \begin{itemize}
-    \item RELIABLE: questa impostazione costringe il DataReader a farsi
-    ritrasmettere dal DataWriter i pacchetti mancanti o ricevuti in maniera errata.
-    In questo modo le informazioni del DataReader saranno sempre corrette anche
-    se non sempre saranno aggiornate in tempo reale.
-    \item BEST-EFFORT: l'impostazione predefinita non consente il recupero
-    dei pacchetti mancanti o corrotti
-    del DataReader, quindi, quest'ultimo potrebbe anche perdere dei pacchetti 
-    che gli sono stati inviati \cite{dds1.4}.
+    \item DataWriter: è l'interfaccia usata dagli applicativi 
+    per spedire i
+    data-values con un loro specifico data type ai publisher.
+    Ricevuti questi data-values il publisher spedirà le
+    informazioni ricevute dall'applicativo ai relativi subscriber.
+    \item DataReader: è l'interfaccia usata dagli applicativi per
+    ricevere i data-values con i rispettivi data type pubblicati in
+    precedenza da un publisher \cite{dds1.4}.
 \end{itemize}
-% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:reliability
-Se il LIFESPAN dei pacchetti, contenenti i dati del topic,
-viene impostato con valori molto piccoli, si verificheranno problemi di comunicazione
-tra DataWriter e DataReader, dato che non sarà possibile effettuare la lettura di 
-certi pacchetti inviati. Impostando il valore RELIABLE tra le policy QoS con
-RELIABILITY è possibile mitigare 
-solo parzialmente questa vulnerabilità
-\cite{DBLP:conf/malware/MichaudDL18}.
+È possibile
+associare più DataReaders ad un unico publisher e più DataWriters ad
+un unico subscriber. Tuttavia, un DataWriter può essere associato solo ad un 
+Publisher e un DataReader solo ad un Subscriber. 
+Questo avviene perché
+i DataReaders e DataWriters possono utilizzare un solo data type alla volta, 
+mentre 
+i publisher e i subscribers, non avendo questa limitazione, possono gestire 
+più DataWriters e DataReaders alla volta.
 
-% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:02_quality_of_service:lifespan
+% Inserire immagine
+
+\subsection{Topic}
+% Specificare dove sono stati introdotti
+Nel modello publish/subscribe abbiamo già introdotto i topic, ma 
+abbiamo la necessità di approfondirli quando vengono utilizzati
+con le specifiche del DDS.
+
+I topic vengono utilizzati per identificare il data type
+scambiato tra i publishers e i subscribers, creando cosi un punto
+di connessione 
+tra DataWriter e DataReader \cite{topicomg}.
+All'interno del topic troviamo il nome,
+i data types e le policy QoS.
+Il nome del topic corrisponde ad una stringa univoca 
+che serve per identificarlo 
+tra gli altri topic del domain.
 
 
-\subsection{Dettagli attacco}
-Avendo sotto controllo i parametri LIFESPAN e RELIABLE, l'attaccante modificherà le
-policy dei DataWriter in modo tale da avere il LIFESPAN molto piccolo. Così
-facendo, i pacchetti spediti dal publisher arriveranno già scaduti al DataReader,
-rendendoli inutilizzabili. In certi casi il pacchetto che deve essere inviato
-viene distrutto dallo stesso DataWriter all'interno della sua coda prima dell'invio. 
-Questa vulnerabilità è stato verificata impostando il valore di
-LIFESPAN < 80ms dove si è visto che nessun pacchetto raggiunge il DataReader.
-Se si aumenta il valore tra gli 80ms e i 100ms già si può notare che dei pacchetti
-vengono letti con successo dal DataReader, mentre altri vengono eliminati prima
-della lettura. Infine impostando un valore LIFESPAN >= 120ms si può notare che
-la comunicazione tra publisher e subscriber avviene senza nessun problema.
+\subsection{Key e Istanza}
+Uno o più data types di un topic possono diventare la chiave (key) del topic. 
+Queste chiavi ci permettono di suddividere
+i data-values di un topic, dividendoli a seconda della chiave.
+Ogni suddivisione che effettuiamo tramite una key diversa crea 
+un'istanza che al suo interno contiene i data-values di un 
+flusso di dati (data-stream)
+\cite{Instance81:online}.
 
-Un dettaglio da aggiungere è che se si imposta la policy
-dell'affidabilità (RELIABILITY) con valore RELIABLE, i millisecondi necessari
-del LIFESPAN per compromettere le comunicazioni tra DataReader e DataWriter
-devono essere moltiplicati per un fattore di 0.01. Quindi, ad esempio se si
-ottiene un completo annullamento delle comunicazioni con un LIFESPAN < 80ms
-utilizzando il la RELIABILITY di tipo BEST-EFFORT, per ottenere lo stesso
-risultato con RELIABILITY di tipo RELIABLE dobbiamo impostare un
-LIFESPAN < 0.8ms
-\cite{DBLP:conf/malware/MichaudDL18}.
+Per fare un esempio prendiamo il topic velocità in un contesto dove si
+vogliono analizzare i dati di una gara.
+La struttura del topic avrà due data types: il primo corrisponde al valore
+della velocità registrata, mentre il secondo mostra l'id-macchina 
+che identifica da quale vettura i dati provengono.
 
-\subsection{Conclusioni}
-Anche questo test è stato dimostrato con RTI Shapes Demo che 
-implementa una
-soluzione DDS di RTI corrispondente alle specifiche dello standard OMG.
-Inizialmente molte reti DDS hanno impostato la RELIABILITY
-di tipo BEST-EFFORT che è l'impostazione predefinita,
-in modo tale da rendere possibili comunicazioni di tipo real-time.
-Quindi nella maggior parte
-dei casi l'attaccante non si deve preoccupare di modificare questo parametro.
+\vspace{5mm} % Riusare per codici futuri
+\begin{lstlisting}[language=C++, caption=Esempio di Topic con una key
+    usando il linguaggio IDL.
+    , label=topic struct,
+    captionpos=b]
+struct Veicolo { // Nome del topic
+    id_macchina; // Key del topic
+    velocita;
+}
+\end{lstlisting}
+\vspace{5mm}
 
-Una possibile soluzione consiste nell'implementare qualche tipo di controllo
-in modo tale da avvertire un operatore umano se molti pacchetti vengono
-scartati perché arrivati con un LIFESPAN scaduto. Questo controllo potrebbe
-essere anche utile, nel caso in cui il DataWriter e il DataReader si trovassero
-distanti fisicamente tra di loro, per verificare la qualità del collegamento
-\cite{DBLP:conf/malware/MichaudDL18}.
+Creiamo ora due istanze, una con valore 270 per la velocità e con 
+l'id-macchina uguale a 1 e l'altra con un valore di 220 per la velocità e 
+con id-macchina 
+uguale a 2. L'id-macchina fungerà da key 
+del topic per distinguere la provenienza dei dati; in questo
+modo possiamo così controllare le due macchine con due istanze ciascuna.
+\
+% Magari anche con RTI shapes
+\label{Key e Istanza}
+
+\subsection{Domain}
+L'entità del domain (dominio) rappresenta uno spazio logico definito che
+ha lo scopo di mettere in comunicazione i vari applicativi tra di loro.
+All'interno possiamo trovare i vari topic che collegano gli applicativi
+con i loro rispettivi data-types.
+L'entità domain è caratterizzata dalle seguenti proprietà:
+\begin{itemize}
+    \item Ogni domain viene identificato da un id 
+    per renderlo univoco.
+    \item Ogni entità del DDS può appartenere
+    ad un solo domain.
+    \item Le entità all'interno del domain possono interagire
+    solamente con le altre entità all'interno dello stesso domain
+    \item Due applicativi DDS per poter comunicare tra di loro
+    hanno bisogno di entrare nello stesso domain.
+    \item Un applicativo può far parte di più domain creando 
+    più istanze dell'entità DomainParticipant in ogni
+    domain in cui vuole interagire \cite{domainrti}.
+\end{itemize}
+
+% (possibilità di aggiungere esempi con demo shapes)
+
+\subsection{DomainParticipant}
+L'entità del DomainParticipant all'interno di un Domain del DDS,
+viene utilizzata dagli applicativi e 
+rappresenta la prima entità creata da un'applicazione che verrà 
+impiegata per creare DataWriters e DataReaders. 
+Questa entità ha il compito di inizializzare
+le comunicazioni con il Domain attraverso 
+il processo di discovery.
+Questo processo consente alle entità appartenenti allo 
+stesso domain di trovarsi e connettersi automaticamente.
+% Processo discovery non ancora introdotto
+L'entità DomainParticipant è caratterizzata dalle seguenti proprietà:
+\begin{itemize}
+    \item Il DomainParticipant come le altre entità, può 
+    esistere solo all'interno di un dominio.
+    \item Il DomainParticipant è responsabile della scoperta di altri
+    DomainParticipant all'interno del domain \cite{domainparticipantrti}.
+\end{itemize}
+
+
+\section{Le policy QoS nel dettaglio}
+A livello logico, le specifiche del DDS
+definiscono un insieme di policy QoS
+che le entità del DCPS devono rispettare. Qui di seguito vengono
+proposte le categorie QoS più rilevanti.
+\begin{itemize}
+    \item Ownership: questo valore specifica se un topic
+    può essere aggiornato da più 
+    (SHARED ownership) o da un solo (EXCLUSIVE ownership) publisher.
+    Se abbiamo impostato un ownership di tipo EXCLUSIVE, per decidere il 
+    publisher che ha la possibilità di aggiornare il topic, viene 
+    utilizzato l'ownership STRENGTH.
+    \item Liveness: viene utilizzato per specificare se è necessaria
+    una comunicazione di tipo attivo, rispetto ad una di tipo 
+    intermittente.
+    \item Reliability: specifica se in una comunicazione tutti i dati
+    trasferiti tra publisher e subscriber devono essere consegnati
+    per intero, oppure
+    se è accettabile anche la perdita di alcuni dati.
+    \item Lifespan: specifica il tempo di scadenza dei dati pubblicati da 
+    un publisher.
+    \item History: specifica quanti e come i dati devono essere 
+    mantenuti in un 
+    subscriber dopo averli ricevuti.
+    \item Durability: specifica se i dati inviati in precedenza sono
+    disponibili per i nuovi subscriber appena entrati nel domain.
+\end{itemize}
+Le configurazioni 
+delle policy vengono trasmesse alle varie entità dal DomainParticipant
+tra cui i publisher, i subscriber, i topic e i DataWriters.
+Tuttavia, le policy di un publisher e un subscriber devono essere compatibili.
+Se così non fosse, la comunicazione tra i due potrebbe essere compromessa
+\cite{Michaud2017Apr}.
+\label{Le policy QoS nel dettaglio}
+
+
+\section{Il protocollo RTPS}
+RTPS (Real-Time Publish-Subscribe Protocol) è il wire-protocol 
+nativo utilizzato dal DDS che consente di trasferire i dati provenienti
+dal layer DDS a quello di trasporto della rete.
+Solitamente questo viene utilizzato in combinazione con il protocollo
+best-effort
+UDP/IP, che risulta ottimale per le comunicazioni di tipo real-time. Tuttavia 
+anche i protocolli connection-oriented incluso il TCP/IP possono essere utilizzati. 
+RTPS include molti vantaggi ideali per il DDS:
+\begin{itemize}
+    \item Connettività plug and play: le nuove applicazioni possono unirsi o 
+    lasciare il domain a proprio piacimento.
+    \item Tolleranza ai guasti: non sono presenti singoli punti di 
+    guasto perché i dati vengono distribuiti e replicati tra le varie 
+    entità DDS che adoperano il Global Data Space.
+    \item Type-safety: gli errori di programmazione vengono gestiti 
+    in modo tale da non compromettere il funzionamento 
+    dei dispositivi remoti.
+\end{itemize}
+L'RTPS è suddiviso in quattro moduli differenti: lo structure module, il 
+messages module, behavior module e il discovery module \cite{ddsrtps}.
+
+\subsection{Structure and behavior module}
+Lo structure module si occupa di associare le entità DDS alle corrispondenti
+entità RTPS. Queste entità RTPS sono utilizzate 
+per rappresentare le entità del DDS (come DataReader e DataWriter) 
+all'interno del protocollo RTPS (come l'RTPS Writers e l'RTPS Readers) 
+\cite{ddsrtps}.
+
+Il behavior module, invece, definisce le regole di comunicazione tra
+due o più entità RTPS, che sono i RTPS Writers e i RTPS Readers 
+(definite dal behavior module), durante 
+una sequenza di messaggi.
+Esse consentono di mantenere l'interoperabilità tra le varie 
+implementazioni (anche di diversi vendors) del DDS \cite{ddsrtps}.
+
+\subsection{Messages module}
+Il messages module si occupa di descrivere il formato dei messaggi scambiati
+tra i RTPS Writers e i RTPS Readers che sono composti da un header
+seguito da dei sottomessaggi (Figura~\ref{wireskartshapesdemo}). 
+Nell'header troviamo informazioni relative al
+protocollo RTPS, cioè la sua versione, il nome del vendor dell'implementazione
+usata e il mittente. Nel sottomessaggi invece possiamo trovare un header
+e una serie elementi. Nell'header del sottomessaggio
+è presente l'id che ne
+identifica il tipo, eventuali flag e la lunghezza in bytes 
+del sottomessaggio stesso. Le tipologie dei sottomessaggi più importanti, 
+identificate dal suo header, sono:
+\begin{itemize}
+    \item DATA: in questo sottomessaggio vengono trasferiti dall'RTPS Writers
+    all'RTPS Reader i dati effettivi relativi ad un topic.
+    \item HEARTBEAT: viene mandato da un RTPS Writer a un RTPS Reader per 
+    comunicare il numero di nuovi (sequence number) aggiornamenti che il 
+    Writer ha disponibili.
+    \item ACKNACK: utilizzato per comunicare lo stato di un RTPS Reader 
+    al corrispondente RTPS Writer e per informarlo riguardo i dati ricevuti
+    e quelli mancanti. Questo sottomessaggio, con la flag FINAL 
+    impostata, consente di far rimanere il Reader sincronizzato con l'RTPS
+    Writer \cite{ddsrtps}.
+\end{itemize} \label{Messages module}
+
+
+\subsection{Discovery module}
+Questo modulo garantisce che i nuovi partecipanti DDS (publisher e subscriber)
+riescano a identificarsi in automatico tra di loro in modo tale da inizializzare una 
+possibile comunicazione. Questo modulo è responsabile dell'auto-scoperta 
+(Dynamic Discovery)
+delle entità del DDS all'interno dello stesso domain. Il Dynamic Discovery
+utilizza messaggi di tipo multicast e unicast per informare gli altri partecipanti
+di un nuovo dispositivo connesso alla rete, pronto a comunicare con il
+resto delle entità. Il discovery module è composto da due protocolli chiamati
+Simple Participant Discovery Protocol (SPDP) e 
+Simple Endpoint Discovery Protocol (SEDP). SPDP ha il compito di scoprire nuovi 
+partecipanti, mentre l'SEPD si occupa di scambiare tra le entità le informazioni
+di topics, DataWriter e DataReader. In particolare l'SEDP serve per collegare
+tramite topic i DataReaders ai DataWriters \cite{ddsrtps}.
+\label{Discovery module}
+
+\section{DDS Security}
+Nelle specifiche del DDS non viene presa in considerazione la sicurezza, quindi
+un'implementazione che utilizza il DDS di base può essere esposta a numerosi 
+rischi. Per ovviare a questo problema, OMG ha definito un nuovo standard 
+chiamato DDS security. Il DDS security è un'estensione del DDS con 
+l'obiettivo di mitigare una moltitudine di vettori d'attacco come 
+la lettura e la scrittura dei messaggi scambiati tra i partecipanti di un 
+domain DDS. Questa estensione è composta da cinque plugin:
+\begin{itemize}
+    \item Authentication Service Plugin: serve per effettuare l'autenticazione 
+    delle entità DDS. Senza l'autenticazione le entità non possono
+    comunicare tra di loro.
+    \item Access Control Service Plugin: ha lo scopo di imporre 
+    delle policy alle entità DDS autenticate. Ad esempio limitare
+    la pubblicazione di nuovi dati o la creazione di nuovi topic.
+    \item Cryptographic Service Plugin: gestisce tutte le operazioni 
+    crittografiche, tra cui la crittografia, la decrittazione e
+    le firme digitali. Ha anche il compito di controllare l'integrità
+    dei messaggi.
+    \item Logging Service Plugin: permette di effettuare un audit di 
+    tutte le operazioni DDS rilevanti all'interno di un domain.
+    \item Data Tagging Service Plugin: fornisce dei metodi per implementare
+    un tag su tutti i dati trasferiti. 
+\end{itemize}
+Anche se il DDS security riesce a risolvere molti problemi legati alla
+sicurezza del DDS, non sempre è possibile implementarlo. Spesso 
+la sua configurazione può richiedere molto tempo per essere 
+impostata, soprattutto su sistemi DDS già esistenti e sprovvisti di 
+questa estensione.
+Il partecipante più vulnerabile rappresenta la sicurezza
+complessiva dell'intero sistema, quindi ogni entità deve essere
+protetta \cite{Michaud2017Apr}. 
+
+Il DDS security può essere usato anche non utilizzando tutti i plugin;
+gli ultimi due sono facoltativi e vengono 
+raramente usati \cite{essay93639}. 
+\label{DDS Security}
+
+
+\subsection{Authentication Service Plugin}
+Senza questo modulo chiunque potrebbe entrare a far parte nel domain
+del DDS, ponendo un grave rischio alla sicurezza. Per ovviare a questa
+falla, l'Authentication Service Plugin richiede, a ogni dispositivo che 
+vuole entrare del domain DDS, la necessità di autenticarsi.
+Prima di effettuare l'autenticazione tutti i partecipanti devono 
+avere un loro certificato e le loro chiavi private, mentre 
+l'amministratore deve creare un certificato root(o Certificate Authority, CA) 
+che deve essere riconosciuto da tutte le entità autorizzate. 
+L'autenticazione tra le entità avviene in modo reciproco, 
+in modo tale che ciascun partecipante verifichi l'identità dell'altro
+tramite un controllo dei certificati.
+
+
+\subsubsection{Processo di autenticazione}
+% Quali sono le due identità
+L'autenticazione di due entità viene effettuata
+tramite il protocollo Diffie-Hellman, che consente la trasmissione 
+di chiavi in modo sicuro anche in canali di comunicazione non protetti.
+Le due entità utilizzando Diffie-Hellman otterranno una chiave 
+segreta condivisa da entrambi. Implementando questo 
+protocollo la chiave non verrà mai 
+trasmessa direttamente, evitando così di essere intercettata da 
+possibili attaccanti. 
+
+Per rafforzare ulteriormente la sicurezza e prevenire attacchi replay 
+(riutilizzo di messaggi intercettati) o di impersonificazione, vengono 
+utilizzate le challenge. Queste challenge corrispondono a valori 
+casuali che cambiano nel tempo e vengono utilizzati durante il 
+calcolo della firma digitale che si effettua nel protocollo
+Diffie-Hellman.
+Dato che che queste challenge cambiano periodicamente,
+i vecchi messaggi intercettati dagli attaccanti non possono essere 
+più riutilizzati.
+
+La fase di autenticazione si conclude quando viene completato
+lo scambio delle chiavi.
+Queste chiavi verranno poi utilizzate da protocolli di 
+crittazione incluso l'RSA (Rivest-Shamir-Adleman) per effettuare 
+comunicazioni in modo sicuro. Infatti non sarà possibile per un 
+attaccante spiare o cambiare il contenuto dei messaggi dato 
+che questi sono criptati 
+\cite{DBLP:conf/asiaccs/WangLG24}.
+\label{Processo di autenticazione}
+
+\subsection{Access Control Service Plugin}
+
+Questo plugin gestisce i permessi delle entità all'interno di 
+un domain DDS. È possibile configurare questi permessi con una 
+granularità molto fine. Dei possibili permessi possono essere:
+aggiornare un determinato topic da parte di 
+un DataWriter, far entrare una determinata entità
+all'interno di un domain, eliminare un topic, iscriversi a un topic, 
+creare un topic con specifici DataReaders e DataWriters e
+entrare o uscire da determinati domains.
+
+L'Access Control Service Plugin per funzionare ha bisogno di due 
+files in formato XML che devono essere entrambi firmati da 
+un CA: il governance document e il permissions document.
+Il governance document rimane uguale per tutti i dispositivi 
+all'interno del domain DDS e si occupa di gestire 
+permessi generali a livello di domain. Il permissions document,
+invece, è unico per ogni dispositivo e si occupa di gestire i 
+permessi del singolo partecipante.
+Questi vengono ricevuti dai partecipanti durante la fase di
+autenticazione e devono rimanere sempre disponibili \cite{essay93639}.
+
+
+
+\vspace{5mm} % Riusare per codici futuri
+\begin{lstlisting}[language=XML, caption=Estratto di permissions
+    document{,} tratto da documento di riferimento 
+    del DDS Security versione 1.1 \cite{ddssecurity1.1}.
+    , label=XML permission file,
+    captionpos=b]
+...
+    <permissions>
+        <grant name="ShapesPermission">
+            <subject_name>CN=DDS Shapes Demo</subject_name>
+            <validity>
+                <not_before>2013-10-26T00:00:00</not_before>
+                <not_after>2018-10-26T22:45:30</not_after>
+            </validity>
+            <allow_rule>
+                <domains>
+                    <id>0</id>
+                </domains>
+            </allow_rule>
+            <deny_rule>
+                <domains>
+                    <id>0</id>
+                </domains>
+                <publish>
+                    <topics>
+                        <topic>Circle1</topic>
+                    </topics>
+                </publish>
+...
+    \end{lstlisting}
+\vspace{5mm}
+\label{Access Control Service Plugin}
+
+\subsubsection{Processo di controllo permessi}
+Un esempio di processo di controllo permessi avviene
+quando un DataWriter richiede l'autorizzazione per creare un nuovo topic.
+Le altre entità hanno il compito di verificare se l'operazione 
+richiesta dal DataWriter viene consentita
+dai files di permessi a loro disposizione. Per effettuare 
+questa operazione il partecipante, che richiede l'autorizzazione ,
+deve mandare il proprio permission document, il topic che intende creare e 
+i propri metadati. Successivamente un altro partecipante,
+che ha il compito di autorizzare il DataWriter,
+riceverà il messaggio ed effettuerà le seguenti
+verifiche:
+\begin{enumerate}
+    \item Verifica che la firma digitale del permesso ricevuto sia valida.
+    \item I metadati forniti devono corrispondere a quelli del del 
+    permesso ricevuto.
+\end{enumerate}
+Il secondo controllo ha lo scopo di verificare
+che il partecipante, che vuole creare il 
+nuovo topic sia effettivamente quello indicato nel permesso 
+ricevuto in precedenza; mitigando in questo modo gli attacchi di 
+impersonificazione 
+\cite{DBLP:conf/asiaccs/WangLG24}.
+
+\section{Implementazioni DDS}
+Il Data Distribution Service definito (DDS) dall'Object Management
+Group (OMG) può essere definito un open standard. Gli standard
+definiti da OMG infatti sono disponibili al pubblico e servono  
+per mantenere una certa consistenza, portabilità e interoperabilità
+tra le varie implementazioni del DDS. Bisogna ricordare che un open 
+standard non equivale però a un software open source, quindi, lo
+sviluppo dell'applicativo è gestito dalle software house che possono 
+decidere come gestire il codice sorgente. Sul mercato sono comunque 
+presenti
+soluzioni open source, ma spesso queste presentano degli svantaggi,
+tra cui la mancanza di supporto per alcuni linguaggi di programmazione 
+per interagire con le API del middleware
+\cite{DDSimplementationRTI}.
 
 
 
@@ -379,7 +694,7 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
 
 % Regolazione dello spessore delle linee
 \setlength{\arrayrulewidth}{1.0pt} % Spessore linee generali
-% \renewcommand{\arraystretch}{1.2} % Altezza righe
+\renewcommand{\arraystretch}{1.2} % Altezza righe
 
 
 \begin{table}[H]
@@ -389,47 +704,41 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
         \begin{tabular}{|c|c|c|c|c|c|}
             \hline
             \rowcolor{customgray}
-            \multicolumn{1}{|>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Tipo di}\\ \textbf{attacco}}} &
-            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Vettore} \\ \textbf{attacco}}} &
-            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Protoc.}/ \\ \textbf{Estens.}}} &
-            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Bersaglio} \\ \textbf{nella rete}}} &
-            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Software}}} &
-            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Soluzione}}} \\
+            \multicolumn{1}{|>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Implementazione}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Sviluppatore}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Tipo di licenza}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Linguaggi} \\ \textbf{supportati}}} &
+            \multicolumn{1}{>{\columncolor{customgray}}c|}{\tabularCenterstack{c}{\textbf{Anno} \\ \textbf{creazione}}} \\
             \hline
-            \tabularCenterstack{c}{Discovery \\ devices \cite{White2017AnII}} &
-            \tabularCenterstack{c}{Verbose nature \\ of RTPS} &
-            \tabularCenterstack{c}{RTPS-SDPD} &
-            \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
-            \tabularCenterstack{c}{Sniffer \\ Python} &
-            \tabularCenterstack{c}{DDS security/ \\ WireGuard} \\
+            \tabularCenterstack{c}{Fast DDS \cite{FastDDS}} &
+            \tabularCenterstack{c}{eProsima} &
+            \tabularCenterstack{c}{Apache License 2.0} &
+            \tabularCenterstack{c}{C++,\\ Python} &
+            \tabularCenterstack{c}{2014} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{DDos \cite{White2017AnII}} &
-            \tabularCenterstack{c}{Heartbeat \\ sequence number} &
-            \tabularCenterstack{c}{RTPS} &
-            \tabularCenterstack{c}{DataReader} &
-            \tabularCenterstack{c}{Sniffer \\ Python} &
-            \tabularCenterstack{c}{DDS security: \\ Auth Control} \\
+            \tabularCenterstack{c}{Connext DDS \cite{DDSconnext}} &
+            \tabularCenterstack{c}{Real-Time \\ Innovations} &
+            \tabularCenterstack{c}{Closed source} &
+            \tabularCenterstack{c}{C, C\#, C++, \\Python, Java} &
+            \tabularCenterstack{c}{2005} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{DDoS \cite{DBLP:conf/asiaccs/WangLG24}} &
-            \tabularCenterstack{c}{Authentication \\ challenge} &
-            \tabularCenterstack{c}{DDS security 1.1 \\ Discovery protoc.} &
-            \tabularCenterstack{c}{Tutti i par-\\tecipanti} &
-            \tabularCenterstack{c}{Proverif} &
-            \tabularCenterstack{c}{Scadenza richieste \\ di autenticazione} \\
+            \tabularCenterstack{c}{OpenDDS \cite{OpenDDS1}} &
+            \tabularCenterstack{c}{Object Computing} &
+            \tabularCenterstack{c}{Open source \\ (custom)} &
+            \tabularCenterstack{c}{C++, Java} &
+            \tabularCenterstack{c}{2005} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{QoS policy \cite{DBLP:conf/malware/MichaudDL18}} &
-            \tabularCenterstack{c}{Policy: \\ Ownership} &
-            \tabularCenterstack{c}{RTPS} &
-            \tabularCenterstack{c}{DataReader} &
-            \tabularCenterstack{c}{RTI \\ shapes} &
-            \tabularCenterstack{c}{DDS security: \\ Access Control} \\
+            \tabularCenterstack{c}{Cyclone DDS \cite{CycloneDDS}} &
+            \tabularCenterstack{c}{Eclipse Foundation} &
+            \tabularCenterstack{c}{Open source \\ (custom)} &
+            \tabularCenterstack{c}{C, C++, \\ Python} &
+            \tabularCenterstack{c}{2011} \\
             \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
-            \tabularCenterstack{c}{QoS policy \cite{DBLP:conf/malware/MichaudDL18}} &
-            \tabularCenterstack{c}{Policy: \\ Lifespan} &
-            \tabularCenterstack{c}{RTPS} &
-            \tabularCenterstack{c}{DataReader} &
-            \tabularCenterstack{c}{RTI \\ shapes} &
-            \tabularCenterstack{c}{Controllo per \\ Lifespan scartati} \\
+            \tabularCenterstack{c}{CoreDX \cite{CoreDX}} &
+            \tabularCenterstack{c}{Twin Oaks \\ Computing} &
+            \tabularCenterstack{c}{Closed source} &
+            \tabularCenterstack{c}{C, C\#, C++, \\ Java} &
+            \tabularCenterstack{c}{2009} \\
             % \specialrule{0.3pt}{0pt}{0pt} % Linea più spessa dopo l'intestazione
             
             % Aggiungere altre linee
@@ -437,6 +746,6 @@ distanti fisicamente tra di loro, per verificare la qualità del collegamento
             \hline
         \end{tabular}
         }
-        \caption{Riassunto delle vulnerabilità del DDS analizzate.}
+        
+        \caption{Esempi di implementazioni DDS.}
     \end{table}
-
