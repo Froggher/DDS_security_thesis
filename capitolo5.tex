@@ -151,8 +151,8 @@ in modo da testare vari input che il middleware DDS può
 ricevere durante la sua esecuzione. Prima di questo strumento 
 non esistevano (o non erano disponibili al pubblico) soluzioni
 per effettuare questo tipo di test specifico sul DDS, mancanza
-che DDSFuzz cerca di colmare. Infatti anche se esistono tool 
-inclusi RoboFuzz e Deng, questi ultimi vengono utilizzati solamente
+che ora DDSFuzz cerca di colmare. Infatti anche se esistono tool 
+inclusi RoboFuzz e Deng, questi ultimi vengono impiegati solamente
 per testare applicativi ROS (Robotic Operation System), che 
 sfruttano solo una parte delle funzioni del DDS, tralasciando
 funzionalità del middleware che non vengono impegate
@@ -167,8 +167,8 @@ dati di input invalidi in modo tale da esplorare più vulnerabilità
 possibili all'interno di un software. 
 Inizialmente i primi tool di fuzzing non erano molto 
 semplici da utilizzare e poco conosciuti, 
-ma con il tempo questi strumenti
-sono migliorati rendendoli più user-friendly e aumentando così la 
+ma con il tempo
+sono migliorati perchè resi più user-friendly aumentando così la 
 loro frequenza di uso per testare software. Oggi, il fuzzing viene
 applicato a diversi tipi di applicativo, tra cui compilatori, 
 applicazioni, protocolli di rete e kernel \cite{8371326}.
@@ -185,8 +185,8 @@ che si vuole testare input regolari e irregolari,
 in modo tale da poter 
 accedere ad ogni parte del codice con ogni tipo di input possibile.
 In questo modo è possibile analizzare il comportamento del software
-ed è possibile distinguere casi anomali o insicuri che non dovrebbero
-essere possibili. Infatti quando questo test è attivo il fuzzer riceverà
+e distinguere casi anomali o insicuri che non dovrebbero
+essere impiegati. Infatti quando questo test è attivo il fuzzer riceverà
 varie informazioni riguardanti lo stato e l'output del programma, in 
 modo tale da poter distinguere il suo comportamento. Se viene scoperto
 qualche comportamento anomalo (ad esempio un segmentation fault) il 
@@ -197,7 +197,7 @@ Tuttavia, dato che questi test sono generalizzati per essere compatibili
 con vari software, si crea una sorta di imprecisione nel mandare i vari 
 input. Questi input a volte non sono variegati a sufficienza 
 per analizzare ogni singola parte del software che stiamo analizzando.
-Inoltre in molti casi può anche succedere che vengono creati
+Inoltre in molti casi può anche succedere che vengano creati
 dei test che non sono necessari consumando
 così risorse e tempo inutilmente.
 
@@ -246,7 +246,7 @@ del DDS in modo tale da identificare
 se i risultati dei test input rimangono consistenti tra di loro in 
 ognuna delle esecuzioni. 
 Se otteniamo una soluzione differente in una sola 
-delle implementazioni utilizzate possiamo dire che quest'ultima ha un 
+degli applicativi impiegati possiamo dire che quest'ultima ha un 
 comportamento anomalo generato da un bug di tipo semantico 
 \cite{10.1145/3691620.3695073}. 
 
@@ -267,7 +267,7 @@ DDS input generator, DDS program executor e bug detector.
     \item DDS PROGRAM EXECUTOR: ricevuti gli input generati 
     li invierà alle
     tre implementazioni del DDS, mandando feedback  al DDS input generator
-    sulla validità e efficacia dei test generati;
+    sulla validità ed efficacia dei test generati;
     \item BUG DETECTOR: a differenza di altri bug detector provenienti da 
     fuzzer tool generici, questo componente del DDSFuzz riesce
     a distinguere tra bug 

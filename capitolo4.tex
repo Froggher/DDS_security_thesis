@@ -27,18 +27,18 @@ progetto Scapy di Python.
 
 \section{Ricognizione DDS}
 Le implementazioni DDS, per rispettare lo standard 
-OMG, devono rispettare delle regole di interoperabilità 
+OMG, devono seguire delle regole di interoperabilità 
 per far si che i vari applicativi DDS siano compatibili 
-tra di loro. Questo a portato alla creazione di un sistema
+tra di loro. Questo ha portato alla creazione di un sistema
 molto verbose per effettuare discovery 
 di altri partecipanti all'interno di un network DDS.
 
 
-La natura molto verbose del processo di discovery 
+La natura molto verbose del processo di autoscoperta 
 fa si che inviando un singolo pacchetto RTPS vuoto 
-a un'entità di una rete DDS all'interno di un dominio 
+a un'entità di una rete DDS all'interno di un dominio,
 quest'ultima risponderà 
-con un messaggio discovery. La risposta ci permette di 
+con un messaggio discovery. La risposta ci permetterà di 
 confermare se quel determinato partecipante è attivo.
 
 \begin{figure}[H]
@@ -49,13 +49,13 @@ confermare se quel determinato partecipante è attivo.
     \label{rispostarecoinnassance}
 \end{figure}
 
-La vulnerabilità è stata scoperta adoperando 
+La vulnerabilità è stata individuata adoperando 
 CycloneDDS, ma anche altre implementazioni 
 presentano lo stesso problema. 
 Questo accade perché non è possibile mitigare 
 la vulnerabilità senza violare lo standard 
 OMG. L'unica soluzione applicabile consisterebbe 
-di disabilitare in parte il meccanismo di discovery, 
+nel disabilitare in parte il meccanismo di autoscoperta, 
 ma cosi facendo l'interoperabilità tra i vari vendors 
 DDS andrebbe persa. 
 
@@ -67,22 +67,22 @@ una soluzione vera e propria \cite{mayoral2022robot}.
 \section{Attacco riflesso DDS}
 Un attacco riflesso consiste nel dirottare il traffico 
 di rete verso un dispositivo vittima, manipolando e in certi 
-casi amplificando anche il flusso di dati.
+casi amplificando anche un flusso di dati.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=15.2cm, keepaspectratio]{img/submessaggereflection.png}
     \caption{Parte di un pacchetto RTPS costruito con Scapy
-    che abilità un attacco
+    che abilita un attacco
     riflesso \cite{mayoral2022robot}.}
     \label{submessaggereflection}
 \end{figure}
 
 Il vettore di questo attacco si trova all'interno di più parametri 
-di un sottomessaggio di tipo DATA. 
-Incluso il parametro 
+di un sottomessaggio di tipo DATA 
+incluso il parametro 
 \texttt{PID\_METATRAFFIC\_MULTICAST\_LOCATOR} che si occupa di specificare 
-indirizzi multicast che verranno adoperati successivamente dalle 
+gli indirizzi multicast che verranno adoperati successivamente dalle 
 entità per comunicazioni di metatraffico.
 Il DDS non prevede filtri per questo 
 specifico valore e quindi un attaccante può specificare a un 
@@ -92,7 +92,7 @@ ricevere informazioni riguardo la rete DDS e rispondere al partecipante
 con un alto numero di comunicazioni in modo tale da sovraccaricarlo (DDoS).
 
 Inoltre, il valore 
-di \texttt{PID\_METATRAFFIC\_MULTICAST\_LOCATOR} può essere anche utilizzato 
+di \texttt{PID\_METATRAFFIC\_MULTICAST\_LOCATOR} può essere utilizzato 
 da un attore malevolo per reindirizzare il traffico di molteplici 
 entità verso un unico partecipante che si ritoverà quindi a ricevere un 
 numero elevato di pacchetti indesiderati rallentandone la sua esecuzione.
@@ -104,9 +104,9 @@ possibile applicare filtri per limitare la scelta di valori per
 gli indirizzi IP. 
 
 Come mostrato nella 
-Figura~\ref{submessaggereflection} creando un pacchetto con Scapy
+Figura~\ref{submessaggereflection} creando un pacchetto con Scapy e
 modificando i valori dei parametri vulnerabili 
-è possibile 
+sarà possibile 
 rispedire le comunicazioni di una identità verso un qualsiasi
 indirizzo, come l'IP del DNS 8.8.8.8 (Figura~\ref{reflectionattackdns}).
 
@@ -128,7 +128,8 @@ Per rimanere compatibili con lo standard OMG i vendor hanno
 implementato un sistema di controllo che limita il numero 
 di pacchetti scambiati quando viene superata una soglia limite
 prefissata. Questo sistema non è perfetto, ma in molti casi ha 
-ridotto significativamente l'efficacia di questo attacco \cite{mayoral2022robot}.
+ridotto significativamente 
+l'efficacia di questo attacco \cite{mayoral2022robot}.
 
 \begin{figure}[H]
     \centering
@@ -139,7 +140,7 @@ ridotto significativamente l'efficacia di questo attacco \cite{mayoral2022robot}
 
 
 \section{Crash di un partecipante}
-La seguente vulnerabilità è stata scoperta con utilizzando 
+La seguente vulnerabilità è stata scoperta utilizzando 
 un software in grado di eseguire fuzz tests, 
 incluso DDSFuzz (mostrato nella Sezione~\ref{ddsfuzz}).
 
@@ -151,9 +152,9 @@ del DDS \cite{mayoral2022robot}.
 
 Questo parametro viene 
 utilizzato nella fase di discovery
-tra i partecipanti della rete per trasmettere, 
-alla nuova entità che vuole unirsi alla rete, le policy
-QoS attive. La nuova entità confrontate 
+tra i partecipanti della rete per trasmettere
+alla nuova entità, che vuole unirsi alla rete, le policy
+QoS attive. La nuova entità, confrontate 
 le proprie impostazioni QoS con quelle appena ricevute
 può determinare con quali partecipanti può iniziare le 
 comunicazioni \cite{ddsrtps}.
@@ -163,13 +164,14 @@ valore del parametro è possibile costruire un pacchetto
 RTPS, come mostrato in Figura~\ref{crashnode} 
 in modo tale da 
 mandare in crash il partecipante che lo riceve. 
-Osserviamo che il valore parameterLength è pari a zero,
-mentre il parametro parameterData contiene dei bytes 
+Osserviamo che il valore \texttt{parameterLength} è pari a zero,
+mentre il parametro \texttt{parameterData} contiene dei bytes 
 (nel nostro caso nulli).
 Questa discrepanza causa un crash durante la 
-lettura di parameterData dato che l'indice di lettura 
-vendendo impostato a zero indica che non dovrebbe essere 
-presente alcun dato all'interno di parameterData. 
+lettura di \texttt{parameterData} dato che l'indice di lettura 
+venendo impostato (\texttt{parameterLength}) a zero 
+denota che non dovrebbe essere 
+presente alcun dato al suo interno. 
 Di conseguenza,
 viene eseguita una porzione di codice al di fuori dei 
 limiti della memoria causando un errore di segmentazione.
