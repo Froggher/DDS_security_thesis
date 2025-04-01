@@ -27,7 +27,10 @@ un file di tipo PCAP (packet capture).
 
 Questo tool è anche compatibile con il protocollo RTPS che viene
 adoperato dalle entità del DDS per comunicare tra di loro 
-come descritto nella Sezione~\ref{Messages module}.
+come descritto nella Sezione~\ref{Messages module}. 
+Nella Figura~\ref{wireskartshapesdemo} possiamo trovare 
+un esempio di un pacchetto RTPS suddiviso dall'interfaccia di 
+WireShark.
 \begin{figure}[H]
     \centering
     \includegraphics[width=15.2cm, keepaspectratio]{img/Info_ts e info_DST-Pagina-4.jpg}
@@ -65,6 +68,9 @@ di un HEADER e due diversi sottomessaggi.
     \item Il secondo sottomessaggio, che nel nostro caso è di tipo DATA,
     serve a identificare il tipo di pacchetto.
 \end{itemize}
+Nella Figura~\ref{Info_ts e info_DST} viene evidenziato con 
+l'ausilio dell'interfaccia di WireShark la differenza tra NFO\_TS e 
+INFO\_DST.
 \begin{figure}[H]
     \centering
     \includegraphics[width=15.2cm, keepaspectratio]{img/Info_ts e info_DST-Pagina-3.jpg}
@@ -108,7 +114,8 @@ eProsima Fast DDS Spy è un tool, sviluppato da eProsima,
 open-source con licenza Apache 2.0 accessibile
 tramite interfaccia a riga di comando (CLI) che serve a
 monitorare i partecipanti
-e i loro messaggi scambiati all'interno di una rete DDS \cite{FastDDSSpy}. 
+e i loro messaggi scambiati all'interno di una rete DDS,
+mostrato in Figura~\ref{fastddsspyintro} \cite{FastDDSSpy}. 
 
 \begin{figure}[H]
     \centering
@@ -133,7 +140,8 @@ Un'altra importante funzionalità particolarmente utile per effettuare
 una ricognizione del
 network è offerta dai
 comandi \texttt{READER <GUID>} e \texttt{WRITER <GUID>} (o in alternativa,
-\texttt{READER VERBOSE} e \texttt{WRITER VERBOSE}), che mostrano
+\texttt{READER VERBOSE} e \texttt{WRITER VERBOSE}), eseguiti nella
+Figura~\ref{fastddsspyQoS}, che mostrano
 una parte delle policy QoS adoperate dai DataReader e i DataWriter.
 
 \begin{figure}[H]
@@ -191,7 +199,8 @@ varie informazioni riguardanti lo stato e l'output del programma, in
 modo tale da poter distinguere il suo comportamento. Se viene scoperto
 qualche comportamento anomalo (ad esempio un segmentation fault) il 
 fuzzer segnalerà in un log gli input utilizzati in modo tale da poter 
-segnalare il bug.
+segnalare il bug, nella Figura~\ref{funzionamento fuzzer} viene mostrato 
+un diagramma di flusso per spiegare il suo funzionamento.
 
 Tuttavia, dato che questi test sono generalizzati per essere compatibili
 con vari software, si crea una sorta di imprecisione nel mandare i vari 

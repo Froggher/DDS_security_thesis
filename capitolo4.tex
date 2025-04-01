@@ -15,7 +15,9 @@ l'exploit vero e proprio. Prima di mandare questi
 pacchetti è stato necessario creare una libreria Python 
 così da poter automatizzare il loro processo di creazione.
 Questo strumento, successivamente è stato anche unito al 
-progetto Scapy di Python.
+progetto Scapy di Python, nella 
+Figura~\ref{rptspacketheaderscapy} è presente un esempio 
+di un pacchetto RTPS costruito con questa libreria.
 
 \begin{figure}[H]
     \centering
@@ -38,7 +40,8 @@ La natura molto verbose del processo di autoscoperta
 fa si che inviando un singolo pacchetto RTPS vuoto 
 a un'entità di una rete DDS all'interno di un dominio,
 quest'ultima risponderà 
-con un messaggio discovery. La risposta ci permetterà di 
+con un messaggio discovery. La risposta, mostrata
+in Figura~\ref{rispostarecoinnassance} ci permetterà di 
 confermare se quel determinato partecipante è attivo.
 
 \begin{figure}[H]
@@ -119,7 +122,8 @@ indirizzo, come l'IP del DNS 8.8.8.8 (Figura~\ref{reflectionattackdns}).
     \label{reflectionattackdns}
 \end{figure}
 
-Questo problema di sicurezza è presente in tutte le implementazioni 
+Questo problema di sicurezza è presente in tutte le implementazioni,
+come viene mostrato dai CVE della Figura~\ref{CVErecoinnassance},
 dei vendor dato che non può essere risolto senza violare lo 
 standard OMG. Questa opzione però, non è considerata dai vari 
 vendors perché interromperebbe l'interoperabilità tra le 
