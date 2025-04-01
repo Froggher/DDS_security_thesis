@@ -19,7 +19,7 @@ di comunicazione tra i vari dispositivi connessi.
 \section{WireShark}
 WireShark è un tool di tipo packet-sniffing che ci consente di 
 interagire e visualizzare il contenuto dei pacchetti scambiati da 
-diversi protocolli di rete. Ha ottenuto un grande successo 
+diversi protocolli di rete. Esso ha ottenuto un grande successo 
 grazie alla sua interfaccia user-friendly e al suo codice sorgente 
 open-source con licenza di utilizzo libero. I pacchetti possono 
 essere analizzati sia in real-time che in modalità statica utilizzando 
@@ -59,7 +59,7 @@ di un HEADER e due diversi sottomessaggi.
     del pacchetto,
     quindi non contiene un guidPrefix al 
     suo interno. Al contrario, un sottomessaggio INFO\_DST include
-    il guidPrefix, in quanto il messaggio è diretto a un'unica
+    il guidPrefix, in quanto il messaggio è diretto ad un'unica
     entità specifica, come avviene, ad esempio, per un sottomessaggio ACKNACK
     destinato a un DataWriter \cite{rtiwireshark}.
     \item Il secondo sottomessaggio, che nel nostro caso è di tipo DATA,
@@ -80,7 +80,7 @@ di un HEADER e due diversi sottomessaggi.
 \subsection{Un'alternativa a WireShark: eProsima DDS Record \& Replay}
 eProsima DDS Record \& Replay è un software open-source con licenza 
 Apache 2.0 sviluppato da eProsima (gli stessi creatori di Fast DDS) che 
-ci consente di salvare i contenuti del traffico di un network DDS
+ci consente di catturare i contenuti del traffico di un network DDS
 all'interno di un file di tipo MCAP, a differenza del formato PCAP 
 utilizzato da WireShark \cite{eProsimaDDSRecordeReplayDocumentation}.
 
@@ -106,7 +106,8 @@ eProsima DDS Record \& Replay.
 \section{eProsima Fast DDS Spy}
 eProsima Fast DDS Spy è un tool, sviluppato da eProsima, 
 open-source con licenza Apache 2.0 accessibile
-tramite interfaccia a riga di comando (CLI) che serve ad monitorare i partecipanti
+tramite interfaccia a riga di comando (CLI) che serve a
+monitorare i partecipanti
 e i loro messaggi scambiati all'interno di una rete DDS \cite{FastDDSSpy}. 
 
 \begin{figure}[H]
@@ -117,11 +118,11 @@ e i loro messaggi scambiati all'interno di una rete DDS \cite{FastDDSSpy}.
 \end{figure}
 
 Facile da utilizzare, può essere molto efficace per comprendere 
-al meglio la topologia di una rete DDS. Un attaccate può usare questo 
-tool per capire quali sono le varie entità del network, 
+al meglio la topologia di una rete DDS. Un attaccante può usare questo 
+tool per capire quali siano le varie entità del network, 
 inclusi il DataWriter, il DataReader i DomainParticipant e i topic.
 Per ciascuna di queste entità è anche possibile ottenere 
-il loro GUID, (guidPrefix)
+il loro GUID (guidPrefix), 
 una stringa univoca che ci permette di identificare un partecipante.
 Il GUID ottenuto può essere impiegato 
 per filtrare il traffico 
@@ -131,14 +132,15 @@ all'interno della rete.
 Un'altra importante funzionalità particolarmente utile per effettuare
 una ricognizione del
 network è offerta dai
-comandi READER <GUID> e WRITER <GUID> (o in alternativa,
-READER VERBOSE e WRITER VERBOSE), che mostrano
+comandi \texttt{READER <GUID>} e \texttt{WRITER <GUID>} (o in alternativa,
+\texttt{READER VERBOSE} e \texttt{WRITER VERBOSE}), che mostrano
 una parte delle policy QoS adoperate dai DataReader e i DataWriter.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=12cm, keepaspectratio]{img/fastddsspyQoS.png}
-    \caption{Esecuzione dei comandi READER <GUID> e WRITER <GUID>.}
+    \caption{Esecuzione dei comandi \texttt{READER <GUID>} 
+    e \texttt{WRITER <GUID>}.}
     \label{fastddsspyQoS}
 \end{figure}
 
