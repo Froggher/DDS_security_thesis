@@ -1,1 +1,91 @@
 \chapter{Conclusione}
+Questa tesi ha analizzato in dettaglio il Data Distribution Service (DDS),
+iniziando con un'introduzione in cui viene spiegato il suo funzionamento 
+e le sue caratteristiche principali, incluse l'interoperabilità tra 
+le diverse implementazioni tra diversi vendors, la possibilità di 
+cambiare la topologia della rete a runtime e una gestione di policy 
+QoS che rendono il middleware estremamente flessibile per ogni tipo 
+di utilizzo. 
+
+Nei successivi capitoli, dopo l'introduzione, sono state 
+analizzate 
+delle vulnerabilità relative allo stesso standard OMG che il 
+DDS deve rispettare. Inoltre sono state anche mostrate delle
+possibili soluzione per mitigare certe problematiche di
+sicurezza, tra cui il DDS security che tramite i suoi plugin 
+permette di crittare le comunicazioni tra le varie entità e 
+bloccare certe loro azioni se non hanno determinati permessi.
+
+Un'altra tipologia di vulnerabilità che é stata presentata é 
+relativa al software DDS utilizzato dai vendors per 
+implementarlo. Queste vulnerabilità hanno evidenziato che 
+soluzioni open source come FastDDS hanno maggiori possibilità 
+di avere problematiche relative alla sicurezza dato che molti 
+la maggior parte dei CVE compilati sono relativi a questa 
+implementazione di eProsima. Da qui possiamo dedurre che 
+anche se il costo iniziale di software DDS a pagamento 
+é maggiore garantiscono una maggiore sicurezza.
+
+Queste vulnerabilità relative all'implementazione hanno anche
+evidenziato 
+come lo standard OMG puó creare diverse problematiche 
+legate alla sicurezza. 
+Anche se quest'ultime ormai sono note, molte volte vengono ignorate 
+dato che per i vendors l'importante é mantenere il loro applicativo 
+in regola con lo standard OMG. Questa scelta é guidata dal fatto che 
+lo standard garantisce l'interoperabilità tra i diversi vendor. 
+Purtroppo la collaborazine di queste software house sono ancora 
+molto limitate tra di loro, se in futuro ci fosse piú collaborazione 
+si potrebbe arrivare a creare standard piú rigidi in modo 
+da aumentare la sicurezza complessiva del middleware.
+
+OMG in futuro dovrebbe aggiornare i propri standard in modo da 
+mitigare queste problematiche legate alle sue regole di interoperabilità, 
+non solo utilizzando il DDS security, specialmente durante il 
+processo di discovery. Uno standard che OMG ha proposto 
+é il DDS security che peró 
+non viene sempre applicato dato che in molti casi é difficile da 
+configurare in una rete giá esistente e sprovvista di questa estensione.
+
+Una soluzione potrebbe essere quella di aumentare solo la sicurezza del 
+processo di discovery che in molti casi é il 
+principale vettore d'attacco, magari 
+utilizzando una parte dei plugin di sicurezza giá impiegati dal DDS security.
+
+Nell'ultima parte dell'elaborato sono stati descritti degli strumenti 
+in grado di analizzare il traffico all'interno di una rete DDS.
+É stato introdotto WireShark un potente strumento in grado di 
+catturare pacchetti del protocollo RTPS insiema ad una sua alternativa
+sviluppata da eProsima chiamata eProsima DDS Record \&
+Replay. Mentre questi due strumenti sono unici e non sono stati 
+sviluppati piú volte da differenti software house, lo stesso non 
+si puó dire per il tool Fast DDS Spy che é stato sviluppato 
+con diversi nomi per quasi tutte le implementazioni DDS. 
+Anche se questi strumenti garantiscono il funzionamento 
+con diversi applicativi DDS sviluppati da varie software house, 
+presentano delle differenze e punti di forza differenti. 
+
+Se OMG e i diversi vendors in futuro collaborasseró tra di loro 
+potrebbero creare un applicativo definitivo per monitorare 
+una rete DDS avendo tutti i vantaggi possibili. Questo applicativo 
+evita di creare differenze di analisi del traffico che normalmente 
+si possono trovare quando vengono adoperati i tool a oggi 
+disponibili.
+Un altro sistema aggiuntivo per migliorare l'efficacia del 
+controllo del traffico potrebbe essere quello 
+dell'utilizzo di un'intelligenza artificiale che monitora 
+i pacchetti scambiati tra le varie entità. 
+Ad esempio essa puó monitorare se i dati ricevuti dai sensori 
+rimangono all'interno di un intervallo predefinito e se 
+mantentengono una consistenza nel tempo. Se viene rilevato 
+un problema, successivamente puó avvisare un operatore che 
+analizzerà piú nel dettaglio l'inconsistenza indivduata 
+dall'AI
+
+Inoltre questa AI potrebbe 
+essere impiegata durante la configurazione iniziale della rete,
+specialmente durante la creazione delle policy QoS per evitare
+di creare delle misconfigurazioni che possono essere
+successivamente sfruttate da un attore malevolo.
+
+
