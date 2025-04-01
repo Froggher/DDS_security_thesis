@@ -1,1 +1,193 @@
 \chapter{Introduzione}
+In questo elaborato verrà esposto il middleware Data Distribution 
+Service (DDS) standardizzato dall'Object Management Group (OMG) e 
+verrà effettuata un'analisi della sua sicurezza.
+In particolare nel Capitolo~\ref{introdDDS} 
+viene spiegato inizialmente 
+il suo funzionamento, per poi passare ai successivi due capitoli 
+dove verranno introdotte due tipologie di vulnerabilità: una 
+basata sullo standard OMG, mentre l'altra si basa sugli applicativi
+che utilizzano il DDS. Infine nel Capitolo~\ref{chtools} 
+verranno 
+mostrati dei tools in grado di analizzare il analizzare 
+il traffico di una rete DDS e inoltre verrà introdotto DDSFuzz, 
+un tool per eseguire test di tipo fuzz.
+
+Il DDS di OMG viene adoperato in numerosi campi grazie alla 
+sua comunicazione efficiente che può essere impostata anche 
+per funzionare in sistemi che hanno bisogno di risposte 
+real-time. L'architettura è basata su un sistema di comunicazione 
+distribuito che si basa su modello publish/subscribe in modo 
+tale da poter rendere flessibile la topologia della rete.
+Questo vantaggio porta il DDS ad essere utilizzato in vari campi 
+che hanno necessità di aggiornare continuamente la loro 
+struttura. Viene adottato in medicina, in ambienti militari, 
+in controlli industriali, in veicoli autonomi e nelle telecomunicazioni.
+
+Un'applicazione molto importante del DDS è ROS Robot Operating System
+uno strumento che permette a molti ingegneri robotici di 
+interfacciarsi con vari dispositivi all'interno di una 
+rete che hanno bisogno di effettuare uno scambio di informazioni.
+Ad esempio un utente può ricevere dati da diversi robot e sensori
+contemporaneamente, inclusi 
+movimento dei giunti (espressi in coordinate), velocità, 
+posizione geografica, stato del robot, temperatura di un 
+determinato componente e tutti gli altri sensori di cui il 
+robot è dotato. Il DDS all'interno di ROS è utilizzato come 
+middleware e si occupa di stabilire e mostrare i dati 
+che vengono mandati dai componenti della rete. 
+In questo modo l'utente ha la possibilità di visualizzare 
+comodamente in unico punto tutte le informazioni necessarie 
+senza dover creare nuovi canali di comunicazione.
+
+Tuttavia, nonostante i numerosi il DDS presenta alcune 
+problematiche a livello di sicurezza che possono 
+essere sfruttate da un attore malevolo. Una delle 
+caratteristiche, chiamato processo di discovery,
+più utilizzate è la possibilità permettere 
+a nuovi dispositivi di connettersi ad una rete DDS senza 
+l'intervento di un operatore. Diverse vulnerabilità che verranno 
+analizzate successivamente all'interno dell'elaborato, nel 
+Capitolo~\ref{chvulstdndds} e nel Capitolo~\ref{chvulimpldds}, 
+mostrano come il processo di discovery, se non adeguatamente 
+configurato da i vendors delle implementazioni DDS, posso 
+essere sfruttato come vettore di attacco. Proprio durante 
+l'esecuzione di questo processo è possibile immettere nella 
+rete pacchetti malevoli che possono compromettere il 
+corretto funzionamento di uno o più dispositivi all'interno 
+della rete. Inoltre, un attaccante in ascolto 
+che riesce a catturare 
+il traffico generato da questo processo è in grado 
+di effettuare una ricognizione della rete in modo da 
+ricevere abbastanza metadati, tra cui il nome del topic,
+per comprendere al meglio 
+il funzionamento di ogni singolo dispositivo collegato.
+
+Un'altra caratteristica vantaggiosa per il DDS che può 
+essere adoperata da un attore malevolo sono le policy QoS.
+Esse servono per impostare diversi criteri di
+comportamento che i dispositivi all'interno della rete 
+devono seguire, inclusa la priorità di pubblicazione.
+Se un attore malevolo riesce ad avere accesso ai valori 
+di questi parametri esso può ottenere un controllo sui 
+vari flussi dati e effettuare una manipolazione 
+dei dati trasmessi che può essere 
+successivamente reindirizzata attraverso una policy modificata 
+dall'attaccante che 
+si occupa di gestire le 
+priorità verso dispositivi di ricezione. Essa può compromettere
+un o più delle loro operazioni che utilizzano 
+i dati ricevuti per effettuare un qualche tipo di elaborazione.
+
+OMG per mitigare queste problematiche relative alla sicurezza 
+ha creato un nuovo standard chiamato DDS security che viene
+gestito come una estensione per il DDS. Il DDS security introduce 
+una serie di plugin relativi all'autenticazione, crittografia e 
+gestione degli accessi. Questi plugin vengono adoperati come misure 
+di protezione dei messaggi scambiati per garantirne l'integrità 
+l'impossibilita di effettuare manipolazioni indesiderate. 
+Il processo di autenticazione effettuato dal DDS security 
+ha il compito di garantire che non ci siano partecipanti della 
+rete non autorizzati impedendo ad un attaccante di leggere 
+il contenuto del loro traffico. Invece, la gestione degli accessi
+si occupa di certificare che i dispositivi all'interno del network
+hanno i permessi necessari per compiere determinate azioni.
+
+Il DDS security in questo elaborato viene proposte diverse volte 
+come la soluzione ottimale per la risoluzione di vulnerabilità. 
+Tuttavia, non viene ancora impiegato in molte implementazioni, 
+data la difficoltà di configurazione iniziale e l'aumento 
+delle risorse richieste durante le operazione crittografiche. 
+Esse risultano molto difficoltose specialmente 
+per dispositivi di tipo IoT (internet of things).
+
+In altri casi il DDS security non viene adoperato perché il 
+network della rete DDS si trova all'interno di un sistema 
+chiuso, isolato da internet o con un accesso limitato 
+(dietro un firewall). Un esempio di questa configurazione 
+si può trovare all'interno di fabbrica che collega i vari 
+macchinari in modo tale da poter comunicare tra di loro e 
+che non devono essere disponibili al di fuori di 
+quell'ambiente.
+
+Nel Capitolo~\ref{introdDDS} di questo elaborato si introdurrà il 
+funzionamento del middleware DDS partendo dal funzionamento 
+di un modello di tipo publish/subscribe confrontandolo 
+con il più comune protocollo TCP/IP. Il DDS viene definito 
+data-centric, dando importanza ai dati stessi semplificando 
+la sua configurazione. Verrà inoltre introdotto il concetto 
+delle policy QoS e del Global Space Data per permettere 
+alle entità della rete di comunicare tra di loro senza preoccuparsi 
+dell'accessibilità e disponibilità dei dati. Si analizzerà la sua
+struttura, tutte le sue entità utilizzate introducendo il protocollo 
+RTPS (Real-Time Publish-Subscribe Protocol) e i moduli che lo compongono.
+Successivamente verrà introdotto il DDS security insieme ai suoi 
+plugin e al loro funzionamento inclusi l'Authentication Service Plugin e 
+l'Access Control Service Plugin, mostrando nel dettaglio come 
+avviene il processo di autenticazione e di controllo permessi.
+Infine verranno presentate diverse implementazioni DDS dei vendor, 
+confrontando tra di loro soluzioni gratuite e a pagamento.
+
+Nel Capitolo~\ref{chvulstdndds} ci occuperemo di analizzare 
+le vulnerabilità del DDS che si trovano nello standard OMG. 
+Queste non vengono presentate tramite una implementazione 
+a differenza del Capitolo~\ref{chvulimpldds}, ma solo attraverso 
+l'utilizzo dello standard OMG per evidenziare delle problematiche 
+di sicurezza più generali del middleware. Le prime due vulnerabilità 
+impiegano entrambe il protocollo RTPS per essere applicate, 
+in particolare nel primo caso verrà introdotta una vulnerabilità 
+che permette ad un attore malevolo di compiere una ricognizione 
+della rete, mentre nel secondo caso verrà mostrato come la modifica del 
+valore sequence number all'interno di un pacchetto RTPS può
+compromettere
+il funzionamento di un DataReader. 
+Nel successivo attacco dimostreremo che si può creare un vettori 
+di attacco anche impiegando il DDS security, in particolare durante
+la fase di autenticazione di un'entità all'interno della rete.
+Infine le ultime due vulnerabilità che verranno spiegate, si basano sulla 
+misconfigurazione di due policy QoS in modo tale da consentire ad un
+attaccante di manipolare gli aggiornamenti di un flusso di dati e 
+impedire ad una o più entità di ricevere nuove informazioni riguardanti 
+un topic.
+
+Nel Capitolo~\ref{chvulstdndds} verranno introdotte altre vulnerabilità,
+questa volta basati sulle implementazioni dei vari vendors DDS. 
+Si analizzeranno tre casi che saranno relativi a ROS che impiegherà 
+il DDS come middleware. Inizialmente viene spiegata una libreria, che
+successivamente verrà fusa con il progetto Scapy di Python, che facilità
+la costruzione di pacchetti RTPS. La prima vulnerabilità che verrà 
+mostrata consente di effettuare una ricognizione della rete DDS 
+mandando un pacchetto di discovery ai vari applicativi DDS.
+Il secondo attacco che verrà introdotto consente di dirottare il traffico 
+del processo di discovery verso un entità a scelta dell'attaccante.
+Questo attacco è possibile dato che lo standard OMG non consente 
+di effettuare un controllo degli indirizzi IP che devono ricevere 
+questo messaggi di tipo discovery.
+Infine nell'ultimo attacco che verrà mostrato l'implementazione 
+Fast DDS ha una vulnerabilità data la mancanza di controllo di 
+un parametro che può essere impostato con lunghezza pari a 0. 
+Costruendo un pacchetto RTPS con un i giusti parametri è possibile 
+mandare in crash ogni entità della rete che lo riceve.
+
+Nel Capitolo~\ref{chtools}, l'ultimo capitolo di questo elaborato,
+verranno presentati degli strumenti di analisi e test del middleware 
+che possono essere compatibili anche con altri protocolli o solamente
+utilizzabili dal DDS. Il primo tool che verrà introdotto è WireShark, 
+un famoso applicativo che si occupa di sniffare i pacchetti scambiati 
+all'interno di una rete, nel nostro caso siamo interessati a quelli 
+del protocollo RTPS. Infatti successivamente verrà mostrato come 
+si suddivide uno di questi pacchetti tra HEADER e sottomessagi in 
+modo tale da capire come funziona questo tool. Un'alternativa 
+che verrà mostrata è eProsima DDS Record \&
+Replay che ha la caratteristica di salvare i pacchetti RTPS salvati 
+in un formato specializzato per la lettura di dati serializzati.
+Anche il tool che verrà presentato Fast DDS Spy è stato prodotto 
+come quello precedente da eProsima e si occupa sempre di analizzare 
+il traffico di rete con la caratteristica di riuscire a capire 
+quali policy QoS sono attive.
+L'ultimo strumento che verrà indicato è DDSFuzz, un applicativo 
+per effettuare test di tipo fuzz a al DDS. Prima di questo tool non 
+esistevano software simile, quindi dopo la sua creazione sono stati 
+scoperte altre vulnerabilità che altri fuzzer più generici non riuscivano 
+a trovare dato che non sfruttavano a pieno le caratteristiche del DDS, 
+come la possibilità di cambiare la topologia della rete.

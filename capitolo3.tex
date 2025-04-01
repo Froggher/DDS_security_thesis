@@ -1,5 +1,5 @@
 \chapter{Vulnerabilità standard DDS}
-
+\label{chvulstdndds}
 
 In questo capitolo ci occuperemo di analizzare e comprendere delle vulnerabilità
 del middleware DDS standard OMG (Object Management Group) \cite{8469351}. 
@@ -97,6 +97,64 @@ analizzare i contenuti dei pacchetti.
         \label{tabvulndds}
     \end{table}
 
+
+
+
+\section{Enumeration sniff}
+% Devo spiegare il modulo discovery
+Prendendo in considerazione, il protocollo RTPS,
+descritto nella Sezione~\ref{Discovery module}, e il suo modulo discovery,
+possiamo notare che di default i messaggi sono molto verbose, 
+scambiando le informazioni in
+chiaro durante le comunicazioni tra i vari partecipanti \cite{White2017AnII}.
+Il modulo 
+discovery del protocollo RTPS a sua volta si suddivide in
+altri 2 protocolli, che sono necessari per le specifiche DDS:
+% (foglio 5 pag 123)
+\begin{itemize}
+    \item Simple Participant Discovery Protocol (SPDP).
+    \item Simple Endpoint Discovery Protocol (SEDP).
+\end{itemize}
+
+
+
+\subsection{Dettagli attacco e coclusioni}
+Per questo attacco ci focalizzeremo in particolare sull'SPDP che serve ad
+individuare la presenza dei partecipanti al resto delle
+entità nel domain. In particolar modo
+il funzionamento si basa su un messaggi di tipo multicast che vengono
+mandati a tutti i dispositivi riguardo ai partecipanti attivi
+% (foglio 5 pag 125)
+\cite{ddsrtps}.
+
+L'attaccante sniffando questi messaggi (all'interno di un domain DDS)
+di tipo multicast RTPS-SPDP,
+utilizzando anche un semplice script Python, infatti potrà 
+vedere il loro contenuto in maniera chiara.
+
+All'interno di un pacchetto di questo tipo possiamo trovare:
+l'indirizzo IP dell'host, il prefisso GUID dell'RTPS,
+la versione dellRTPS, l'ID del venditore, metadati 
+riguardanti la sincronizzazione
+ed infine il contenuto dei sottomessaggi \cite{White2017AnII}.
+
+
+% \subsection{Conclusioni}
+Fare una ricognizione della rete DDS senza effettuare veri e propri
+attacchi di tipo attivo può essere molto utile per un attaccante che 
+ha il compito di penetrare in modo attivo
+una rete DDS. In molti casi tutto quello che deve fare l'attaccante
+è osservare i messaggi che vengono scambiati all'interno del network.
+Successivamente quando si ottengono informazioni a sufficienza sarà più
+facile per l'attaccante trovare altre vulnerabilità
+\cite{White2017AnII}.
+
+Di solito questo tipo di attacco è difficile da identificare e possono essere
+effettuati senza lasciare tracce di nessun tipo, dato che l'attaccante non 
+manda pacchetti.
+Una soluzione potrebbe essere usare l'estensione DDS security o 
+eseguire la connessione tra i nodi tramite un tunnel con WireGuard per crittare
+le comunicazioni.
 
 
 
@@ -229,63 +287,6 @@ che i partecipanti non si trovino sopraffatti dalle troppe richieste di
 autenticazione. Un allarme potrebbe essere utile per identificare possibili
 tentativi DDoS di questo tipo, allertando così un amministratore
 \cite{DBLP:conf/asiaccs/WangLG24}.
-
-
-\section{Enumeration sniff}
-% Devo spiegare il modulo discovery
-Prendendo in considerazione, il protocollo RTPS,
-descritto nella Sezione~\ref{Discovery module}, e il suo modulo discovery,
-possiamo notare che di default i messaggi sono molto verbose, 
-scambiando le informazioni in
-chiaro durante le comunicazioni tra i vari partecipanti \cite{White2017AnII}.
-Il modulo 
-discovery del protocollo RTPS a sua volta si suddivide in
-altri 2 protocolli, che sono necessari per le specifiche DDS:
-% (foglio 5 pag 123)
-\begin{itemize}
-    \item Simple Participant Discovery Protocol (SPDP).
-    \item Simple Endpoint Discovery Protocol (SEDP).
-\end{itemize}
-
-
-
-\subsection{Dettagli attacco e coclusioni}
-Per questo attacco ci focalizzeremo in particolare sull'SPDP che serve ad
-individuare la presenza dei partecipanti al resto delle
-entità nel domain. In particolar modo
-il funzionamento si basa su un messaggi di tipo multicast che vengono
-mandati a tutti i dispositivi riguardo ai partecipanti attivi
-% (foglio 5 pag 125)
-\cite{ddsrtps}.
-
-L'attaccante sniffando questi messaggi (all'interno di un domain DDS)
-di tipo multicast RTPS-SPDP,
-utilizzando anche un semplice script Python, infatti potrà 
-vedere il loro contenuto in maniera chiara.
-
-All'interno di un pacchetto di questo tipo possiamo trovare:
-l'indirizzo IP dell'host, il prefisso GUID dell'RTPS,
-la versione dellRTPS, l'ID del venditore, metadati 
-riguardanti la sincronizzazione
-ed infine il contenuto dei sottomessaggi \cite{White2017AnII}.
-
-
-% \subsection{Conclusioni}
-Fare una ricognizione della rete DDS senza effettuare veri e propri
-attacchi di tipo attivo può essere molto utile per un attaccante che 
-ha il compito di penetrare in modo attivo
-una rete DDS. In molti casi tutto quello che deve fare l'attaccante
-è osservare i messaggi che vengono scambiati all'interno del network.
-Successivamente quando si ottengono informazioni a sufficienza sarà più
-facile per l'attaccante trovare altre vulnerabilità
-\cite{White2017AnII}.
-
-Di solito questo tipo di attacco è difficile da identificare e possono essere
-effettuati senza lasciare tracce di nessun tipo, dato che l'attaccante non 
-manda pacchetti.
-Una soluzione potrebbe essere usare l'estensione DDS security o 
-eseguire la connessione tra i nodi tramite un tunnel con WireGuard per crittare
-le comunicazioni.
 
 
 

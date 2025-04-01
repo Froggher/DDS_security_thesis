@@ -1,4 +1,6 @@
 \chapter{Introduzione al DDS}
+\label{introdDDS}
+
 In questo capitolo viene fatta un'introduzione generale dello 
 standard del Data Distribution Service (DDS) gestita
 dall'Object Management Group (OMG) \cite{8469351},
@@ -103,7 +105,7 @@ aggiornamenti su un determinato topic anche a runtime \cite{OH2010318}.
 \section{Che cos'è il Data Distribution Service}
 
 Il DDS gestito da OMG è un middleware e uno standard API con una gestione
-dei dati di tipo data-centric. 
+dei dati di tipo \textbf{data-centric}. 
 Prendendo in considerazione il modello ISO OSI 
 (Open Systems Interconnection), questo
 middleware è un software che si trova tra l'applicativo e il livello
@@ -120,7 +122,7 @@ del trasferimento, mostrato in Figura~\ref{DDSISOOSI}.
 % fare disegno layers osi
 Il DDS si basa sul DCPS (Data-Centric Publish-Subscribe) 
 che è un modello di comunicazione simile a quello
-di tipo publish/subscribe, ma con un approccio più \textbf{data-centric}, in modo
+di tipo publish/subscribe, ma con un approccio più data-centric, in modo
 tale da semplificare il lavoro del programmatore che si deve solamente
 occupare di specificare il contesto del dato che deve mandare o ricevere.
 Con data-centric infatti, specifichiamo che il focus del modello DCPS 
@@ -137,7 +139,8 @@ dei messaggi, perché questa parte viene completamente gestita dal middleware.
 
 % Magari fare la differenza tra data centri e message centric
 
-Altri vantaggi del DDS includono un'architettura adattabile che supporti
+Altri vantaggi del DDS includono 
+un'\textbf{architettura adattabile} che supporti
 degli elementi di \textit{auto-scoperta (auto-discovery) o Dynamic Discovery} 
 in modo tale da aggiungere o 
 rimuovere dispositivi dalla rete in modo automatico, anche a runtime.
