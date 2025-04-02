@@ -30,7 +30,7 @@ funzionamento del modello publish/subscribe
 che sta alla base del suo funzionamento.
 Questo modello di publish e subscribe non funziona come la 
 classica applicazione che siamo abituati a vedere tra server e
-client tramite protocollo TCP/IP nell'ambito delle comunicazioni. 
+client tramite protocollo \textit{TCP/IP} nell'ambito delle comunicazioni. 
 
 
 \subsection{Perché non usiamo una connessione con TCP/IP}
@@ -42,8 +42,9 @@ sensore quindi si trovano nello stesso network e possono
 ora cominciare a comunicare tra di loro. L'obiettivo è quello
 di trasferire i dati dal sensore alla workstation in modo tale
 da poterli visualizzare a schermo.
-La metodologia più frequente è quella di utilizzare un socket tramite 
-\textbf{protocollo TCP/IP}, ma non sempre questa è la soluzione migliore.
+La metodologia più frequente è quella di utilizzare un 
+\textbf{socket tramite 
+protocollo TCP/IP}, ma non sempre questa è la soluzione migliore.
 Alcuni vantaggi del TCP/IP sono la disponibilità di utilizzo 
 in molte applicazioni e nella maggior parte 
 delle connessioni a Internet.
@@ -79,10 +80,10 @@ quando hanno un \textbf{topic}, che
 rappresenta una tipologia di dati (ad esempio la temperatura, 
 la distanza e la velocità) è in comune tra di loro.
 \begin{itemize}
-    \item Publisher: colui che pubblica nuovi dati riguardanti dei
+    \item \textbf{Publisher:} colui che pubblica nuovi dati riguardanti dei
     topic rendendoli accessibili ai subscriber iscritti. 
     Di solito si tratta di un sensore.
-    \item Subscriber: è colui che si iscrive ai topic del publisher, 
+    \item \textbf{Subscriber:} è colui che si iscrive ai topic del publisher, 
     cominciando
     così a ricevere nuovi dati sul topic scelto. Spesso si tratta
     di un dispositivo utilizzato per visualizzare informazioni, come uno
@@ -198,13 +199,13 @@ Lo standard DDS definito dall'OMG è composto da due layer:
 il DDS e il
 DDSI (DDS Interoperability), mostrati in Figura~\ref{dcpsrtpslayers}.
     \begin{itemize}
-        \item DDS: è il layer fondamentale in cui troviamo il DCPS
+        \item \textbf{DDS:} è il layer fondamentale in cui troviamo il DCPS
         (Data-Centric Publish-Subscribe),
         un modello di comunicazione simile a quello di tipo publish/subscribe,
         che si occupa di mettere in comunicazione più applicazioni 
         tra di loro. In questo layer vengono inoltre 
         definite le policy QoS \cite{Michaud2017Apr}.
-        \item DDSI: è il layer che si occupa di garantire \textbf{l'interoperabilità}
+        \item \textbf{DDSI:} è il layer che si occupa di garantire \textbf{l'interoperabilità}
         tra le diverse implementazioni del DDS, ad
         esempio quando provengono da vendors diversi.
         All'interno di questo layer troviamo l'RTPS 
@@ -283,7 +284,7 @@ in precedenza nel modello publish/subscribe nella Sezione
 \ref{publish/subscribe}. Esse 
 mantengono lo stesso ruolo all'interno del modello DCPS. 
 Durante l'esecuzione, l'applicativo che si interfaccia con il 
-middleware DDS \textit{non deve occuparsi 
+middleware DDS \textbf{non deve occuparsi 
 di gestire le comunicazioni tra publisher e subscriber}, dato 
 che queste verranno gestite automaticamente. 
 Questo consente ai DataWriters e DataReaders di 
@@ -303,12 +304,12 @@ sono i \textit{data type e i data-values}. I data type consentono di
 descrivere la struttura e il formato del dato, mentre i data-value
 sono i dati veri e propri che rispettano le specifiche data type.
 \begin{itemize}
-    \item DataWriter: è l'interfaccia usata dagli applicativi 
+    \item \textbf{DataWriter:} è l'interfaccia usata dagli applicativi 
     per spedire i
     data-values con un loro specifico data type ai publisher.
     Ricevuti questi data-values il publisher spedirà le
     informazioni ricevute dall'applicativo ai relativi subscriber.
-    \item DataReader: è l'interfaccia usata dagli applicativi per
+    \item \textbf{DataReader:} è l'interfaccia usata dagli applicativi per
     ricevere i data-values con i rispettivi data type pubblicati in
     precedenza da un publisher \cite{dds1.4}.
 \end{itemize}
@@ -385,7 +386,7 @@ modo potremo così controllare le due macchine con due istanze ciascuna.
 
 \subsection{Domain}
 L'entità del \textbf{domain} (dominio) rappresenta uno spazio logico definito che
-ha lo scopo di \textit{mettere in comunicazione i vari applicativi tra di loro}.
+ha lo scopo di \textbf{mettere in comunicazione i vari applicativi tra di loro}.
 All'interno possiamo trovare i vari topic che collegano gli applicativi
 con i loro rispettivi data-types.
 L'entità domain è caratterizzata dalle seguenti proprietà:
@@ -410,7 +411,7 @@ L'entità del \textbf{DomainParticipant} all'interno di un Domain del DDS,
 viene utilizzata dagli applicativi e 
 rappresenta la prima entità creata da un'applicazione che verrà 
 impiegata per creare DataWriters e DataReaders. 
-Il DomainParticipant ha il \textit{compito di inizializzare
+Il DomainParticipant ha il \textbf{compito di inizializzare
 le comunicazioni con il Domain} attraverso 
 il processo di discovery che consente alle entità appartenenti allo 
 stesso domain di trovarsi e connettersi automaticamente.
@@ -430,25 +431,25 @@ definiscono un insieme di policy QoS
 che le entità del DCPS devono rispettare. Qui di seguito vengono
 proposte le categorie QoS più rilevanti.
 \begin{itemize}
-    \item Ownership: questo valore specifica se un topic
+    \item \textbf{Ownership:} questo valore specifica se un topic
     può essere aggiornato da più 
     (\texttt{SHARED} ownership) o da un solo (\texttt{EXCLUSIVE} ownership) publisher.
     Se abbiamo impostato un ownership di tipo \texttt{EXCLUSIVE}, per decidere il 
     publisher che ha la possibilità di aggiornare il topic, viene 
     utilizzato l'ownership \texttt{STRENGTH}.
-    \item Liveness: viene utilizzato per specificare se è necessaria
+    \item \textbf{Liveness:} viene utilizzato per specificare se è necessaria
     una comunicazione di tipo attivo, rispetto ad una di tipo 
     intermittente.
-    \item Reliability: specifica se in una comunicazione tutti i dati
+    \item \textbf{Reliability:} specifica se in una comunicazione tutti i dati
     trasferiti tra publisher e subscriber devono essere consegnati
     per intero, oppure
     se è accettabile anche la perdita di alcuni di essi.
-    \item Lifespan: specifica il tempo di scadenza dei dati pubblicati da 
+    \item \textbf{Lifespan:} specifica il tempo di scadenza dei dati pubblicati da 
     un publisher.
-    \item History: specifica quanti e come i dati devono essere 
+    \item \textbf{History:} specifica quanti e come i dati devono essere 
     mantenuti in un 
     subscriber dopo averli ricevuti.
-    \item Durability: specifica se i dati inviati in precedenza sono
+    \item \textbf{Durability:} specifica se i dati inviati in precedenza sono
     disponibili per i nuovi subscriber appena entrati nel domain.
 \end{itemize}
 Le configurazioni 
@@ -470,12 +471,12 @@ UDP/IP, che risulta ottimale per le comunicazioni di tipo real-time. Tuttavia
 anche i protocolli connection-oriented incluso il TCP/IP possono essere utilizzati. 
 RTPS include molti vantaggi ideali per il DDS:
 \begin{itemize}
-    \item Connettività plug and play: le nuove applicazioni possono unirsi o 
+    \item \textbf{Connettività plug and play}: le nuove applicazioni possono unirsi o 
     lasciare il domain a proprio piacimento.
-    \item Tolleranza ai guasti: non sono presenti singoli punti di 
+    \item \textbf{Tolleranza ai guasti}: non sono presenti singoli punti di 
     guasto perché i dati vengono distribuiti e replicati tra le varie 
     entità DDS che adoperano il Global Data Space.
-    \item Type-safety: gli errori di programmazione vengono gestiti 
+    \item \textbf{Type-safety}: gli errori di programmazione vengono gestiti 
     in modo tale da non compromettere il funzionamento 
     dei dispositivi remoti.
 \end{itemize}
@@ -497,8 +498,8 @@ Esse consentono di mantenere l'interoperabilità tra le varie
 implementazioni (anche di diversi vendors) del DDS \cite{ddsrtps}.
 
 \subsection{Messages module}
-Il messages module si occupa di descrivere il \textit{formato dei messaggi scambiati}
-tra i RTPS Writers e i RTPS Readers che sono composti da un \textit{header}
+Il messages module si occupa di descrivere il \textbf{formato dei messaggi scambiati}
+tra i RTPS Writers e i RTPS Readers che sono composti da un \textit{HEADER}
 seguito da dei \textit{sottomessaggi} (Figura~\ref{wireskartshapesdemo}). 
 Nell'header troviamo informazioni relative al
 protocollo RTPS, cioè la sua versione, il nome del vendor dell'implementazione
@@ -509,12 +510,12 @@ e una serie di metadati. Nell'header del sottomessaggio
 del sottomessaggio stesso. Le tipologie dei sottomessaggi più importanti, 
 identificate dal suo header, sono:
 \begin{itemize}
-    \item DATA: in questo sottomessaggio vengono trasferiti dall'RTPS Writers
+    \item \textbf{DATA}: in questo sottomessaggio vengono trasferiti dall'RTPS Writers
     all'RTPS Reader i dati effettivi relativi ad un topic.
-    \item HEARTBEAT: viene mandato da un RTPS Writer a un RTPS Reader per 
+    \item \textbf{HEARTBEAT}: viene mandato da un RTPS Writer a un RTPS Reader per 
     comunicare il numero di nuovi (sequence number) aggiornamenti che il 
     Writer ha disponibili.
-    \item ACKNACK: utilizzato per comunicare lo stato di un RTPS Reader 
+    \item \textbf{ACKNACK}: utilizzato per comunicare lo stato di un RTPS Reader 
     al corrispondente RTPS Writer, per informarlo riguardo i dati ricevuti
     e quelli mancanti. Questo sottomessaggio, con la flag \texttt{FINAL} 
     impostata, consente di far rimanere il Reader sincronizzato con l'RTPS
@@ -526,7 +527,7 @@ identificate dal suo header, sono:
 Questo modulo garantisce che i nuovi partecipanti DDS (publisher e subscriber)
 riescano a identificarsi in automatico tra di loro in modo tale da inizializzare una 
 possibile comunicazione. Questo modulo 
-è \textit{responsabile dell'auto-scoperta 
+è \textbf{responsabile dell'auto-scoperta 
 (Dynamic Discovery)}
 delle entità del DDS all'interno dello stesso domain. Il Dynamic Discovery
 utilizza messaggi di tipo \textit{multicast e unicast} 
@@ -552,19 +553,19 @@ l'obiettivo di mitigare una moltitudine di vettori d'attacco come
 la lettura e la scrittura dei messaggi scambiati tra i partecipanti di un 
 domain DDS. Questa estensione è composta da cinque plugin:
 \begin{itemize}
-    \item Authentication Service Plugin: serve per effettuare l'autenticazione 
+    \item \textbf{Authentication Service Plugin}: serve per effettuare l'autenticazione 
     delle entità DDS. Senza l'autenticazione le entità non possono
     comunicare tra di loro.
-    \item Access Control Service Plugin: ha lo scopo di imporre 
+    \item \textbf{Access Control Service Plugin}: ha lo scopo di imporre 
     delle policy alle entità DDS autenticate. Ad esempio limitare
     la pubblicazione di nuovi dati o la creazione di nuovi topic.
-    \item Cryptographic Service Plugin: gestisce tutte le operazioni 
+    \item \textbf{Cryptographic Service Plugin}: gestisce tutte le operazioni 
     crittografiche, tra cui la crittografia, la decrittazione e
     le firme digitali. Ha anche il compito di controllare l'integrità
     dei messaggi.
-    \item Logging Service Plugin: permette di effettuare un audit di 
+    \item \textbf{Logging Service Plugin}: permette di effettuare un audit di 
     tutte le operazioni DDS rilevanti all'interno di un domain.
-    \item Data Tagging Service Plugin: fornisce dei metodi per implementare
+    \item \textbf{Data Tagging Service Plugin}: fornisce dei metodi per implementare
     un tag su tutti i dati trasferiti. 
 \end{itemize}
 Anche se il DDS security riesce a risolvere molti problemi legati alla
@@ -572,7 +573,7 @@ sicurezza del DDS, non sempre è possibile implementarlo. Spesso
 la sua configurazione può richiedere molto tempo per essere 
 impostata, soprattutto su sistemi DDS già esistenti e sprovvisti di 
 questa estensione.
-\textit{Il partecipante più vulnerabile rappresenta la sicurezza
+\textbf{Il partecipante più vulnerabile rappresenta la sicurezza
 complessiva dell'intero sistema}, quindi ogni entità deve essere
 protetta \cite{Michaud2017Apr}. 
 
@@ -589,7 +590,8 @@ falla, l'Authentication Service Plugin richiede, a ogni dispositivo che
 vuole entrare del domain DDS, la \textbf{necessità di autenticarsi}.
 Prima di effettuare l'autenticazione tutti i partecipanti devono 
 avere \textit{un loro certificato e le loro chiavi private}, mentre 
-l'amministratore deve creare un certificato root (o Certificate Authority, CA) 
+l'amministratore deve creare un \textit{certificato root}
+(o Certificate Authority, CA) 
 che deve essere riconosciuto da tutte le entità autorizzate. 
 L'\textit{autenticazione tra le entità avviene in modo reciproco}, 
 in modo tale che ciascun partecipante verifichi l'identità dell'altro
@@ -607,7 +609,7 @@ protocollo la chiave non verrà mai
 trasmessa direttamente, \textbf{evitando così di essere intercettata} da 
 possibili attaccanti. 
 
-Per rafforzare ulteriormente la sicurezza e prevenire attacchi replay 
+Per rafforzare ulteriormente la sicurezza e prevenire attacchi \textit{replay} 
 (riutilizzo di messaggi intercettati) o di impersonificazione, vengono 
 utilizzate le \textit{challenge}. Queste challenge corrispondono a valori 
 casuali che cambiano nel tempo e vengono utilizzati durante il 
@@ -652,7 +654,7 @@ autenticazione e devono rimanere sempre disponibili \cite{essay93639}.
 \subsubsection{Processo di controllo permessi}
 Un esempio di processo di controllo permessi avviene
 quando un DataWriter richiede l'autorizzazione per creare un nuovo topic.
-Le \textit{altre entità hanno il compito di verificare se l'operazione 
+Le \textbf{altre entità hanno il compito di verificare se l'operazione 
 richiesta dal DataWriter viene consentita
 dai files di permessi} a loro disposizione. Per effettuare 
 questa operazione il partecipante, che richiede l'autorizzazione ,
@@ -726,7 +728,7 @@ sviluppo dell'applicativo è gestito dalle software house che possono
 decidere come gestire il codice sorgente. Sul mercato sono comunque 
 presenti
 soluzioni open source, ma spesso queste presentano degli svantaggi,
-tra cui la mancanza di supporto per alcuni linguaggi di programmazione 
+tra cui la \textbf{mancanza di supporto per alcuni linguaggi di programmazione} 
 per interagire con le API del middleware
 \cite{DDSimplementationRTI}.
 

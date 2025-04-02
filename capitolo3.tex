@@ -107,9 +107,9 @@ analizzare i contenuti dei pacchetti.
 % Devo spiegare il modulo discovery
 Prendendo in considerazione, il protocollo RTPS,
 descritto nella Sezione~\ref{Discovery module}, e il suo modulo discovery,
-possiamo notare che i messaggi di default sono molto verbose, 
-scambiando le informazioni in
-chiaro durante le comunicazioni tra i vari partecipanti \cite{White2017AnII}.
+possiamo notare che i messaggi di default sono molto \textit{verbose}, 
+scambiando le \textbf{informazioni in
+chiaro} durante le comunicazioni tra i vari partecipanti \cite{White2017AnII}.
 Il modulo 
 discovery del protocollo RTPS a sua volta si suddivide in
 altri 2 protocolli, che sono necessari per le specifiche DDS:
@@ -125,12 +125,12 @@ altri 2 protocolli, che sono necessari per le specifiche DDS:
 Per questo attacco ci focalizzeremo in particolare sull'SPDP che serve ad
 individuare la presenza dei partecipanti al resto delle
 entità nel domain. In particolar modo
-il funzionamento si basa su messaggi di tipo multicast che vengono
+il funzionamento si basa su messaggi di tipo \textit{multicast} che vengono
 mandati a tutti i partecipanti attivi.
 % (foglio 5 pag 125)
 \cite{ddsrtps}.
 
-L'attaccante sniffando questi messaggi (all'interno di un domain DDS)
+L'attaccante \textit{sniffando} questi messaggi (all'interno di un domain DDS)
 di tipo multicast RTPS-SPDP e
 utilizzando anche un semplice script Python, potrà infatti 
 vedere il loro contenuto in maniera chiara.
@@ -148,11 +148,13 @@ attacchi di tipo attivo può essere molto utile per un attaccante che
 ha il compito di penetrare in modo attivo
 una rete DDS. In molti casi tutto quello che deve fare l'attaccante
 è osservare i messaggi che vengono scambiati all'interno del network.
-Successivamente quando si ottengono informazioni a sufficienza sarà più
-facile per l'attaccante trovare altre vulnerabilità
+Successivamente quando si ottengono \textbf{informazioni 
+a sufficienza sarà più
+facile per l'attaccante trovare altre vulnerabilità}
 \cite{White2017AnII}.
 
-Di solito questo tipo di attacco è difficile da identificare e può essere
+Di solito questo tipo di attacco è \textbf{difficile da identificare} 
+e può essere
 effettuato senza lasciare tracce di nessun tipo, dato che l'attaccante non 
 manda pacchetti.
 Una soluzione potrebbe essere usare l'estensione DDS security o 
@@ -164,22 +166,23 @@ le comunicazioni.
 \section{Blocco DataReader tramite sequence number}
 
 %\subsubsection{Prologo}
-Il vettore di attacco si trova nel messages module del protocollo RTPS
+Il vettore di attacco si trova nel \textit{messages module} del protocollo RTPS
 descritto nella Sezione~\ref{Messages module}. Questo modulo
 si occupa di scambiare messaggi tra i DataReader e i DataWriter 
 all'interno un domain DDS.
 
 Per effettuare questi scambi di messaggi vengono utilizzati dei sottomessaggi,
 in particolare l'HEARTBEAT e l'ACKNACK.
-L'HEARTBEAT contiene al suo interno il sequence number che tiene traccia 
+L'HEARTBEAT contiene al suo interno il \textit{sequence number} che tiene traccia 
 del numero di aggiornamenti di un topic da parte di DataWriter, mentre
 l'ACKNACK inviato da un DataReader
 serve per confermare al DataWriter la ricezione di nuovi dati 
 riguardo un topic.
 Quando il DataReader riceve il sequence number all'interno di un HEARTBEAT
-può identificare se ci sono o no dei pacchetti mancanti e in caso segnalarli al
+può identificare 
+\textbf{se ci sono o no dei pacchetti mancanti e in caso segnalarli} al
 DataWriter \cite{White2017AnII}.
-Inoltre se il parametro FINAL è attivo in un sottomessaggio HEARTBEAT, il DataReader 
+Inoltre se il parametro \texttt{FINAL} è attivo in un sottomessaggio HEARTBEAT, il DataReader 
 deve sempre rispondere al DataWriter con ACKNACK dopo aver ricevuto nuovi aggiornamenti.
 Il DataWriter, nel frattempo, rimarrà in attesa del sottomessaggio 
 ACKNACK prima di 
@@ -188,7 +191,7 @@ Questo sistema aiuta il DataReader a rimanere sempre sincronizzato con il
 DataWriter.
 
 I controlli del sequence number all'interno dell'HEARTBEAT 
-non sono però sufficienti per mitigare questo attacco:
+\textbf{non sono però sufficienti} per mitigare questo attacco:
 \begin{itemize}
     \item Un primo controllo viene effettuato per verificare che non ci siano 
     valori negativi;
@@ -206,11 +209,11 @@ strumento per sniffare la comunicazione tra il DataReader e il DataWriter,
 intercettando così i
 sottomessaggi HEARTBEAT. Dopo aver catturato un HEARTBEAT diretto verso 
 un DataReader e modificato 
-il suo sequence number assegnandogli un valore molto alto, 
+il suo sequence number \textbf{assegnandogli un valore molto alto}, 
 l'attaccante lo rinvierà al suo destinatario originario.
 Una volta ricevuto il sottomessaggio il DataReader si metterà quindi 
 in attesa di un HEARTBEAT con un sequence number 
-superiore a quello appena ricevuto. Di conseguenza il DataReader
+\textbf{superiore a quello appena ricevuto}. Di conseguenza il DataReader
 non elaborerà più i messaggi legittimi mandati dal DataWriter,
 dato che questi hanno sequence number più piccoli.
 Solo un messaggio HEARTBEAT con un sequence number
@@ -244,15 +247,15 @@ Successivamente due entità,
 per iniziare una comunicazione tra di loro, devono prima
 scambiarsi le chiavi private
 in modo
-sicuro tramite protocollo Diffie-Hellman in modo tale da poter 
+sicuro tramite protocollo \textit{Diffie-Hellman} in modo tale da poter 
 crittare i successivi
 messaggi. Durante l'uso di Diffie-Hellman vengono adoperate
-le challenge (Sezione ~\ref{Processo di autenticazione}), 
+le \textit{challenge} (Sezione ~\ref{Processo di autenticazione}), 
 che corrispondono a valori che variano nel tempo, 
 inseriti durante il calcolo
 della firma digitale richiesta dal protocollo. 
 Queste challenge vengono utilizzate per rendere le varie sessioni 
-di autenticazione uniche evitando così attacchi di tipo replay
+di autenticazione uniche evitando così attacchi di tipo \textit{replay}
 \cite{DBLP:conf/asiaccs/WangLG24}.
 
 % controllare sta robbba
@@ -266,8 +269,8 @@ all'entità con cui vuole aprire una comunicazione.
 La richiesta del partecipante viene intercettata
 dall'attaccante che modifica i valori della challenge crittografica 
 all'interno del pacchetto. 
-Modificando ripetutamente questi valori, l'attaccante
-inizia a inviare molteplici richieste crittografiche alla sua vittima.
+\textbf{Modificando ripetutamente questi valori, l'attaccante
+inizia a inviare molteplici richieste crittografiche alla sua vittima.}
 Il partecipante così comincerà a calcolare le firme digitali per effettuare
 l'autenticazione, consumando tutte le sue risorse.
 Dato che, la vittima è probabilmente un dispositivo IoT
@@ -279,7 +282,8 @@ ricevute dall'attaccante, bloccando così il suo funzionamento
 
 
 % \subsection{Conclusioni}
-Questo attacco è stato scoperto con Proverif, un tool che viene usato
+Questo attacco è stato scoperto con \textit{Proverif}, 
+un tool che viene usato
 per individuare vulnerabilità nei protocolli crittografici. 
 È stato utilizzato in molti studi, ad esempio nell'analisi della 
 posta elettronica certificata e nell'analisi del TLS 1.3 \cite{proverifmanual}.
@@ -328,14 +332,14 @@ allertando così un amministratore
 
 Questo attacco è realizzabile solo se certe policy QoS vengono
 modificate durante l'esecuzione della rete, specialmente il parametro
-OWNERSHIP\_KIND che gestisce quanti DataWriter possono scrivere per un
-determinato topic. Una descrizione accurata di altre policy QoS viene 
+OWNERSHIP\_KIND che gestisce \textbf{quanti DataWriter possono scrivere per un
+determinato topic.} Una descrizione accurata di altre policy QoS viene 
 effettuata nella Sezione~\ref{Le policy QoS nel dettaglio}.
 Questo parametro può essere impostato in due modi diversi:
 \begin{itemize}
-    \item SHARED: in questo modo più DataWriter possono aggiornare le
+    \item \textbf{SHARED:} in questo modo più DataWriter possono aggiornare le
     informazioni di un topic.
-    \item EXCLUSIVE: solo un DataWriter può aggiornare le informazioni di un
+    \item \textbf{EXCLUSIVE:} solo un DataWriter può aggiornare le informazioni di un
     topic. Il DataWriter che ha il permesso di scrittura per il topic è quello
     che dispone di una OWNERSHIP\_STRENGTH con valore più alto.
 \end{itemize}
@@ -360,17 +364,19 @@ Per effettuare questo attacco, tutto quello che serve, è
 essere a conoscenza del topic che
 si vuole modificare, delle policy QoS in uso e del valore 
 dell'OWNERSHIP\_STRENGTH.
-L'ultimo passo è quello di impostare la policy QoS nel DataWriter
+L'ultimo passo è quello di \textbf{impostare la policy QoS 
+nel DataWriter
 dell'attaccante con una OWNERSHIP\_STRENGTH 
 superiore a quella impiegata dal
-DataWriter originario.
+DataWriter originario.}
 Ora i DataReader che sono iscritti al topic bersaglio
 ricevono dati dal DataWriter dell'attaccante
 \cite{DBLP:conf/malware/MichaudDL18}.
 
 
 % \subsection{Conclusioni}
-Questa vulnerabilità è stata analizzata con l'ausilio di RTI Shapes Demo, un 
+Questa vulnerabilità è stata analizzata con l'ausilio di \textit{RTI Shapes Demo}, 
+un 
 software che emula una rete DDS corrispondente alle specifiche 
 dello standard OMG, sviluppato da Real-Time Innovations (RTI).
 
@@ -400,12 +406,12 @@ l'OWNERSHIP\_STRENGTH.
 
 Un'altra policy QoS che può essere usata come vettore di attacco è quella
 che regola il parametro LIFESPAN. Questo parametro 
-corrisponde al tempo limite massimo 
+corrisponde al \textbf{tempo limite massimo 
 di validità per la
-lettura di pacchetti da parte di un DataReader. Per determinare se un pacchetto
-di un topic è scaduto viene utilizzato il timestamp di creazione
+lettura di pacchetti} da parte di un DataReader. Per determinare se un pacchetto
+di un topic è scaduto viene utilizzato il \textit{timestamp} di creazione
 aggiungendo il valore del LIFESPAN impostato; se questo risultato chiamato 
-expiration time risulterà
+\textit{expiration time} risulterà
 superiore all'orario durante la ricezione del DataReader, allora il pacchetto
 ricevuto sarà ancora valido. 
 Per funzionare, gli orologi interni del DataWriter e del DataReader
@@ -438,7 +444,7 @@ solo parzialmente questa vulnerabilità
 
 \subsection{Dettagli attacco e conclusioni}
 Avendo sotto controllo i parametri LIFESPAN e RELIABLE, l'attaccante modificherà le
-policy dei DataWriter in modo tale da avere il valore LIFESPAN molto piccolo. 
+policy dei DataWriter in modo tale da \textbf{avere il valore LIFESPAN molto piccolo.} 
 Così
 facendo, i pacchetti spediti dal publisher 
 arriveranno già scaduti al DataReader,
@@ -456,7 +462,7 @@ la comunicazione tra publisher e subscriber avverrà senza nessun problema.
 Un dettaglio da aggiungere è che se si imposta la policy
 dell'affidabilità (RELIABILITY) con la flag RELIABLE, i millisecondi necessari
 del LIFESPAN per compromettere le comunicazioni tra DataReader e DataWriter
-devono essere moltiplicati per un fattore di 0.01. Quindi, ad esempio se si
+devono essere \textit{moltiplicati per un fattore di 0.01}. Quindi, ad esempio se si
 ottiene un completo annullamento delle comunicazioni con un LIFESPAN < 80ms
 utilizzando la RELIABILITY di tipo BEST-EFFORT, per ottenere lo stesso
 risultato con RELIABILITY di tipo RELIABLE dobbiamo impostare un

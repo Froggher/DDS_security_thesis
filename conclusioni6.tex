@@ -1,4 +1,3 @@
-% Va libreoffizzato
 \chapter{Conclusione}
 Questa tesi ha analizzato in dettaglio il Data Distribution Service (DDS),
 iniziando con un'introduzione in cui viene spiegato il suo funzionamento 
@@ -6,7 +5,7 @@ e le sue caratteristiche principali, incluse l'interoperabilità tra
 le diverse implementazioni dei vendors, la possibilità di 
 cambiare la topologia della rete a runtime e una gestione di policy 
 QoS che rendono il middleware estremamente flessibile per ogni tipo 
-di utilizzo. Successivamente é stato eseguito un confronto tra i 
+di utilizzo. Successivamente è stato eseguito un confronto tra i 
 vari applicativi del DDS per elencare e comparare i loro 
 punti di forza e svantaggi.
 
@@ -20,10 +19,10 @@ permette di crittare le comunicazioni tra le varie entità e
 bloccare certe loro azioni se non hanno determinati permessi.
 Specialmente la mancanza di un sistema di autenticazione 
 permette ad un autore malevolo di intercettare 
-il traffico scambiato tra entitá, dato che di base le 
+il traffico scambiato tra entità, dato che di base le 
 comunicazioni avvengono in chiaro.  
 
-Un'altra tipologia di vulnerabilità che é stata presentata, é 
+Un'altra tipologia di vulnerabilità che è stata presentata, è 
 relativa al software DDS utilizzato dai vendors per 
 implementarlo. Queste falle di sicurezza hanno evidenziato che 
 soluzioni open source come FastDDS hanno maggiori possibilità 
@@ -31,35 +30,35 @@ di avere problematiche di sicurezza dato che
 la maggior parte dei CVE compilati sono relativi a questa 
 implementazione di eProsima. Da qui possiamo dedurre che 
 anche se il costo iniziale di una soluzione a pagamento 
-é superiore, alla lunga garantisce una maggiore copertura.
+è superiore, alla lunga garantisce una maggiore copertura.
 
 Queste vulnerabilità hanno
 evidenziato 
-come lo standard OMG puó creare diverse problematiche 
+come lo standard OMG può creare diverse problematiche 
 legate alla sicurezza. 
-Anche se molte delle vulnerabilitá che sono state presentate 
+Anche se molte delle vulnerabilità che sono state presentate 
 sono ormai note, in molti casi vengono ignorate 
 dato che i vendors cercano di mantenere il loro applicativo 
-in regola con lo standard OMG. Questa scelta é guidata dal fatto che 
+in regola con lo standard OMG. Questa scelta è guidata dal fatto che 
 lo standard garantisce l'interoperabilità tra le diverse implementazioni. 
-Purtroppo la collaborazine di queste software house sono ancora 
-molto limitate tra di loro, se in futuro ci fosse piú collaborazione 
-si potrebbe arrivare a creare standard piú rigidi in modo tale
+Purtroppo la collaborazione di queste software house sono ancora 
+molto limitate tra di loro, se in futuro ci fosse più collaborazione 
+si potrebbe arrivare a creare standard più rigidi in modo tale
 da aumentare la sicurezza complessiva del middleware.
 
 L'OMG in futuro dovrebbe aggiornare i propri standard in modo da 
 mitigare le problematiche legate a queste regole di interoperabilità
 specialmente durante il 
 processo di discovery. Lo standard OMG proposto per rispondere alla problematica
-é il DDS security che purtroppo in molti casi 
-non viene applicato dato che é difficile da 
-configurare in una rete giá esistente e sprovvista di questa estensione.
+è il DDS security che purtroppo in molti casi 
+non viene applicato dato che è difficile da 
+configurare in una rete già esistente e sprovvista di questa estensione.
 
 Una soluzione potrebbe essere quella di aumentare solamente 
 la sicurezza del 
-processo di discovery che in molti casi é il 
+processo di discovery che in molti casi è il 
 principale vettore d'attacco, magari 
-utilizzando una parte dei plugin di sicurezza giá impiegati dal DDS security.
+utilizzando una parte dei plugin di sicurezza già impiegati dal DDS security.
 
 Nell'ultima parte dell'elaborato sono stati descritti degli strumenti 
 in grado di analizzare il traffico all'interno di una rete DDS.
@@ -68,9 +67,9 @@ catturare pacchetti del protocollo RTPS insieme ad un'alternativa
 sviluppata da eProsima chiamata eProsima DDS Record \&
 Replay. Mentre questi due strumenti sono unici e non sono stati 
 sviluppati da differenti software house, lo stesso non 
-si puó dire per il tool Fast DDS Spy.
+si può dire per il tool Fast DDS Spy.
 Anche se questi strumenti garantiscono il funzionamento 
-con piú applicativi del middleware creati dai vari vendors, essi
+con più applicativi del middleware creati dai vari vendors, essi
 presentano dei distinti punti di forza. 
 
 Se OMG e i diversi vendors in futuro collaborassero tra di loro 
@@ -88,7 +87,7 @@ Ad esempio essa potrebbe monitorare se i valori ricevuti dai sensori
 rimangono all'interno di un intervallo predefinito e se 
 mantentengono una consistenza nel tempo. Se venisse rilevato 
 un problema, l'IA potrebbe avvisare un operatore che 
-analizzerà piú nel dettaglio l'inconsistenza individuata.
+analizzerà più nel dettaglio l'inconsistenza individuata.
 
 Inoltre questa AI potrebbe 
 essere impiegata durante la configurazione iniziale della rete,
@@ -96,29 +95,29 @@ specialmente per la creazione delle policy QoS per evitare
 di creare delle misconfigurazioni che potrebbero essere
 successivamente sfruttate da un attore malevolo.
 
-L'ultimo strumento che é stato presentato all'interno di questo 
-elaborato é DDSFuzz, un software che ci permette di effettuare test 
+L'ultimo strumento che è stato presentato all'interno di questo 
+elaborato è DDSFuzz, un software che ci permette di effettuare test 
 di tipo fuzzing per ogni implementazione del DDS. Infatti una delle 
-vulnerabilità che é stata presentata é stata scoperta proprio 
+vulnerabilità che è stata presentata è stata scoperta proprio 
 con l'utilizzo di un tool simile. Questo dimostra che questi 
 modelli di software sono utili per trovare falle di sicurezza 
 che possono compromettere anche il funzionamento dei dispositivi
 all'interno della rete stessa. 
-DDSFuzz é stato descritto in maniera dettagliata
+DDSFuzz è stato descritto in maniera dettagliata
 perché rappresenta il primo applicativo di tipo fuzzer ad essere
 solamente  
 compatibile con il middleware DDS portando l'analisi dei suoi test di 
-input ad una maggiore accuratezza. Come é stato indicato, i bug identificati
-si divono in due categorie distinte, la prima relativa ai tradizionali 
+input ad una maggiore accuratezza. Come è stato indicato, i bug identificati
+si dividono in due categorie distinte, la prima relativa ai tradizionali 
 bug, ma nella seconda il vero punto di forza di DDSFuzz
 sono i bug semantici.
 Solo grazie all'esecuzione parallela di diversi applicativi DDS 
 sarà possibile
 individuare quest'ultima categoria di bug che avvengono quando 
-una o piú delle norme del DDS, come ad esempio l'obbligo di 
+una o più delle norme del DDS, come ad esempio l'obbligo di 
 autenticazione, potrebbe essere bypassato con uno specifico input.
 
-DDSFuzz é relativamente nuovo e ci dimostra 
+DDSFuzz è relativamente nuovo e ci dimostra 
 una mancanza di strumenti d'analisi 
 per trovare problematiche di funzionamento
 del DDS e della sua sicurezza, dato che sono subito state trovate 
@@ -135,15 +134,15 @@ Tuttavia, con la crescente domanda di interconnessioni
 e diffusione di reti sempre più complesse, 
 potrebbe rivelarsi insufficiente nel lungo termine.
 
-Il DDS é una tecnologia ancora in 
-sviluppo che, con il tempo, potrá aiutare a risolvere tante 
+Il DDS è una tecnologia ancora in 
+sviluppo che, con il tempo, potrà aiutare a risolvere tante 
 problematiche attuali legate alla comunicazione in 
 ambienti distribuiti. 
 
 Se prendiamo il 5G, un insieme di tecnologie che permette 
 di connettere ad Internet un grande numero di dispositivi
 inclusi quelli di tipo IoT, 
-possiamo osservare come la domanda di interconnettere piú dispositvi 
+possiamo osservare come la domanda di interconnettere più dispositivi 
 tra di loro stia crescendo. Questa interconnessione in futuro 
 non troppo distante, potrebbe portare a creare un sistema in 
 grado di permettere a una vasta rete di 
@@ -152,11 +151,9 @@ tra di loro.
 
 In questo scenario, il DDS potrebbe rappresentare una efficiente
 soluzione per permettere l'interconnessione di questa vasta 
-rete di sensori, evitando di impigare tecnologie come il 
-protocollo TCP/IP, che non é adatto a gestire un ambiente con 
+rete di sensori, evitando di impiegare tecnologie come il 
+protocollo TCP/IP, che non è adatto a gestire un ambiente con 
 un network dinamico. Tuttavia, affinché questa evoluzione possa 
-realizzarsi é necessario incrementare misure di potrezione 
-piú efficaci, capaci di risolvere almeno le vulnerabilità che 
+realizzarsi è necessario incrementare misure di protezione 
+più efficaci, capaci di risolvere almeno le vulnerabilità che 
 sono state mostrate in questo elaborato.
-
-

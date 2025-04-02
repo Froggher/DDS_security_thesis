@@ -17,13 +17,13 @@ di comunicazione tra i vari dispositivi connessi.
 %dire anche che é stato utilizzato in molti casi rti shapes
 
 \section{WireShark}
-WireShark è un tool di tipo packet-sniffing che ci consente di 
+WireShark è un tool di tipo \textit{packet-sniffing} che ci consente di 
 interagire e visualizzare il contenuto dei pacchetti scambiati da 
 diversi protocolli di rete. Esso ha ottenuto un grande successo 
 grazie alla sua interfaccia user-friendly e al suo codice sorgente 
 open-source con licenza di utilizzo libero. I pacchetti possono 
 essere analizzati sia in real-time che in modalità statica utilizzando 
-un file di tipo PCAP (packet capture). 
+un file di tipo \textit{PCAP} (packet capture). 
 
 Questo tool è anche compatibile con il protocollo RTPS che viene
 adoperato dalle entità del DDS per comunicare tra di loro 
@@ -56,13 +56,14 @@ controllando il contenuto di pacchetto RTPS possiamo osservare la presenza
 di un HEADER e due diversi sottomessaggi. 
 \begin{itemize}
     \item All'interno dell'HEADER sono presenti
-    diversi metadata, tra cui il guidPrefix, un identificativo univoco che rappresenta
+    diversi metadata, tra cui il guidPrefix, un identificativo univoco che 
+    rappresenta
     il partecipante che ha inviato il pacchetto.
     \item Il sottomessaggio INFO\_TS serve a fornire un timestamp ai destinatari 
     del pacchetto,
-    quindi non contiene un guidPrefix al 
-    suo interno. Al contrario, un sottomessaggio INFO\_DST include
-    il guidPrefix, in quanto il messaggio è diretto ad un'unica
+    quindi non contiene un guidPrefix per il suo destinatario al 
+    suo interno. Al contrario, un sottomessaggio \textbf{INFO\_DST include
+    il guidPrefix}, in quanto il messaggio è diretto ad un'unica
     entità specifica, come avviene, ad esempio, per un sottomessaggio ACKNACK
     destinato a un DataWriter \cite{rtiwireshark}.
     \item Il secondo sottomessaggio, che nel nostro caso è di tipo DATA,
@@ -93,14 +94,14 @@ utilizzato da WireShark \cite{eProsimaDDSRecordeReplayDocumentation}.
 MCAP è un database open-source che serve a salvare il contenuto 
 di più istanze DDS (quindi provenienti da differenti flussi di dati, 
 Sezione~\ref{Key e Istanza}), associandolo
-ad un timestamp in modo tale da creare dei dati serializzati
+ad un timestamp in modo tale da creare dei \textbf{dati serializzati}
 \cite{mcap}.
 Con questi dati serializzati è possibile vedere con più facilità 
 il loro contenuto in modo tale da poter analizzare al meglio
 il comportamento del traffico della rete, controllando nel dettaglio 
 uno o più partecipanti.   
 
-MCAP è stato creato per loggare dati provenienti da applicazioni 
+\textbf{MCAP} è stato creato per \textit{loggare} dati provenienti da applicazioni 
 che utilizzano un modello publish/subscribe, tra cui il DDS e ROS.
 Quindi diversi applicativi possono interpretare questo formato, 
 inclusa la piattaforma 
@@ -112,7 +113,7 @@ eProsima DDS Record \& Replay.
 \section{eProsima Fast DDS Spy}
 eProsima Fast DDS Spy è un tool, sviluppato da eProsima, 
 open-source con licenza Apache 2.0 accessibile
-tramite interfaccia a riga di comando (CLI) che serve a
+tramite \textit{interfaccia a riga di comando} (CLI) che serve a
 monitorare i partecipanti
 e i loro messaggi scambiati all'interno di una rete DDS,
 mostrato in Figura~\ref{fastddsspyintro} \cite{FastDDSSpy}. 
@@ -128,8 +129,8 @@ Facile da utilizzare, può essere molto efficace per comprendere
 al meglio la topologia di una rete DDS. Un attaccante può usare questo 
 tool per capire quali siano le varie entità del network, 
 inclusi il DataWriter, il DataReader i DomainParticipant e i topic.
-Per ciascuna di queste entità è anche possibile ottenere 
-il loro GUID (guidPrefix), 
+Per ciascuna di queste entità è anche possibile \textbf{ottenere 
+il loro GUID (guidPrefix)}, 
 una stringa univoca che ci permette di identificare un partecipante.
 Il GUID ottenuto può essere impiegato 
 per filtrare il traffico 
@@ -141,8 +142,8 @@ una ricognizione del
 network è offerta dai
 comandi \texttt{READER <GUID>} e \texttt{WRITER <GUID>} (o in alternativa,
 \texttt{READER VERBOSE} e \texttt{WRITER VERBOSE}), eseguiti nella
-Figura~\ref{fastddsspyQoS}, che mostrano
-una parte delle policy QoS adoperate dai DataReader e i DataWriter.
+Figura~\ref{fastddsspyQoS}, che \textbf{mostrano
+una parte delle policy QoS adoperate} dai DataReader e i DataWriter.
 
 \begin{figure}[H]
     \centering
@@ -154,7 +155,7 @@ una parte delle policy QoS adoperate dai DataReader e i DataWriter.
 
 \section{DDSFuzz}
 DDSFuzz è un tool di analisi open source con l'obiettivo di 
-effettuare test di tipo fuzz
+effettuare test di \textbf{tipo fuzz}
 in modo da testare vari input che il middleware DDS può
 ricevere durante la sua esecuzione. Prima di questo strumento 
 non esistevano (o non erano disponibili al pubblico) soluzioni
@@ -162,15 +163,15 @@ per effettuare questo tipo di test specifico sul DDS, mancanza
 che ora DDSFuzz cerca di colmare. Infatti anche se esistono tool 
 inclusi RoboFuzz e Deng, questi ultimi vengono impiegati solamente
 per testare applicativi ROS (Robotic Operation System), che 
-sfruttano solo una parte delle funzioni del DDS, tralasciando
-funzionalità del middleware che non vengono impegate
+sfruttano solo una parte delle funzioni del DDS, \textbf{tralasciando
+funzionalità del middleware} che non vengono impegate
 da ROS \cite{10.1145/3691620.3695073}.\label{ddsfuzz}
 
 \subsection{Fuzz testing}
 Prima di parlare del tool DDSFuzz dobbiamo comprendere 
 il significato di fuzzing (chiamato anche fuzz test) che è
 alla base del funzionamento di questo tool. Il fuzzing è un test
-automatizzato che serve a trovare e creare casi limite utilizzando
+automatizzato che serve a \textbf{trovare e creare casi limite} utilizzando
 dati di input invalidi in modo tale da esplorare più vulnerabilità
 possibili all'interno di un software. 
 Inizialmente i primi tool di fuzzing non erano molto 
@@ -188,7 +189,7 @@ applicazioni, protocolli di rete e kernel \cite{8371326}.
     \label{funzionamento fuzzer}
 \end{figure}
 
-Questi fuzzing test simulano un attacco mandando al software
+Questi fuzzing test \textbf{simulano un attacco} mandando al software
 che si vuole testare input regolari e irregolari, 
 in modo tale da poter 
 accedere ad ogni parte del codice con ogni tipo di input possibile.
@@ -204,15 +205,15 @@ un diagramma di flusso per spiegare il suo funzionamento.
 
 Tuttavia, dato che questi test sono generalizzati per essere compatibili
 con vari software, si crea una sorta di imprecisione nel mandare i vari 
-input. Questi input a volte non sono variegati a sufficienza 
-per analizzare ogni singola parte del software che stiamo analizzando.
+input. Questi \textbf{input a volte non sono variegati a sufficienza 
+per analizzare ogni singola parte del software} che stiamo analizzando.
 Inoltre in molti casi può anche succedere che vengano creati
 dei test che non sono necessari consumando
 così risorse e tempo inutilmente.
 
 Per migliorare la qualità di questi test è stato 
-creato il DDSFuzz che essendo un fuzzer specifico solamente per 
-il middleware DDS rimuove molte delle imprecisioni di un fuzzer 
+creato il \textit{DDSFuzz che essendo un fuzzer specifico solamente per 
+il middleware DDS} rimuove molte delle imprecisioni di un fuzzer 
 più generico.
 
 \subsection{Punti di forza del DDSFuzz}
@@ -228,19 +229,19 @@ piacimento rendendo quindi necessario cambiare i destinatari
 degli input di test 
 evitando così di trasmettere informazioni verso un'entità 
 che si è disconnessa e quindi impossibilitata a ricevere ulteriori
-aggiornamenti. DDSFuzz prende anche in considerazione le
+aggiornamenti. DDSFuzz \textbf{prende anche in considerazione le
 policy QoS e 
-le funzionalità abilitate dal DDS security, come
+le funzionalità abilitate dal DDS security}, come
 l'autenticazione e il controllo accessi, in modo tale da
 poter creare test più accurati. 
 
 Finita l'esecuzione di DDSFuzz ci ritroviamo con due tipologie
 di bug che possiamo riscontrare in un applicativo DDS:
 \begin{itemize}
-    \item BUG TRADIZIONALI: racchiude tutti i classici bug 
+    \item \textbf{BUG TRADIZIONALI:} racchiude tutti i classici bug 
     che sono presenti anche in altri software, un esempio può 
     essere un buffer overflow;
-    \item BUG SEMANTICI: questo bug avviene quando viene violata
+    \item \textbf{BUG SEMANTICI:} questo bug avviene quando viene violata
     una norma definita dallo standard DDS,
     ad esempio un bypass dell'autenticazione. 
     Dato che il loro comportamento
@@ -263,7 +264,7 @@ comportamento anomalo generato da un bug di tipo semantico
 DDSFuzz è composto da tre elementi principali chiamati: 
 DDS input generator, DDS program executor e bug detector.
 \begin{itemize}
-    \item DDS INPUT GENERATOR: Si occupa di generare degli input 
+    \item \textbf{DDS INPUT GENERATOR:} si occupa di generare degli input 
     specifici per il DDS prendendo in considerazione la topologia
     della rete, delle policy QoS e dei parametri di sicurezza del 
     DDS security. In questo modo non vengono generati test inutili 
@@ -273,11 +274,11 @@ DDS input generator, DDS program executor e bug detector.
     protocollo RTPS in modo tale che il DDS program executor
     potrà utilizzarli
     immediatamente;
-    \item DDS PROGRAM EXECUTOR: ricevuti gli input generati 
+    \item \textbf{DDS PROGRAM EXECUTOR:} ricevuti gli input generati 
     li invierà alle
     tre implementazioni del DDS, mandando feedback  al DDS input generator
     sulla validità ed efficacia dei test generati;
-    \item BUG DETECTOR: a differenza di altri bug detector provenienti da 
+    \item \textbf{BUG DETECTOR:} a differenza di altri bug detector provenienti da 
     fuzzer tool generici, questo componente del DDSFuzz riesce
     a distinguere tra bug 
     di tipo tradizionale e bug semantici, grazie all'analisi

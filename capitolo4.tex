@@ -11,7 +11,7 @@ vulnerabilità in Robot Operating System (ROS) 2 che
 utilizza come middleware il DDS e come wire-protocol 
 l'RTPS (Real-Time Publish-Subscribe Protocol).
 Infatti saranno proprio i pacchetti RTPS a contenere 
-l'exploit vero e proprio. Prima di mandare questi 
+l'\textit{exploit} vero e proprio. Prima di mandare questi 
 pacchetti è stato necessario creare una libreria Python 
 così da poter automatizzare il loro processo di creazione.
 Questo strumento, successivamente è stato anche unito al 
@@ -29,7 +29,7 @@ di un pacchetto RTPS costruito con questa libreria.
 
 \section{Ricognizione DDS}
 Le implementazioni DDS, per rispettare lo standard 
-OMG, devono seguire delle regole di interoperabilità 
+OMG, devono seguire delle \textbf{regole di interoperabilità} 
 per far si che i vari applicativi DDS siano compatibili 
 tra di loro. Questo ha portato alla creazione di un sistema
 molto verbose per effettuare discovery 
@@ -53,8 +53,8 @@ confermare se quel determinato partecipante è attivo.
 \end{figure}
 
 La vulnerabilità è stata individuata adoperando 
-CycloneDDS, ma anche altre implementazioni 
-presentano lo stesso problema. 
+CycloneDDS, ma anche \textbf{altre implementazioni 
+presentano lo stesso problema.} 
 Questo accade perché non è possibile mitigare 
 la vulnerabilità senza violare lo standard 
 OMG. L'unica soluzione applicabile consisterebbe 
@@ -87,8 +87,8 @@ incluso il parametro
 \texttt{PID\_METATRAFFIC\_MULTICAST\_LOCATOR} che si occupa di specificare 
 gli indirizzi multicast che verranno adoperati successivamente dalle 
 entità per comunicazioni di metatraffico.
-Il DDS non prevede filtri per questo 
-specifico valore e quindi un attaccante può specificare a un 
+\textbf{Il DDS non prevede filtri per questo 
+specifico valore} e quindi un attaccante può specificare a un 
 partecipante di utilizzare un indirizzo IP multicast per il metatraffico 
 sotto il suo controllo. Ricevuto questo traffico l'attaccante può 
 ricevere informazioni riguardo la rete DDS e rispondere al partecipante
@@ -124,8 +124,8 @@ indirizzo, come l'IP del DNS 8.8.8.8 (Figura~\ref{reflectionattackdns}).
 
 Questo problema di sicurezza è presente in tutte le implementazioni,
 come viene mostrato dai CVE della Figura~\ref{CVErecoinnassance},
-dei vendor dato che non può essere risolto senza violare lo 
-standard OMG. Questa opzione però, non è considerata dai vari 
+dei vendor dato che \textbf{non può essere risolto senza violare lo 
+standard OMG}. Questa opzione però, non è considerata dai vari 
 vendors perché interromperebbe l'interoperabilità tra le 
 diverse implementazioni.
 Per rimanere compatibili con lo standard OMG i vendor hanno 
@@ -148,8 +148,8 @@ La seguente vulnerabilità è stata scoperta utilizzando
 un software in grado di eseguire fuzz tests, 
 incluso DDSFuzz (mostrato nella Sezione~\ref{ddsfuzz}).
 
-I test hanno identificato una vulnerabilità in un mancato 
-controllo di lunghezza del valore del parametro 
+I test hanno identificato una vulnerabilità in un \textbf{mancato 
+controllo di lunghezza del valore del parametro} 
 \texttt{PID\_BUILTIN\_ENDPOINT\_QOS} che si trova all'interno di 
 un sottomessaggio utilizzato durante la fase di autoscoperta
 del DDS \cite{mayoral2022robot}. 
@@ -168,7 +168,8 @@ valore del parametro è possibile costruire un pacchetto
 RTPS, come mostrato in Figura~\ref{crashnode} 
 in modo tale da 
 mandare in crash il partecipante che lo riceve. 
-Osserviamo che il valore \texttt{parameterLength} è pari a zero,
+\textbf{Osserviamo che il valore 
+\texttt{parameterLength} è pari a zero},
 mentre il parametro \texttt{parameterData} contiene dei bytes 
 (nel nostro caso nulli).
 Questa discrepanza causa un crash durante la 
