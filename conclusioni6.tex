@@ -5,16 +5,22 @@ e le sue caratteristiche principali, incluse l'interoperabilità tra
 le diverse implementazioni tra diversi vendors, la possibilità di 
 cambiare la topologia della rete a runtime e una gestione di policy 
 QoS che rendono il middleware estremamente flessibile per ogni tipo 
-di utilizzo. 
+di utilizzo. Successivamente é stato eseguito un confronto tra i 
+vari applicativi del DDS per elencare e comparare i loro 
+punti di forza e svantaggi.
 
 Nei successivi capitoli, dopo l'introduzione, sono state 
 analizzate 
 delle vulnerabilità relative allo stesso standard OMG che il 
-DDS deve rispettare. Inoltre sono state anche mostrate delle
+DDS deve rispettare. Sono state anche mostrate delle
 possibili soluzioni per mitigare certe problematiche di
 sicurezza, tra cui il DDS security che tramite i suoi plugin 
 permette di crittare le comunicazioni tra le varie entità e 
 bloccare certe loro azioni se non hanno determinati permessi.
+Specialmente la mancanza di un sistema di autenticazione 
+ha portato permette ad un autore malevolo di interccare 
+il traffico scambiato tra entitá, dato che di base le 
+comunicazioni avvengono in chiaro.  
 
 Un'altra tipologia di vulnerabilità che é stata presentata é 
 relativa al software DDS utilizzato dai vendors per 
@@ -23,14 +29,14 @@ soluzioni open source come FastDDS hanno maggiori possibilità
 di avere problematiche relative alla sicurezza dato che
 la maggior parte dei CVE compilati sono relativi a questa 
 implementazione di eProsima. Da qui possiamo dedurre che 
-anche se il costo iniziale di un software DDS a pagamento 
-é maggiore, alla lunga garantiscono una maggiore sicurezza.
+anche se il costo iniziale di una soluzione a pagamento 
+é superiore, alla lunga garantiscono una maggiore copertura.
 
-Queste vulnerabilità relative all'implementazione hanno anche
+Queste vulnerabilità hanno anche
 evidenziato 
 come lo standard OMG puó creare diverse problematiche 
 legate alla sicurezza. 
-Anche se quest'ultime molte delle vulnerabilitá che sono state presentate 
+Anche se molte delle vulnerabilitá che sono state presentate 
 sono ormai note, in molti casi vengono ignorate 
 dato che i vendors cercano di mantenere il loro applicativo 
 in regola con lo standard OMG. Questa scelta é guidata dal fatto che 
@@ -114,5 +120,39 @@ una mancanza di analisi per trovare problematiche di funzionamento
 del DDS e alla sua sicurezza, dato che sono subito state trovate 
 nuove CVE dopo la sua esecuzione. 
 
+In conclusione questo elaborato ha dimostrato come, in futuro,
+é necessario avanzare nuovi studi per la sicurezza del 
+middleware DDS. Molte aziende che adoperano questa soluzione 
+non sono interessate ad aumentare la sua sicurezza dato che 
+mantengono il network DDS in un ambiente 
+protetto senza possibilità di accesso da parte di esterni, 
+rendendolo un sistema chiuso. 
+Tuttavia, con la crescente domanda di interconnessioni
+e diffusione di reti sempre più complesse, 
+questa strategia potrebbe rivelarsi insufficiente nel lungo termine.
+
+Il DDS é ancora una tecnologia ancora in 
+sviluppo che, con il tempo, potrá aiutare a risolvere tante 
+problematiche attuali legate alla comunicazione in 
+ambienti distribuiti. 
+
+Se prendiamo il 5G, un insieme di tecnologie che permette 
+di connettere ad Internet un grande numero di dispositivi che 
+inclusi quelli di tipo IoT, 
+possiamo osservare come la domanda di interconnettere piú dispositvi 
+tra di loro stia crescendo. Questa interconnessione in futuro 
+non troppo distante, potrebbe portare a creare un sistema in 
+grado di permettere a una vasta rete di 
+sensori di comunicare in real-time 
+tra di loro.
+
+In questo scenario, il DDS potrebbe rappresentare una efficiente
+soluzione per permettere l'interconnessine di questa vasta 
+rete di sensori, evitando di impigare tecnologie come il 
+protocollo TCP/IP, che non é adatto a gestire un ambiente con 
+un network dinamico. Tuttavia, affinché questa evoluzione possa 
+realizzarsi é necessario incrementare misure di potrezione 
+piú efficaci, capaci ci di risolvere almeno le vulnerabilità che 
+sono state mostrate.
 
 
