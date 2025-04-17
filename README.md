@@ -1,52 +1,30 @@
 # DDS_security_thesis
-Tesi triennale
+Tesi triennale in informatica
 
-## Idee da implementare
-AFTER si potrebbe fare nei capitoli introduttivi una mappa che racchiuda
-i tipi di variabili che usano i QoS (int, double,.. etc) per i capitoli
-che spiegano meglio i concetti introduttivi
+## Università di Perugia
 
-Non ho parlato molto dei software utilizzati, specialmente Proverif e 
-RTI Shapes
+### Dipartimento di Matematica e Informatica
 
-Devo parlare meglio dei protocolli RTPS
+## Analisi della sicurezza del middleware Data Distribution Service
 
+### Relatore
+Prof. Francesco Santini
 
+### Laureando
+Federico Ranocchia
 
-% https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:glossary:d:domain_participant
-% Aggiungere la fonte
+### Anno accademico 2023/2024
 
-% @misc{DomainParticipantomg,
-% 	title = {{Domain Participant [DDS Foundation Wiki]}},
-% 	year = {2025},
-% 	month = feb,
-% 	note = {[Online; accessed 5. Feb. 2025]},
-% 	url = {https://www.omgwiki.org/ddsf/doku.php?id=ddsf:public:guidebook:06_append:glossary:d:domain_participant}
-% }
+## Intro
+In questo elaborato verrà esposto il middleware Data Distribution Service (DDS)
+standardizzato dall’Object Management Group (OMG) e verrà effettuata un’analisi
+sulla sua sicurezza. In particolare nel Capitolo 2 viene spiegato inizialmente il suo
+funzionamento, per poi passare ai successivi due capitoli dove verranno introdotte
+due tipologie di vulnerabilità: una basata sullo standard OMG, mentre l’altra sugli
+applicativi che utilizzano il DDS. Infine nel Capitolo 5 verranno mostrati dei tools in
+grado di analizzare il traffico di una rete DDS e inoltre verrà introdotto DDSFuzz, un
+altro strumento per eseguire un test di tipo fuzz.
 
-
-% Aggiungere domnio definizione con relativa foto insimistica
-% https://community.rti.com/static/documentation/connext-dds/current/doc/manuals/connext_dds_professional/users_manual/users_manual/Fundamentals_of_DDS_Domains_and_DomainPa.htm
-
-% Utile per dopo
-% https://fast-dds.docs.eprosima.com/en/latest/fastdds/getting_started/definitions.html
-
-% @misc{ddsdomaineprosima,
-% 	title = {{1.1. What is DDS? {\ifmmode---\else\textemdash\fi} Fast DDS 3.1.1 documentation}},
-% 	year = {2025},
-% 	month = jan,
-% 	note = {[Online; accessed 5. Feb. 2025]},
-% 	url = {https://fast-dds.docs.eprosima.com/en/latest/fastdds/getting_started/definitions.html}
-% }
-
-# TODO
-vari vendors.
-wireshark
-Introduzione a shapes rti
-
-# Soluzioni (dopo)
-wireguard
-
-## Facoltativi
-Aggiungere differenza tra CORBA e DDS,  
-Aggiungeere altro attacco DDS security che si basa su i permessi
+### N.B.
+- Contiene la versione stampata e la versione inviata tramite portale esse3
+- Contiene la presentazione finale
